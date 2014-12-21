@@ -2,32 +2,44 @@ import java.util.Scanner ;
 
 public class PRLisp {
     public static void main(String args[]) {
+	testFakeReader() ;
+    }
+
+    private void repl() {
 	System.out.println("Starting PRLisp") ;
 	
 	LispReader r = new LispReader() ;
 	r.prompt() ;
 
 	Scanner in = new Scanner(System.in);
+
 	while(in.hasNext()) {
 	    String input = in.next() ;
 	    LispObject o = r.read(input) ;
 	    System.out.println(o.toString()) ;
+	    r.prompt() ;
 	}
-
-	
     }
-    private void testFakeReader() {
+    
+    static private void testFakeReader() {
 	LispReader r = new LispReader() ;
 
     	LispObject fiftyfour = r.read("(54)") ;
+	System.out.println(fiftyfour.toString()) ;	
+
 	LispObject hello = r.read("Hello") ;
+	System.out.println(hello.toString()) ;
+
+	LispObject cons = r.read("(\"Hello\" . 23)") ;
+	System.out.println(cons.toString()) ;
+
 	
 	//	LispObject s = Atom.make(13) ;
 	//System.out.println(s.toString()) ;
 	
-	System.out.println(fiftyfour.toString()) ;
+
 	//System.out.println(fiftyfour.data() + 1) ;
-	System.out.println(hello.toString()) ;
+
     }
     
     private void testObjects () {
@@ -51,7 +63,7 @@ public class PRLisp {
 
 	System.out.println(f.cdr().toString()) ;
 
-	ConsCell nilCdr = new ConsCell(thirteen, new NilObject()) ;
+	ConsCell nilCdr = new ConsCell(thirteen, new NilAtom()) ;
 	ConsCell list = new ConsCell(five, nilCdr) ;
 	System.out.println(list.toString()) ;
 

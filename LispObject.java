@@ -1,4 +1,4 @@
-abstract class LispObject {
+interface LispObject {
     /*
     public enum Tag {
 	CONS,
@@ -12,16 +12,6 @@ abstract class LispObject {
     public abstract void printAsCdr() ;
     */
     //public abstract Object data() ;
-    public abstract String toStringCdr() ;
+    String toStringCdr() ;
 }
 
-class NilObject extends LispObject {
-    /*
-    public void print() { System.out.print("NIL") ; }
-    public void printAsCdr() {
-    }
-    */
-    
-    public String toString() { return "NIL" ; }
-    public String toStringCdr() { return "" ; }
-}

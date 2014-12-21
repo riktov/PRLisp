@@ -1,21 +1,12 @@
-class Atom extends LispObject {
+class Atom implements LispObject {
     //member data
     protected Object data ;
 
     //constructor
-    public Atom() { this.data = new NilObject() ; }
+    //public Atom() { this.data = new NilAtom() ; }
     public Atom(Object o) { this.data = o ; }
 
-    //methods
-    /*
-    public void print() {
-	System.out.print(this.data) ;
-    }
-    public void printAsCdr() {
-	System.out.print(" . ") ;
-	print() ;
-    }
-    */
+    //accessors
     public Object data() { return data ; }
     
     //factory methods
@@ -32,9 +23,14 @@ class Atom extends LispObject {
     }
 
     public String toStringCdr() {
-	return " . " + this.toString() ;
+	return "->" + this.toString() ;
     }
     
+}
+
+class NilAtom implements LispObject {
+    public String toString() { return "NIL" ; }
+    public String toStringCdr() { return "" ; }
 }
 
 class StringAtom extends Atom {

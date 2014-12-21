@@ -14,41 +14,40 @@ public class LispReader {
 	} catch (IOException e) {
 	    System.out.println("error: bad input string in LispReader.read()") ;
 	}
-	return new NilObject() ;
+	return new NilAtom() ;
     }
 
     public LispObject readFrom(StreamTokenizer st) throws IOException {
-	Atom a = new Atom() ;
-	ConsCell c = new ConsCell() ;
+	//	Atom a = new Atom() ;
+	//ConsCell c = new ConsCell() ;
 	
 	while(st.nextToken() != st.TT_EOF) {
 	    System.out.println(st.toString()) ;
 	    
 	    if (st.ttype == '(') {
-		System.out.println("Read opening paren") ;
-		c.setCar(readFrom(st)) ;
+		//System.out.println("Read opening paren") ;
+		return new ConsCell(readFrom(st), readFrom(st)) ;
 	    } else if (st.ttype == ')') {
-		System.out.println("Read closing paren") ;
-		return c ;
+		//System.out.println("Read closing paren") ;
+		return readFrom(st) ;
+		//return c ;
 	    } else if (st.ttype == '.') {//assumes enclosed within spaces
-		c.setCdr(readFrom(st));
+		//return new SymbolAtom(st.sval) ;
+		return readFrom(st);
 	    } else if (st.ttype == '"') {
-		System.out.println("Read quoted string") ;
-		a = Atom.make(st.sval) ;
-		return a; 
+		//System.out.println("Read quoted string") ;
+		return new StringAtom(st.sval); 
 	    } else if (st.ttype == st.TT_NUMBER) {
-	       	a = Atom.make(st.nval) ;
-		return a ;
+		return new Atom(st.nval) ;
 	    } else if (st.ttype == st.TT_WORD) {
-		a = new SymbolAtom(st.sval) ;
-		return a ;
+		return new SymbolAtom(st.sval) ;
 	    } else {
 		//a = Atom.make() ;
-		return a ;
+		//return new NilAtom() ;
 	    }
 
 	}
-	return a ;
+	return new NilAtom() ;
     }
 
     public void prompt() {
