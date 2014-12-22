@@ -1,3 +1,5 @@
+//package org.riktov.prlisp ;
+
 class ConsCell implements LispObject {
     private LispObject car ;
     private LispObject cdr ;
@@ -22,10 +24,12 @@ class ConsCell implements LispObject {
 
     //methods
     public String toString() {
-	return '[' + this.car.toString() + this.cdr.toStringCdr() + ']' ;
+	return '(' + this.car.toString() + this.cdr.toStringCdr() + ')' ;
     }
 
     public String toStringCdr() {
 	return ' ' + this.car.toString() + this.cdr.toStringCdr() ;
     }
+
+    public boolean isNull() { return false ; }
 }

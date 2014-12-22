@@ -8,11 +8,11 @@ PRLisp.class: PRLisp.java
 LispObject.class: LispObject.java
 	javac LispObject.java
 
-Atom.class: Atom.java
-	javac Atom.java
+#Atom.class: Atom.java
+#	javac Atom.java
 
-ConsCell.class: ConsCell.java
-	javac ConsCell.java
+#ConsCell.class: ConsCell.java
+#	javac ConsCell.java
 
 LispReader.class: LispReader.java
 	javac LispReader.java
