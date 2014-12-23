@@ -1,21 +1,25 @@
 CLASSES=PRLisp.class LispObject.class Atom.class ConsCell.class LispReader.class
+JAVAC=javac
+JAVAC_FLAGS=-d .
+
 
 all: $(CLASSES)
 
-PRLisp.class: PRLisp.java
-	javac PRLisp.java
-
 LispObject.class: LispObject.java
-	javac LispObject.java
+	$(JAVAC) $(JAVAC_FLAGS) LispObject.java
 
 #Atom.class: Atom.java
-#	javac Atom.java
+#	$(JAVAC) $(JAVAC_FLAGS) Atom.java
 
 #ConsCell.class: ConsCell.java
-#	javac ConsCell.java
+#	$(JAVAC) $(JAVAC_FLAGS) ConsCell.java
 
 LispReader.class: LispReader.java
-	javac LispReader.java
+	$(JAVAC) $(JAVAC_FLAGS) LispReader.java
+
+PRLisp.class: PRLisp.java
+	$(JAVAC) $(JAVAC_FLAGS) PRLisp.java
+
 .PHONY: clean
 
 clean:

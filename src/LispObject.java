@@ -50,6 +50,9 @@ class NilAtom implements LispObject {
     public boolean isNull() { return true ; }
 }
 
+/**
+ *@ class StringAtom
+ */
 class StringAtom extends Atom {
     public StringAtom(String s) { super(s) ; }
     public String toString() {

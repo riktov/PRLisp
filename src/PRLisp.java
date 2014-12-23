@@ -1,4 +1,4 @@
-import org.riktov.prlisp.* ;
+package org.riktov.prlisp ;
 
 import java.util.Scanner ;
 
