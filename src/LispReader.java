@@ -2,7 +2,7 @@ package org.riktov.prlisp ;
 
 import java.io.* ;
 
-public class LispReader {
+class LispReader {
     public LispObject read(String sExp) {
         Reader r = new BufferedReader(new StringReader(sExp)) ;
         StreamTokenizer st = new StreamTokenizer(r) ;
