@@ -4,22 +4,30 @@ import java.util.Scanner ;
 
 public class PRLisp {
     public static void main(String args[]) {
-        testFakeReader() ;
+        Environment env = new Environment() ;
+        env.put("FOO", Atom.make(45)) ;
+        env.put("BAR", Atom.make("Bargle")) ;
+
+        LispObject o = env.lookup("FOO") ;
+        System.out.println(o) ;
+        
+        //repl(env) ;
+        //     testFakeReader() ;
     }
     
-    private void repl() {
+    static private void repl(Environment env) {
         System.out.println("Starting PRLisp") ;
         
-        LispReader r = new LispReader() ;
-        r.prompt() ;
+        LispReader lr = new LispReader() ;
+        lr.prompt() ;
         
         Scanner in = new Scanner(System.in);
         
-        while(in.hasNext()) {
-            String input = in.next() ;
-            LispObject o = r.read(input) ;
+        while(in.hasNextLine()) {
+            String input = in.nextLine() ;
+            LispObject o = lr.read(input) ;
             System.out.println(o.toString()) ;
-            r.prompt() ;
+            lr.prompt() ;
         }
     }
 

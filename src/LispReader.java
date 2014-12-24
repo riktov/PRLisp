@@ -2,6 +2,8 @@ package org.riktov.prlisp ;
 
 import java.io.* ;
 
+/**
+ */
 class LispReader {
     public LispObject read(String sExp) {
         Reader r = new BufferedReader(new StringReader(sExp)) ;
@@ -21,10 +23,10 @@ class LispReader {
 
     /**
      * readFrom(StreamTokenizer st)
-     * StreamTokenizer is not very flexible, and lisp syntax is kind of tough.
+     * StreamTokenizer is not very flexible, and lisp syntax is kind of tough with dots.
      * We can't use dots for dotted-pairs because StreamTokenizer will treat 
-     * a single dot surrounded by spaces as the number 0.0 . So for this Lisp
-     * we use commas instead of dots.
+     * a single dot surrounded by spaces as the number 0.0 . 
+     * So for this Lisp we use commas instead of dots.
      */
     public LispObject readFrom(StreamTokenizer st) throws IOException {
         //	Atom a = new Atom() ;
@@ -62,11 +64,13 @@ class LispReader {
                     return s ;
                 }
             } else {
+                System.out.println("Could not parse token: " + st.sval ) ; 
                 //a = Atom.make() ;
                 //return new NilAtom() ;
             }
             
         }
+        System.out.println("; No value") ;
         return new NilAtom() ;
     }
     
