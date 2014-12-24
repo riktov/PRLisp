@@ -3,17 +3,25 @@ package org.riktov.prlisp ;
 import java.util.List ;
 import java.util.ArrayList ;
 
-interface LispObject {
-    public boolean isNull() ;
-    public String toStringCdr() ;
-    public LispObject eval(Environment env) ;
+abstract class LispObject {
+    public boolean isNull() { return false ; }
     //    int length() ;
+}
+
+/** 
+@class ValueObject - an object whose value can be taken; an atom or pair
+procedures and conditions are not ValueObjects
+ */
+abstract class ValueObject extends LispObject {
+    /* most atoms are self-evaluating */
+    public LispObject eval(Environment env) { return this ;}
+    abstract public String toStringCdr() ;
 }
 
 /** Atom HAS a data member, rather than IS a data member because the box classes like
  * Integer and String are final.
  */
-class Atom implements LispObject {
+class Atom extends ValueObject {
     //member data
     protected Object data ;
     
@@ -24,7 +32,7 @@ class Atom implements LispObject {
     //accessors
     public Object data() { return data ; }
     
-    //factory methods
+    //factory methods, dispatch on argument type
     public static Atom make(Object o) {
         return new Atom(o) ;
     }
@@ -34,10 +42,7 @@ class Atom implements LispObject {
     }
 
     //implementation of LispObject
-    public boolean isNull() { return false ; }
-    public String toString() { return this.data.toString() ; }
-    public LispObject eval(Environment env) { return this ; }
-    
+    public String toString() { return data.toString() ; }
     public String toStringCdr() { return " . " + this.toString() ; }
 }
 
@@ -45,15 +50,14 @@ class Atom implements LispObject {
 * NilAtom does not extend Atom because it requires no data. 
 * It could also be a singleton class
 */
-class NilAtom implements LispObject {
+class NilAtom extends ValueObject {
     public String toString() { return "NIL" ; }
     public String toStringCdr() { return "" ; }
     public boolean isNull() { return true ; }
-    public LispObject eval(Environment env) { return this ; }
 }
 
 /**
- *@ class StringAtom
+ *@class StringAtom
  */
 class StringAtom extends Atom {
     public StringAtom(String s) { super(s) ; }
@@ -69,9 +73,9 @@ class SymbolAtom extends Atom {
     }
 }
 
-class ConsCell implements LispObject {
-    private LispObject car ;
-    private LispObject cdr ;
+class ConsCell extends ValueObject {
+    private ValueObject car ;
+    private ValueObject cdr ;
 
     //constructors
     /*
@@ -80,14 +84,14 @@ class ConsCell implements LispObject {
 	this.cdr = new NilAtom() ;
     }
     */
-    public ConsCell(LispObject car, LispObject cdr) {
+    public ConsCell(ValueObject car, ValueObject cdr) {
         this.car = car ;
         this.cdr = cdr ;
     }
     
     //accessors
-    public LispObject car() { return this.car ;}
-    public LispObject cdr() { return this.cdr ;}
+    public ValueObject car() { return this.car ;}
+    public ValueObject cdr() { return this.cdr ;}
     //public void setCar(LispObject o) { this.car = o ; }
     //public void setCdr(LispObject o) { this.cdr = o ; }
     
@@ -100,39 +104,51 @@ class ConsCell implements LispObject {
         return ' ' + this.car.toString() + this.cdr.toStringCdr() ;
     }
     
-    public boolean isNull() { return false ; }
+
+    /** EVAL
+     * 
+     */
     public LispObject eval (Environment env) {
-        return new StringAtom("TODO") ;
+	/* eval() returns a LispObject.
+	 * It can be an Atom or a LispProcedure
+	 */
+	LispProcedure proc = (LispProcedure)car.eval(env) ;
+	return proc.apply(new Atom[0]) ;
+	
+	//        return new StringAtom("TODO") ;
     }
 
     int length() {
         if(cdr.isNull()) {
             return 1 ;
         } else {
-            return 1 + cdr.length() ;
+            return 1 ; //+ cdr.length() ;
         }
     }
 }
 
-class Condition implements LispObject {
-    public String toStringCdr() { return "Condition" ; }
-    public boolean isNull() { return false ; } 
-    public LispObject eval(Environment env) { return this ;}
+abstract class LispProcedure extends LispObject {
+    abstract public LispObject apply(Atom []argVals) ;
 }
 
-class LispProcedure extends Atom {
+abstract class PrimitiveProcedure extends LispProcedure {
+}
+
+class PrimitiveAdditionProcedure extends PrimitiveProcedure {
+    public LispObject apply(Atom []argVals) {
+	return argVals[0].data() + argVals[1].data() ;
+    }
+}
+
+class CompoundProcedure extends LispProcedure {
     private LispObject body ;
     private String formalParamList[] ;
     private Environment env ;
     
     //constructors
-    public LispProcedure(LispObject body) {
-        super(body) ;
-        this.body = body ;
-    }
-    public LispProcedure(LispObject body, ConsCell params) {
-        super(body) ;
-        //        this.formalParamList = params ;
+    public CompoundProcedure(LispObject body, String []params) {
+        //super(body) ;
+        this.formalParamList = params ;
     }
     
     //implementation of LispObject
@@ -144,7 +160,7 @@ class LispProcedure extends Atom {
      * extending the procedure's initial environment with the argument
      * bindings.
      */
-    public LispObject apply(ConsCell args) {
+    public LispObject apply(Atom []argVals) {
         return new NilAtom();
     }
 
@@ -169,4 +185,15 @@ class LispProcedure extends Atom {
  | /    |
  \|APPLY/
   \____/      
+
+    ______
+  _/_     \_
+ /    \     \
+/      |     \
+| EVAL |     |
+|     /      |
+|    | APPLY |
+\    |       /
+ \_   \_____/
+   \______/      
 */
