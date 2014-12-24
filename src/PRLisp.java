@@ -29,14 +29,17 @@ public class PRLisp {
         LispObject fiftyfour = r.read("(54)") ;
         System.out.println(fiftyfour.toString()) ;	
         
-        LispObject hello = r.read("Hello") ;
+        LispObject foo = r.read("foo") ;
+        System.out.println(foo.toString()) ;
+        
+        LispObject hello = r.read("\"Hello\"") ;
         System.out.println(hello.toString()) ;
         
         LispObject nilly = r.read("nil") ;
         System.out.println(nilly.toString()) ;
         
-        LispObject cons = r.read("(12 , (foo , (34, nil)))") ;
-        System.out.println(cons.toString()) ;
+        LispObject aCons = r.read("(12 , (foo , (34, nil)))") ;
+        System.out.println(aCons.toString()) ;
         
         
         //	LispObject s = Atom.make(13) ;

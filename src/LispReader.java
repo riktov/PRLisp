@@ -47,12 +47,15 @@ class LispReader {
                 //System.out.println("Read quoted string") ;
                 return new StringAtom(st.sval); 
             } else if (st.ttype == st.TT_NUMBER) {
-                //                System.out.println("I think we got a number") ;
+                System.out.println("Read a number with string: " +
+                                   st.sval +
+                                   " and number " +
+                                   st.nval) ;
                 return new Atom(st.nval) ;
             } else if (st.ttype == st.TT_WORD) {
                 SymbolAtom s = new SymbolAtom(st.sval) ;
-                if(s.toString() == "NIL") {
-                    System.out.println("Read a NIL") ;
+                if(s.toString().equals("NIL")) {
+                    System.out.println("Creating a NilObject") ;
                     return new NilAtom() ;
                 } else {
                     System.out.println("Read a symbol named " + s.toString()) ;

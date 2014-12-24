@@ -1,0 +1,13 @@
+public class StringAtomTest {
+    private StringAtom str ;
+
+    @Before
+    public void setUp() {
+        str = new StringAtom("I am a StringAtom.") ;
+    }
+    @Test public void testStringAtom() {
+        assertTrue(str.toString() == "I am a StringAtom.") ;
+    }
+    
+}
+
