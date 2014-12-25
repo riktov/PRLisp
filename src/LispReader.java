@@ -5,12 +5,13 @@ import java.io.* ;
 /**
  */
 class LispReader {
-    public LispObject read(String sExp) {
+    public ValueObject read(String sExp) {
         Reader r = new BufferedReader(new StringReader(sExp)) ;
         StreamTokenizer st = new StreamTokenizer(r) ;
         st.whitespaceChars(' ', ' ');
         st.commentChar(';') ;
         st.parseNumbers() ;
+        st.ordinaryChar('+') ;
         
         //StringTokenizer st = new StringTokenizer(s, "( )", true) ;
         try {
@@ -28,12 +29,12 @@ class LispReader {
      * a single dot surrounded by spaces as the number 0.0 . 
      * So for this Lisp we use commas instead of dots.
      */
-    public LispObject readFrom(StreamTokenizer st) throws IOException {
+    public ValueObject readFrom(StreamTokenizer st) throws IOException {
         //	Atom a = new Atom() ;
         //ConsCell c = new ConsCell() ;
         
         while(st.nextToken() != st.TT_EOF) {
-            //System.out.println(st.toString()) ;
+            System.out.println(st.toString()) ;
             
             if (st.ttype == '(') {
                 //System.out.println("Read opening paren") ;
@@ -49,10 +50,12 @@ class LispReader {
                 //System.out.println("Read quoted string") ;
                 return new StringAtom(st.sval); 
             } else if (st.ttype == st.TT_NUMBER) {
+                /*
                 System.out.println("Read a number with string: " +
                                    st.sval +
                                    " and number " +
                                    st.nval) ;
+                */
                 return new Atom(st.nval) ;
             } else if (st.ttype == st.TT_WORD) {
                 SymbolAtom s = new SymbolAtom(st.sval) ;
@@ -64,8 +67,10 @@ class LispReader {
                     return s ;
                 }
             } else {
-                System.out.println("Could not parse token: " + st.sval ) ; 
-                //a = Atom.make() ;
+                String sym = Character.toString((char)st.ttype) ;
+                
+                System.out.println("Read a single-character symbol named " + sym) ; 
+                return new SymbolAtom(sym) ;
                 //return new NilAtom() ;
             }
             

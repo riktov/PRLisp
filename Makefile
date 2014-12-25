@@ -8,6 +8,7 @@ CLASSES=\
 	$(PACKAGEPATH)LispReader.class \
 	$(PACKAGEPATH)Environment.class \
 	$(PACKAGEPATH)PRLisp.class \
+	$(PACKAGEPATH)Primitives.class \
 	$(PACKAGEPATH)NilAtomTest.class \
 	$(PACKAGEPATH)StringAtomTest.class \
 	$(PACKAGEPATH)ConsCellTest.class
@@ -16,13 +17,16 @@ all: $(CLASSES)
 
 #LispObject and Environment are circularly dependent, so they must be compiled simultaneously
 $(PACKAGEPATH)LispObject.class: src/LispObject.java
-	$(JAVAC) -cp $(JAVAC_CLASSPATH) $(JAVAC_FLAGS) src/LispObject.java src/Environment.java
+	$(JAVAC) -cp $(JAVAC_CLASSPATH) $(JAVAC_FLAGS) src/LispObject.java src/Environment.java src/Primitives.java
 
 $(PACKAGEPATH)ConsCell.class: src/LispObject.java
 	$(JAVAC) -cp $(JAVAC_CLASSPATH) $(JAVAC_FLAGS) src/LispObject.java src/Environment.java
 
 $(PACKAGEPATH)Environment.class: src/Environment.java
 	$(JAVAC) -cp $(JAVAC_CLASSPATH) $(JAVAC_FLAGS) src/Environment.java
+
+$(PACKAGEPATH)Primitives.class: src/Primitives.java
+	$(JAVAC) -cp $(JAVAC_CLASSPATH) $(JAVAC_FLAGS) src/Primitives.java
 
 #Atom.class: Atom.java
 #	$(JAVAC) $(JAVAC_FLAGS) Atom.java

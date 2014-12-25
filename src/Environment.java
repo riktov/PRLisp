@@ -3,20 +3,29 @@ package org.riktov.prlisp ;
 import java.util.HashMap ;
 
 /**
- * @classEnvironment
+ * Environment
  */
 class Environment extends HashMap<String, LispObject> {
+    /** 
+     */
+    public Environment() {
+        installPrimitive(new PrimitiveAdditionProcedure()) ;
+        installPrimitive(new PrimitiveSubtractionProcedure()) ;
+        installPrimitive(new PrimitiveConsProcedure()) ;
+    }
+    
     public LispObject lookup(String str) {
-        if (this.containsKey(str)) {
-            return this.get(str) ;
-        }
-        System.out.println("ERROR: no binding for " + str) ;
-        return new Condition() ;
+        return this.get(str) ;
+    }
+
+    public boolean installPrimitive(PrimitiveProcedure proc) {
+        put(proc.symbol(), proc) ;
+        return true ;
     }
 }
 
 /**
- * @classEnvironment
+ * Environment
  */
 class ChildEnvironment extends Environment{
     //members
@@ -32,7 +41,7 @@ class ChildEnvironment extends Environment{
     public LispObject lookup(String str) {
         if (this.containsKey(str)) {
             return this.get(str) ;
-        } ;
+        }
         return parent.lookup(str) ;
     }
 

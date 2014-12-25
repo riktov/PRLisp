@@ -2,6 +2,13 @@ package org.riktov.prlisp ;
 
 import java.util.Scanner ;
 
+/**
+ * <h1>PRLisp</h1>
+ * A Lisp interpreter.
+ *
+ * @author Paul Richter <riktov@freeshell.org>
+ * @version 0.1
+ */
 public class PRLisp {
     public static void main(String args[]) {
         Environment env = new Environment() ;
@@ -11,11 +18,17 @@ public class PRLisp {
         LispObject o = env.lookup("FOO") ;
         System.out.println(o) ;
         
-        //repl(env) ;
+        PRLisp lisp = new PRLisp() ;
+        lisp.repl(env) ;
         //     testFakeReader() ;
     }
-    
-    static private void repl(Environment env) {
+
+    /**
+     * Runs a REPL(Read-Eval-Print Loop)
+     * @param env The initial environment
+     * @return None
+     */
+    public void repl(Environment env) {
         System.out.println("Starting PRLisp") ;
         
         LispReader lr = new LispReader() ;
@@ -25,8 +38,12 @@ public class PRLisp {
         
         while(in.hasNextLine()) {
             String input = in.nextLine() ;
-            LispObject o = lr.read(input) ;
-            System.out.println(o.toString()) ;
+            ValueObject o = lr.read(input) ;
+
+            ValueObject evaluated = (ValueObject)o.eval(env) ; //WARNING: Coercion
+            System.out.println(evaluated.toString()) ;
+
+            //System.out.println(o.toString()) ;
             lr.prompt() ;
         }
     }

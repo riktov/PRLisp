@@ -9,11 +9,11 @@ abstract class LispObject {
 }
 
 /** 
-@class ValueObject - an object whose value can be taken; an atom or pair
-procedures and conditions are not ValueObjects
+ * @class ValueObject - an object whose value can be taken; an atom or pair.
+ * Procedures and conditions are not ValueObjects
  */
 abstract class ValueObject extends LispObject {
-    /* most atoms are self-evaluating */
+    /* Atoms are by default self-evaluating */
     public LispObject eval(Environment env) { return this ;}
     abstract public String toStringCdr() ;
 }
@@ -33,13 +33,8 @@ class Atom extends ValueObject {
     public Object data() { return data ; }
     
     //factory methods, dispatch on argument type
-    public static Atom make(Object o) {
-        return new Atom(o) ;
-    }
-    
-    public static Atom make(String s) {
-        return new StringAtom(s) ;
-    }
+    public static Atom make(Object o) { return new Atom(o) ; }
+    public static Atom make(String s) { return new StringAtom(s) ; }
 
     //implementation of LispObject
     public String toString() { return data.toString() ; }
@@ -50,7 +45,7 @@ class Atom extends ValueObject {
 * NilAtom does not extend Atom because it requires no data. 
 * It could also be a singleton class
 */
-class NilAtom extends ValueObject {
+final class NilAtom extends ValueObject {
     public String toString() { return "NIL" ; }
     public String toStringCdr() { return "" ; }
     public boolean isNull() { return true ; }
@@ -80,8 +75,8 @@ class ConsCell extends ValueObject {
     //constructors
     /*
     public ConsCell() {
-	this.car = new NilAtom() ;
-	this.cdr = new NilAtom() ;
+    this.car = new NilAtom() ;
+    this.cdr = new NilAtom() ;
     }
     */
     public ConsCell(ValueObject car, ValueObject cdr) {
@@ -104,20 +99,22 @@ class ConsCell extends ValueObject {
         return ' ' + this.car.toString() + this.cdr.toStringCdr() ;
     }
     
-
-    /** EVAL
-     * 
+    /** EVAL returns a LispObject.
+     * It can be an Atom or a LispProcedure
      */
     public LispObject eval (Environment env) {
-	/* eval() returns a LispObject.
-	 * It can be an Atom or a LispProcedure
-	 */
-	LispProcedure proc = (LispProcedure)car.eval(env) ;
-	return proc.apply(new Atom[0]) ;
-	
-	//        return new StringAtom("TODO") ;
+        LispProcedure proc = (LispProcedure)car.eval(env) ;
+        ConsCell arguments = (ConsCell)cdr ;
+
+        Atom [] argvals = { new Atom(5), new Atom(13) } ;
+        
+            //return proc.apply(new Atom[0]) ;//TODO :
+        return proc.apply(argvals) ;//TODO : 
+                
+        //        return new StringAtom("TODO") ;
     }
 
+    
     int length() {
         if(cdr.isNull()) {
             return 1 ;
@@ -132,21 +129,17 @@ abstract class LispProcedure extends LispObject {
 }
 
 abstract class PrimitiveProcedure extends LispProcedure {
-}
-
-class PrimitiveAdditionProcedure extends PrimitiveProcedure {
-    public LispObject apply(Atom []argVals) {
-	return argVals[0].data() + argVals[1].data() ;
-    }
+    String symbol ;
+    public String symbol() { return this.symbol ; }
 }
 
 class CompoundProcedure extends LispProcedure {
-    private LispObject body ;
+    private ValueObject body ;
     private String formalParamList[] ;
     private Environment env ;
     
     //constructors
-    public CompoundProcedure(LispObject body, String []params) {
+    public CompoundProcedure(ValueObject body, String []params) {
         //super(body) ;
         this.formalParamList = params ;
     }
@@ -155,12 +148,14 @@ class CompoundProcedure extends LispProcedure {
     public String toString() { return "#<FUNCTION :LAMBDA>" ;}
 
     /**
-     *APPLY
+     * APPLY
      * Evaluate the procedure body in an environment created by 
      * extending the procedure's initial environment with the argument
      * bindings.
+     * @param argVals This is an array of Atoms (evaluated) that is passed to the method.
+     * @return ValueObject This is either an Atom or a list
      */
-    public LispObject apply(Atom []argVals) {
+    public ValueObject apply(Atom []argVals) {
         return new NilAtom();
     }
 
