@@ -12,15 +12,27 @@ class Environment extends HashMap<String, LispObject> {
         installPrimitive(new PrimitiveAdditionProcedure()) ;
         installPrimitive(new PrimitiveSubtractionProcedure()) ;
         installPrimitive(new PrimitiveConsProcedure()) ;
+
+	System.out.println(keySet()) ;
     }
     
-    public LispObject lookup(String str) {
-        return this.get(str) ;
+    LispObject lookup(String str) {
+        LispObject o = this.get(str) ;
+	
+	if (o == null) {
+	    System.out.println("EVAL: variable " + str + " has no value") ;
+	}
+
+	return o ;
     }
 
-    public boolean installPrimitive(PrimitiveProcedure proc) {
-        put(proc.symbol(), proc) ;
-        return true ;
+    boolean installPrimitive(PrimitiveProcedure proc) {
+        return intern(proc.symbol(), proc) ;
+    }
+
+    boolean intern(String symName, LispObject o) {
+	put(symName.toUpperCase(), o) ;
+	return true ;
     }
 }
 
@@ -38,7 +50,7 @@ class ChildEnvironment extends Environment{
         this.parent = parent ;
     }
 
-    public LispObject lookup(String str) {
+    LispObject lookup(String str) {
         if (this.containsKey(str)) {
             return this.get(str) ;
         }

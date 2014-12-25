@@ -103,15 +103,12 @@ class ConsCell extends ValueObject {
      * It can be an Atom or a LispProcedure
      */
     public LispObject eval (Environment env) {
-        LispProcedure proc = (LispProcedure)car.eval(env) ;
+        LispProcedure proc = (LispProcedure)car.eval(env) ;//this can return null...
         ConsCell arguments = (ConsCell)cdr ;
 
         Atom [] argvals = { new Atom(5), new Atom(13) } ;
         
-            //return proc.apply(new Atom[0]) ;//TODO :
-        return proc.apply(argvals) ;//TODO : 
-                
-        //        return new StringAtom("TODO") ;
+        return proc.apply(argvals) ;//...which will raise a NullPointerException here
     }
 
     
@@ -135,13 +132,13 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 class CompoundProcedure extends LispProcedure {
     private ValueObject body ;
-    private String formalParamList[] ;
+    private String formalParams[] ;
     private Environment env ;
     
     //constructors
     public CompoundProcedure(ValueObject body, String []params) {
         //super(body) ;
-        this.formalParamList = params ;
+        this.formalParams = params ;
     }
     
     //implementation of LispObject
@@ -156,7 +153,12 @@ class CompoundProcedure extends LispProcedure {
      * @return ValueObject This is either an Atom or a list
      */
     public ValueObject apply(Atom []argVals) {
-        return new NilAtom();
+	ChildEnvironment newEnv = new ChildEnvironment(env) ;
+	int i ;
+	for(i = 0 ; i < argVals.length ; i++) {
+	    newEnv.intern(formalParams[i], argVals[i]) ;
+	}
+        return (ValueObject)body.eval(newEnv) ;//CAUTION: coercion
     }
 
     public static String[] paramStringArray(ConsCell params) {
