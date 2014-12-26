@@ -5,7 +5,7 @@ import java.io.* ;
 /**
  */
 class LispReader {
-    public ValueObject read(String sExp) {
+    public LispObject read(String sExp) {
         Reader r = new BufferedReader(new StringReader(sExp)) ;
         StreamTokenizer st = new StreamTokenizer(r) ;
         st.whitespaceChars(' ', ' ');
@@ -29,7 +29,7 @@ class LispReader {
      * a single dot surrounded by spaces as the number 0.0 . 
      * So for this Lisp we use commas instead of dots.
      */
-    public ValueObject readFrom(StreamTokenizer st) throws IOException {
+    public LispObject readFrom(StreamTokenizer st) throws IOException {
         //	Atom a = new Atom() ;
         //ConsCell c = new ConsCell() ;
         

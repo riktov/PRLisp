@@ -38,9 +38,9 @@ public class PRLisp {
         
         while(in.hasNextLine()) {
             String input = in.nextLine() ;
-            ValueObject o = lr.read(input) ;
-
-            ValueObject evaluated = (ValueObject)o.eval(env) ; //WARNING: Coercion
+            LispObject o = lr.read(input) ;
+            LispObject evaluated = o.eval(env) ;
+            
             System.out.println(evaluated.toString()) ;
 
             //System.out.println(o.toString()) ;
