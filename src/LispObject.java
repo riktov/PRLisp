@@ -10,15 +10,24 @@ abstract class LispObject {
      * and (lists) cons cells, which are evaluated by applying their first element to the remainders
      */
     public LispObject eval(Environment env) { return this ;}
+    public String toStringCdr() { return " . " + this.toString() ; }
+
+    /**
+     * The methods below here are the base error implementations of the fundamental methods that can be called on 
+     * a LispObject. Some of these might be unnecessary with judicious use of downcasting
+     */
+    /*
     public LispObject apply(LispObject[] argVals) {
         System.out.println("APPLY: " + this.toString() + " is not a function name; try using a symbol instead") ;
         return new NilAtom() ;
     }
-    public String toStringCdr() { return " . " + this.toString() ; }
+    */
+
     public LispObject car() {
         System.out.println("CAR: " + this.toString() + " is not a list") ;
         return new NilAtom() ;
     }
+    
     public LispObject cdr() {
         System.out.println("CDR: " + this.toString() + " is not a list") ;
         return new NilAtom() ;
@@ -103,7 +112,7 @@ class ConsCell extends LispObject {
      * It can be an Atom or a LispProcedure
      */
     public LispObject eval (Environment env) {
-        LispObject proc = car.eval(env) ;//this can return null...
+        LispProcedure proc = (LispProcedure)car.eval(env) ;//this can return null...
         ConsCell rest = (ConsCell)cdr ;
         LispObject[] unevaluatedArgs =  rest.toArray() ;
         int numArgs = unevaluatedArgs.length ;
@@ -131,6 +140,7 @@ class ConsCell extends LispObject {
         LispObject[] arr = new LispObject[al.size()] ; 
         al.toArray(arr) ;
 
+        System.out.println("Arguments: " + arr) ;
         return arr ;
         //return new LispObject [] { new Atom(5), new Atom(13) } ;
     }

@@ -33,3 +33,11 @@ class PrimitiveConsProcedure extends PrimitiveProcedure {
     }
 }
 
+class PrimitiveCarProcedure extends PrimitiveProcedure {
+    public PrimitiveCarProcedure() {
+        symbol = "car" ;
+    }
+    public LispObject apply(LispObject []argVals) {
+        return argVals[0].car() ;
+    }
+}

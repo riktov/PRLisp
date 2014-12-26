@@ -8,11 +8,11 @@ import java.util.HashMap ;
 class Environment extends HashMap<String, LispObject> {
     /** 
      */
-    public Environment() {
-        
+    Environment() {    
         installPrimitive(new PrimitiveAdditionProcedure()) ;
         installPrimitive(new PrimitiveSubtractionProcedure()) ;
         installPrimitive(new PrimitiveConsProcedure()) ;
+        installPrimitive(new PrimitiveCarProcedure()) ;
         
         System.out.println(keySet()) ;
     }
@@ -49,7 +49,7 @@ class ChildEnvironment extends Environment{
     /** constructor
      * @param parent Parent environment.
      */
-    public ChildEnvironment(Environment parent) {
+    ChildEnvironment(Environment parent) {
         this.parent = parent ;
     }
     
