@@ -1,5 +1,5 @@
 package org.riktov.prlisp ;
-
+/*
 class PrimitiveAdditionProcedure extends PrimitiveProcedure {
     public PrimitiveAdditionProcedure() {
         symbol = "+" ;
@@ -11,7 +11,7 @@ class PrimitiveAdditionProcedure extends PrimitiveProcedure {
         return new Atom(num0.floatValue() + num1.floatValue()) ;
     }
 }
-
+*/
 class PrimitiveSubtractionProcedure extends PrimitiveProcedure {
     public PrimitiveSubtractionProcedure() {
         symbol = "-" ;

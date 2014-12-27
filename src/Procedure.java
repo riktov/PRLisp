@@ -1,7 +1,7 @@
 package org.riktov.prlisp ;
 
-import java.util.List ;
-import java.util.ArrayList ;
+//import java.util.List ;
+//import java.util.ArrayList ;
 
 abstract class LispProcedure extends LispObject {
     abstract public LispObject apply(LispObject []argVals) ;
@@ -10,6 +10,11 @@ abstract class LispProcedure extends LispObject {
 abstract class PrimitiveProcedure extends LispProcedure {
     String symbol ;
     public String symbol() { return this.symbol ; }
+}
+
+abstract class SpecialOperation extends LispProcedure {
+    private String formalParams[] ;
+    private Environment env ;    
 }
 
 class CompoundProcedure extends LispProcedure {

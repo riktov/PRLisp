@@ -70,6 +70,7 @@ class Atom extends LispObject {
 * NilAtom does not extend Atom because it requires no data. 
 * It could also be a singleton class
 */
+
 final class NilAtom extends LispObject {
     public String toString() { return "NIL" ; }
     public String toStringCdr() { return "" ; } //If the cdr of a cons is nil, then the cons is a list
