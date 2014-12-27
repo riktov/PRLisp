@@ -6,15 +6,19 @@ import java.util.ArrayList ;
 abstract class LispObject {
     public boolean isNull() { return false ; }
     /**
-     * Most objects are self-evaluating. The two exceptions are symbols, whos values are looked up in the environment,
-     * and (lists) cons cells, which are evaluated by applying their first element to the remainders
+     * Most objects are self-evaluating. The two exceptions are symbols, 
+     * whose values are looked up in the environment,
+     * and (lists) cons cells, which are evaluated by applying their first 
+     * element to the remainders
      */
     public LispObject eval(Environment env) { return this ;}
     public String toStringCdr() { return " . " + this.toString() ; }
 
     /**
-     * The methods below here are the base error implementations of the fundamental methods that can be called on 
-     * a LispObject. Some of these might be unnecessary with judicious use of downcasting
+     * The methods below here are the base error implementations of the 
+     * fundamental methods that can be called on 
+     * a LispObject. Some of these might be unnecessary with judicious use of 
+     * downcasting and handling of the resulting ClassCastException
      */
     /*
     public LispObject apply(LispObject[] argVals) {
@@ -45,7 +49,7 @@ abstract class ObsoleteValueObject extends LispObject {
  */
 class Atom extends LispObject {
     //member data
-    protected Object data ;
+    Object data ;
     
     //constructor
     //public Atom() { this.data = new NilAtom() ; }
@@ -137,10 +141,12 @@ class ConsCell extends LispObject {
             c = c.cdr() ;
         }
 
+	al.add(c.car()) ;
+
         LispObject[] arr = new LispObject[al.size()] ; 
         al.toArray(arr) ;
 
-        System.out.println("Arguments: " + arr) ;
+        //System.out.println("Arguments: " + arr) ;
         return arr ;
         //return new LispObject [] { new Atom(5), new Atom(13) } ;
     }

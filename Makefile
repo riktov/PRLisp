@@ -69,3 +69,4 @@ runtest:
 	java -cp .:build:$(CLASSPATH) org.junit.runner.JUnitCore org.riktov.prlisp.NilAtomTest
 	java -cp .:build:$(CLASSPATH) org.junit.runner.JUnitCore org.riktov.prlisp.StringAtomTest
 	java -cp .:build:$(CLASSPATH) org.junit.runner.JUnitCore org.riktov.prlisp.ConsCellTest
+# java -cp .:build/classes:$CLASSPATH org.junit.runner.JUnitCore org.riktov.prlisp.NilAtomTest

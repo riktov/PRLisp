@@ -5,10 +5,10 @@ class PrimitiveAdditionProcedure extends PrimitiveProcedure {
         symbol = "+" ;
     }
     public LispObject apply(LispObject []argVals) {
-        Atom arg0 = (Atom)argVals[0] ;
-        Atom arg1 = (Atom)argVals[1] ;
+        Number num0 = (Number)((Atom)argVals[0]).data() ;
+        Number num1 = (Number)((Atom)argVals[1]).data() ;
         
-        return new Atom((int)arg0.data() + (int)arg1.data()) ;
+        return new Atom(num0.floatValue() + num1.floatValue()) ;
     }
 }
 
