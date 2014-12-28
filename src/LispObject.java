@@ -73,7 +73,9 @@ class Atom extends LispObject {
 
 final class NilAtom extends LispObject {
     public String toString() { return "NIL" ; }
-    public String toStringCdr() { return "" ; } //If the cdr of a cons is nil, then the cons is a list
+    public String toStringCdr() { return "" ; }
+    //If the cdr of a cons is nil, then the cons is the last element of a list,
+    //so we just finish printing
     public boolean isNull() { return true ; }
 }
 

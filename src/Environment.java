@@ -9,7 +9,7 @@ class Environment extends HashMap<String, LispObject> {
     /** 
      */
     Environment() {
-	installParameters() ;
+	installConstants() ;
 	installPrimitives() ;
         System.out.println(keySet()) ;
     }
@@ -24,15 +24,12 @@ class Environment extends HashMap<String, LispObject> {
         return o ;
     }
     
-    boolean installParameters() {
-	intern("nil",
-	       new LispObject() {
-		   public String toString() { return "NIL" ; }
-		   public String toStringCdr() { return "" ; }//If the cdr of a cons is nil, then the cons is a list
-		   public boolean isNull() { return true ; }
-	       }) ;
-
-	intern("t", new SymbolAtom("t")) ;
+    boolean installConstants() {
+	NilAtom n = new NilAtom() ;//the singleton in the environment
+	intern(n.toString(), n) ;
+	
+	SymbolAtom t = new SymbolAtom("t") ;//the singleton in the environment
+	intern(t.toString(), t) ;
 	
 	return true ;
     }
