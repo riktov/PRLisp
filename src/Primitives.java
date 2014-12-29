@@ -12,17 +12,19 @@ class PrimitiveAdditionProcedure extends PrimitiveProcedure {
     }
 }
 */
+/*
 class PrimitiveSubtractionProcedure extends PrimitiveProcedure {
     public PrimitiveSubtractionProcedure() {
         symbol = "-" ;
     }
     public LispObject apply(LispObject []argVals) {
-        Atom arg0 = (Atom)argVals[0] ;
-        Atom arg1 = (Atom)argVals[1] ;
+        NumberAtom n0 = (NumberAtom)argVals[0] ;
+        NumberAtom n1 = (NumberAtom)argVals[1] ;
         
-        return new Atom((int)arg0.data() - (int)arg1.data()) ;
+        return n0.subtract(n1) ;
     }
 }
+*/
 
 class PrimitiveConsProcedure extends PrimitiveProcedure {
     public PrimitiveConsProcedure() {

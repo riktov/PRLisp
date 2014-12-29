@@ -35,7 +35,7 @@ class LispReader {
         //	Atom a = new Atom() ;
         //ConsCell c = new ConsCell() ;
         
-        while(st.nextToken() != st.TT_EOF) {
+        while(st.nextToken() != StreamTokenizer.TT_EOF) {
             //System.out.println(st.toString()) ;
             
             if (st.ttype == '(') {
@@ -51,15 +51,15 @@ class LispReader {
             } else if (st.ttype == '"') {
                 //System.out.println("Read quoted string") ;
                 return new StringAtom(st.sval); 
-            } else if (st.ttype == st.TT_NUMBER) {
-                /*
+            } else if (st.ttype == StreamTokenizer.TT_NUMBER) {
+                
                 System.out.println("Read a number with string: " +
                                    st.sval +
                                    " and number " +
                                    st.nval) ;
-                */
-                return new Atom(st.nval) ;
-            } else if (st.ttype == st.TT_WORD) {
+                
+                return PrimitiveDataAtom.make(st.nval) ;
+            } else if (st.ttype == StreamTokenizer.TT_WORD) {
                 SymbolAtom s = new SymbolAtom(st.sval) ;
                 if(s.toString().equals("NIL")) {
                     //System.out.println("Creating a NilObject") ;

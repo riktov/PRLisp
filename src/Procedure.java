@@ -14,13 +14,13 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 abstract class SpecialOperation extends LispProcedure {
     private String formalParams[] ;
-    private Environment env ;    
+    private LispEnvironment env ;    
 }
 
 class CompoundProcedure extends LispProcedure {
     private LispObject body ;
     private String formalParams[] ;
-    private Environment env ;
+    private LispEnvironment env ;
     
     //constructors
     public CompoundProcedure(LispObject body, String []params) {

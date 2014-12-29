@@ -1,11 +1,11 @@
 package org.riktov.prlisp ;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.assertTrue;
 
 //import org.junit.Test ;
 //import org.junit.Ignore;
-import org.junit.* ;
-import org.junit.runner.RunWith;
+import org.junit.Before;
+import org.junit.Test;
 
 //import org.junit.runners.JUnit4;
 
@@ -22,6 +22,7 @@ public class StringAtomTest {
     public void setUp() {
         str = new StringAtom("I am a StringAtom.") ;
     }
+
     @Test public void testStringAtom() {
         //System.out.println(str.toString()) ;
         assertTrue(str.toString().equals("\"I am a StringAtom.\"")) ;

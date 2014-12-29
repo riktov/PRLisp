@@ -1,6 +1,7 @@
 package org.riktov.prlisp ;
 
-import java.util.Scanner ;
+import java.util.Scanner;
+
 
 /**
  * <h1>PRLisp</h1>
@@ -11,9 +12,9 @@ import java.util.Scanner ;
  */
 public class PRLisp {
     public static void main(String args[]) {
-        Environment env = new Environment() ;
-        env.put("FOO", Atom.make(45)) ;
-        env.put("BAR", Atom.make("Bargle")) ;
+        LispEnvironment env = new LispEnvironment() ;
+        env.put("FOO", DataAtom.make(45)) ;
+        env.put("BAR", DataAtom.make("Bargle")) ;
 
         LispObject o = env.lookup("FOO") ;
         System.out.println(o) ;
@@ -28,7 +29,7 @@ public class PRLisp {
      * @param env The initial environment
      * @return None
      */
-    public void repl(Environment env) {
+    public void repl(LispEnvironment env) {
         System.out.println("Starting PRLisp") ;
         
         LispReader lr = new LispReader() ;
@@ -39,46 +40,22 @@ public class PRLisp {
         while(in.hasNextLine()) {
             String input = in.nextLine() ;
             LispObject o = lr.read(input) ;
-            LispObject evaluated = o.eval(env) ;
             
-            System.out.println(evaluated.toString()) ;
+            //LispObject evaluated = o.eval(env) ;
+            
+            //System.out.println(evaluated.toString()) ;
 
-            //System.out.println(o.toString()) ;
+            System.out.println(o.toString()) ;
             lr.prompt() ;
         }
     }
 
-    static private void testFakeReader() {
-        LispReader r = new LispReader() ;
-        
-        LispObject fiftyfour = r.read("(54)") ;
-        System.out.println(fiftyfour.toString()) ;	
-        
-        LispObject foo = r.read("foo") ;
-        System.out.println(foo.toString()) ;
-        
-        LispObject hello = r.read("\"Hello\"") ;
-        System.out.println(hello.toString()) ;
-        
-        LispObject nilly = r.read("nil") ;
-        System.out.println(nilly.toString()) ;
-        
-        LispObject aCons = r.read("(12 , (foo , (34, nil)))") ;
-        System.out.println(aCons.toString()) ;
-        
-        
-        //	LispObject s = Atom.make(13) ;
-        //System.out.println(s.toString()) ;
-        
-        
-        //System.out.println(fiftyfour.data() + 1) ;
-        
-    }
     
-    private void testObjects () {
-        Atom five = new Atom(5) ;
-        Atom ninetynine = new Atom(99) ;
-        Atom thirteen = new Atom(13) ;
+    /**
+   private void testObjects () {
+        Atom five = Atom.make(5) ;
+        Atom ninetynine = Atom.make(99) ;
+        Atom thirteen = Atom.make(13) ;
         Atom hello = new SymbolAtom("Hello") ;
         
         //five.print() ;
@@ -104,4 +81,5 @@ public class PRLisp {
         System.out.println(list2.toString()) ;
         
     }    
+*/
 }

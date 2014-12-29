@@ -5,7 +5,6 @@ import static org.junit.Assert.* ;
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.* ;
-import org.junit.runner.RunWith;
 
 //import org.junit.runners.JUnit4;
 
@@ -25,7 +24,7 @@ public class NilAtomTest {
         n = new NilAtom() ;
         str = new StringAtom("I am a StringAtom.") ;
         sym = new SymbolAtom("sym") ;
-        num = new Atom(45) ;
+        num = new IntAtom(45) ;
     }
     
     @Test public void testNil() { assertTrue(n.isNull()) ; }
