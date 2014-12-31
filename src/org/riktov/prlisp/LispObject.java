@@ -8,7 +8,7 @@ abstract class LispObject {
      * and (lists) cons cells, which are evaluated by applying their first 
      * element to the remainders
      */
-    public LispObject eval(Environment env) { return this ;}
+    LispObject eval(Environment env) { return this ;}
     public String toStringCdr() { return " . " + this.toString() ; }
 
     /**
@@ -49,6 +49,9 @@ class Atom extends LispObject {
     //constructor
     //public Atom() { this.data = new NilAtom() ; }
     /* factory methods */
+    public static Atom make(Object o) { return new ObjectAtom(o) ; }
+    public static Atom make(String s) { return new StringAtom(s) ; }
+    public static Atom make(int i) { return new ObjectAtom(i) ; }
     //accessors
     //implementation of LispObject
     //public String toString() { return data.toString() ; }
@@ -56,33 +59,34 @@ class Atom extends LispObject {
 }
 
 /** A DataAtom is an atom that holds some value as data. The Atoms that are not DataAtoms
- * are NilAtom and Procedure. DataAtom is abstract because different subclasses have different 
+ * are NilAtom and Procedure. DataAtom is abstract because different primitive data subclasses have different 
  * types for the data member.
  */
 abstract class DataAtom extends Atom {
     //factory methods, dispatch on argument type
-    public static DataAtom make(Object o) { return new ObjectDataAtom(o) ; }
-    public static DataAtom make(String s) { return new StringAtom(s) ; }
-    //public static DataAtom make(int i) { return new IntAtom(i) ; }
     //public static DataAtom make(float f) { return new FloatAtom(f) ; }
     //public static DataAtom make(double d) { return new DoubleAtom(d) ; }
     
     abstract public boolean isPrimitive() ;
 }
 
-
-class ObjectDataAtom extends DataAtom {
+/**
+ * An ObjectAtom is an atom that holds its data in an Object object, rather than a numerical primitive.
+ * @author paul
+ *
+ */
+class ObjectAtom extends DataAtom {
     Object data ;
 
     public Object data() { return data ; }    
-    public ObjectDataAtom(Object o) { this.data = o ; }
+    public ObjectAtom(Object o) { this.data = o ; }
     public String toString() { return data.toString() ; }
     public boolean dataEquals(Object o) { return data.equals(o);}
     public boolean isPrimitive() { return false ; }
 }
 
 /**
-* NilAtom does not extend Atom because it requires no data. 
+* NilAtom does not extend DataAtom because it requires no data. 
 * It could also be a singleton class
 */
 
@@ -94,14 +98,20 @@ final class NilAtom extends Atom {
     public boolean isNull() { return true ; }
 }
 
-class StringAtom extends ObjectDataAtom {
+/**
+class IntegerAtom extends ObjectAtom {
+	public IntegerAtom(int i) { super(new Integer(i)) ; }
+}
+*/
+
+class StringAtom extends ObjectAtom {
     public StringAtom(String s) { super(s) ; }
     public String toString() { return '"' + super.toString() + '"' ; }
 }
 
-class SymbolAtom extends ObjectDataAtom {
+class SymbolAtom extends ObjectAtom {
     public SymbolAtom(String s) { super(s.toUpperCase()) ; }
     public LispObject eval(Environment env) {
-        return env.lookup(this.toString()) ;
+        return env.lookup(data.toString()) ;
     }
 }

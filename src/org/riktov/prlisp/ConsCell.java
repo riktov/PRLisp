@@ -1,6 +1,7 @@
 package org.riktov.prlisp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class ConsCell extends LispObject {
     private LispObject car ;
@@ -11,6 +12,19 @@ class ConsCell extends LispObject {
         this.cdr = cdr ;
     }
     
+    /**
+     * 
+     * 
+    * @param argObjects An array of LispObjects, which are built into a list
+     */
+    public ConsCell(LispObject[] argObjects) {
+    	this.car = argObjects[0] ;
+    	if (argObjects.length > 1) {
+        	this.cdr = new ConsCell(Arrays.copyOfRange(argObjects, 1, argObjects.length)) ;
+    	} else {
+    		this.cdr = new NilAtom() ;
+    	}
+    }
     //accessors
     public LispObject car() { return this.car ;}
     public LispObject cdr() { return this.cdr ;}
@@ -28,40 +42,36 @@ class ConsCell extends LispObject {
     
     /** EVAL returns a LispObject.
      * It can be an Atom or a LispProcedure
+     * @param env The Enviroment in which this object is evaluated
+     * @return The LispObject resulting from the evaluation
      */
-    public LispObject eval (Environment env) {
+    LispObject eval (Environment env) {
         LispProcedure proc = (LispProcedure)car.eval(env) ;//this can return null...
         ConsCell rest = (ConsCell)cdr ;
         LispObject[] unevaluatedArgs =  rest.toArray() ;
-        int numArgs = unevaluatedArgs.length ;
         
-        LispObject[] evaluatedArgs = new LispObject[numArgs] ;
-
-        int i ;
-        for(i = 0 ; i < numArgs ; i++) {
-            evaluatedArgs[i] = unevaluatedArgs[i].eval(env) ;
-        }
+        LispObject[] evaluatedArgs = proc.ProcessArguments(unevaluatedArgs, env) ;
         
         return proc.apply(evaluatedArgs) ;//...which will raise a NullPointerException here
     }
 
-    LispObject[] toArray() {
-        ArrayList<LispObject> al = new ArrayList<LispObject>() ;
+	LispObject[] toArray() {
+		ArrayList<LispObject> al = new ArrayList<LispObject>();
 
-        LispObject c = this ;
+		LispObject c = this;
 
-        while(!c.cdr().isNull()) {
-            al.add(c.car()) ;
-            c = c.cdr() ;
-        }
+		while (!c.cdr().isNull()) {
+			al.add(c.car());
+			c = c.cdr();
+		}
 
-	al.add(c.car()) ;
+		al.add(c.car());
 
-        LispObject[] arr = new LispObject[al.size()] ; 
-        al.toArray(arr) ;
+		LispObject[] arr = new LispObject[al.size()];
+		al.toArray(arr);
 
-        //System.out.println("Arguments: " + arr) ;
-        return arr ;
-        //return new LispObject [] { new Atom(5), new Atom(13) } ;
-    }
+		// System.out.println("Arguments: " + arr) ;
+		return arr;
+		// return new LispObject [] { new Atom(5), new Atom(13) } ;
+	}
 }

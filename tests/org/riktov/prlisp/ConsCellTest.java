@@ -22,9 +22,9 @@ public class ConsCellTest {
 	/**
 	 * We create a cons cell "by hand", without relying on the reader. 
 	 */
-        ConsCell ct2 = new ConsCell(DataAtom.make(23), new NilAtom()) ;
-        ConsCell ct1 = new ConsCell(DataAtom.make(147), ct2) ;
-        c = new ConsCell(DataAtom.make(55), ct1) ;
+        ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom()) ;
+        ConsCell ct1 = new ConsCell(Atom.make(147), ct2) ;
+        c = new ConsCell(Atom.make(55), ct1) ;
 	// c -> (55 147 23)
     }
 
@@ -55,9 +55,26 @@ public class ConsCellTest {
     @Test public void testArrayElements() {
         LispObject[] arr = c.toArray() ;
         
-        ObjectDataAtom zeroth = (ObjectDataAtom)arr[0] ;
+        ObjectAtom zeroth = (ObjectAtom)arr[0] ;
         System.out.println("[" + zeroth + "]") ;
         assertTrue(zeroth.dataEquals(new Integer(55))) ;
+    }
+    
+    @Test public void testMakeListFromArray() {
+    	SymbolAtom plus = new SymbolAtom("+") ;
+    	ObjectAtom four = new ObjectAtom(4) ;
+    	SymbolAtom x = new SymbolAtom("x") ;
+    	LispObject[] args = {
+    			plus, four, x  
+    	} ;
+    	ConsCell c = new ConsCell(args) ;
+    	
+    	System.out.println("testMakeListFromArray(): List made from array:" + c.toString()) ;
+    	
+    	assertTrue(c.car() == plus) ;
+    	assertTrue(c.cdr().car() == four) ;
+    	assertTrue(c.cdr().cdr().car() == x) ;
+    	assertTrue(c.cdr().cdr().cdr().isNull()) ;
     }
 }
 

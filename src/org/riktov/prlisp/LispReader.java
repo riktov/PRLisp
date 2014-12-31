@@ -14,8 +14,16 @@ class LispReader {
         StreamTokenizer st = new StreamTokenizer(r) ;
         st.whitespaceChars(' ', ' ');
         st.commentChar(';') ;
-        st.parseNumbers() ;
-        st.ordinaryChar('+') ;
+        
+        st.resetSyntax();
+        st.whitespaceChars(' ', ' ');
+        st.wordChars('a', 'z') ;
+        st.wordChars('A', 'Z') ;
+        st.wordChars('0', '9') ;
+        st.wordChars('.', '.') ;
+        st.quoteChar('"') ;
+        //st.parseNumbers() ;
+        //st.ordinaryChars('0', '9') ;
         
         //StringTokenizer st = new StringTokenizer(s, "( )", true) ;
         try {
@@ -28,12 +36,6 @@ class LispReader {
 
     /**
      * readFrom(StreamTokenizer st)
-     * StreamTokenizer is not very flexible, and lisp syntax is kind of tough with dots.
-     * We can't use dots for dotted-pairs because StreamTokenizer will treat 
-     * a single dot surrounded by spaces as the number 0.0 . 
-     * So for this Lisp we use commas instead of dots.
-     * Also there is no way to force numbers to be created as integers
-     * while still allowing explicit floats like 23.0
      */
     public LispObject readFrom(StreamTokenizer st) throws IOException {
         //	Atom a = new Atom() ;
@@ -44,34 +46,42 @@ class LispReader {
             
             if (st.ttype == '(') {
                 //System.out.println("Read opening paren") ;
-                return new ConsCell(readFrom(st), readFrom(st)) ;
+            		st.nextToken() ;
+            		if(st.ttype == ')') {
+            			return new NilAtom() ;
+            		} else {
+            			st.pushBack();
+                     return new ConsCell(readFrom(st), readFrom(st)) ;            			
+            		}
             } else if (st.ttype == ')') {
                 //System.out.println("Read closing paren") ;
                 return readFrom(st) ;
-                //return c ;
-            } else if (st.ttype == ',') {//assumes enclosed within spaces
-                //return new SymbolAtom(st.sval) ;
+            } else if (st.ttype == '.') {//assumes enclosed within spaces
                 return readFrom(st);
             } else if (st.ttype == '"') {
                 //System.out.println("Read quoted string") ;
-                return new StringAtom(st.sval); 
-            } else if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                
-                System.out.println("Read a number with string: " +
-                                   st.sval +
-                                   " and number " +
-                                   st.nval) ;
-                
-                return PrimitiveDataAtom.make(st.nval) ;
+                return new StringAtom(st.sval);
+                /** We parse numbers ourselves instead of using StreamTokenizer's number parsing, 
+                 * because it will read a solitary dot as 0.0
+                 	*/
             } else if (st.ttype == StreamTokenizer.TT_WORD) {
-                SymbolAtom s = new SymbolAtom(st.sval) ;
-                if(s.toString().equals("NIL")) {
-                    //System.out.println("Creating a NilObject") ;
-                    return new NilAtom() ;
-                } else {
-                    //System.out.println("Read a symbol named " + s.toString()) ;
-                    return s ;
-                }
+				if (st.sval.equals(".")) {
+					return readFrom(st);
+				} else {
+					SymbolAtom s = new SymbolAtom(st.sval);
+					if (s.toString().equals("NIL")) {
+						return new NilAtom();
+					} else {
+						try {
+							return parseNumber(st.sval) ;							
+						} catch (NumberFormatException e) {
+							return s ;
+						}
+					}
+					// System.out.println("Read a symbol named " + s.toString())
+					// ;
+					//return s;
+				}
             } else {
                 String sym = Character.toString((char)st.ttype) ;
                 
@@ -85,6 +95,13 @@ class LispReader {
         return new NilAtom() ;
     }
     
+    public static DataAtom parseNumber(String st) {
+    	try {
+        	return new ObjectAtom(Integer.valueOf(st)) ;    		
+    	} catch (NumberFormatException e) {
+			return new ObjectAtom(Float.valueOf(st)) ;
+		}
+    }
     public void prompt() {
         System.out.print("PR-USER> ") ;
     }
