@@ -52,6 +52,13 @@ class Atom extends LispObject {
     public static Atom make(Object o) { return new ObjectAtom(o) ; }
     public static Atom make(String s) { return new StringAtom(s) ; }
     public static Atom make(int i) { return new ObjectAtom(i) ; }
+    public static Atom make(boolean b) {
+    	if (b) {
+    		return new SymbolAtom("t") ;
+    	} else {
+    		return new NilAtom() ;
+    	}
+    }
     //accessors
     //implementation of LispObject
     //public String toString() { return data.toString() ; }
@@ -81,7 +88,7 @@ class ObjectAtom extends DataAtom {
     public Object data() { return data ; }    
     public ObjectAtom(Object o) { this.data = o ; }
     public String toString() { return data.toString() ; }
-    public boolean dataEquals(Object o) { return data.equals(o);}
+    //public boolean dataEquals(Object o) { return data.equals(o);}
     public boolean isPrimitive() { return false ; }
 }
 

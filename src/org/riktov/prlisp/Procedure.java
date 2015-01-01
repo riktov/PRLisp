@@ -15,15 +15,30 @@ class CompoundProcedure extends LispProcedure {
 	private Environment env;
 
 	// constructors
-	public CompoundProcedure(String[] params, LispObject body, Environment env) {
-		this.formalParams = params;
+	public CompoundProcedure(String[] formalParams, LispObject body, Environment env) {
+		this.formalParams = formalParams;
 		this.body = body;
 		this.env = env;
 	}
 
 	// implementation of LispObject
-	public String toString() { return "#<FUNCTION :LAMBDA>" + body.toString(); }
+	public String toString() {
+		String paramList = new String() ;
+		String sep = "" ;
+		int i ;
+		for(i = 0 ; i < formalParams.length ; i++) {
+			if(i > 0) { sep = " " ; }
+			paramList = paramList + formalParams[i] + sep ;
+		}
+		return "#<FUNCTION :LAMBDA> (" + paramList + ") " + body.toString() + ">"; 
+		}
 
+	/**
+	 * 
+	 */
+	String[] formalParams() { return formalParams ; }
+	LispObject body() { return body ; }
+	
 	/**
 	 * @param unevaluatedArgs
 	 *            an Array of LispObjects, which may be symbols or forms which
@@ -57,13 +72,15 @@ class CompoundProcedure extends LispProcedure {
 	public LispObject apply(LispObject[] argVals) {
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		int i;
+		
+		System.out.println("apply(LispObject[]): argVals.length: " + argVals.length) ;
+		
 		for (i = 0; i < argVals.length; i++) {
 			newEnv.intern(formalParams[i], argVals[i]);
 		}
-		return body.eval(newEnv);
+		return body.eval(newEnv);	//TODO: body is a list of forms which need to be PROGNd.
 	}
 
-	public LispObject apply(NilAtom n) {
-		return body.eval(env);
-	}
+	public LispObject apply() {	return apply(new LispObject[0]) ; }
+	public LispObject apply(NilAtom n) { return apply(new LispObject[0]) ; }
 }

@@ -25,19 +25,18 @@ public class EvalTest {
 	 */
     	e = new Environment() ;
 
-        ConsCell ct2 = new ConsCell(DataAtom.make(23), new NilAtom()) ;
-        ConsCell ct1 = new ConsCell(DataAtom.make(47), ct2) ;
+        ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom()) ;
+        ConsCell ct1 = new ConsCell(Atom.make(47), ct2) ;
         c = new ConsCell(new SymbolAtom("+"), ct1) ;
         
 	// c -> (+ 47 23)
     }
 
-    @Test public void testEvalSimpleLookup() {
+    @Test public void testEvalSymbol() {
     	e.intern("foo", new StringAtom(helloString)) ;
     	  	
     	LispObject sexp = new SymbolAtom("foo") ;
     	ObjectAtom value = (ObjectAtom)sexp.eval(e) ;
-    	
     	
     	assertTrue(value.data() == helloString) ;
     }
@@ -49,17 +48,17 @@ public class EvalTest {
 
     	//System.out.println(sum) ;
     	
-       assertTrue(sum.dataEquals(new Float(70))) ;
+       assertTrue(sum.data.equals(new Float(70))) ;
     }
  
     @Test public void testEvalApplyCompoundNoArgs() {
     	// a procedure which takes no arguments and returns 42.
     	// DataAtom.make(42) makes the data have the Integer run-time type. 
     	// Since we do not call the primitive +, the result is not converted to float
-    	ObjectAtom body = (ObjectAtom)DataAtom.make(42) ;	//the body is a self-evaluating atom
+    	LispObject body = DataAtom.make(42) ;	//the body is a self-evaluating atom
     	String[] formalParams = new String[0] ;
     	
-    	System.out.println(body.toString()) ;
+    	System.out.println("testEvalApplyCompoundNoArgs(): body is " + body.toString()) ;
 
     	CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
     	
@@ -67,17 +66,16 @@ public class EvalTest {
 
     	//System.out.println("[" + result + "]") ;
 
+        assertTrue(result == body) ;
         assertTrue(result.toString().equals("42")) ;
-        assertTrue(result.dataEquals(new Integer(42))) ;
+        assertTrue(result.data.equals(new Integer(42))) ;
     }    
 
 	@Test public void testEvalApplyCompoundWithArgs() {
 		SymbolAtom plus = new SymbolAtom("+") ;
-		ObjectAtom four = new ObjectAtom(3) ;
+		ObjectAtom four = new ObjectAtom(4) ;
 		SymbolAtom x = new SymbolAtom("x") ;
-		LispObject[] args = {
-				plus, four, x  
-		} ;
+		LispObject[] args = { plus, four, x } ;
 		
 		ConsCell body = new ConsCell(args) ;
     	String[] formalParams = new String[] { "x" } ;
@@ -86,9 +84,9 @@ public class EvalTest {
     	
     	ObjectAtom result = (ObjectAtom)proc.apply(new LispObject[] { new ObjectAtom(5)} ) ;
 
-    	System.out.println("[" + result + "]") ;
+    	//System.out.println("[" + result + "]") ;
 
-        assertTrue(result.toString().equals("8.0")) ;
-        assertTrue(result.dataEquals(new Float(8.0))) ;
+       assertTrue(result.toString().equals("9.0")) ;
+       assertTrue(result.data.equals(new Float(9.0))) ;
 	}
 }

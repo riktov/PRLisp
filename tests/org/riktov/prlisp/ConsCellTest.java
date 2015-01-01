@@ -47,8 +47,6 @@ public class ConsCellTest {
     
     @Test public void testArraySize() {
         LispObject[] arr = c.toArray() ;
-        
-        System.out.println(arr.length) ;
         assertTrue(arr.length == 3) ;
     }
     
@@ -56,8 +54,8 @@ public class ConsCellTest {
         LispObject[] arr = c.toArray() ;
         
         ObjectAtom zeroth = (ObjectAtom)arr[0] ;
-        System.out.println("[" + zeroth + "]") ;
-        assertTrue(zeroth.dataEquals(new Integer(55))) ;
+        //System.out.println("[" + zeroth + "]") ;
+        assertTrue(zeroth.data.equals(new Integer(55))) ;
     }
     
     @Test public void testMakeListFromArray() {
@@ -75,6 +73,27 @@ public class ConsCellTest {
     	assertTrue(c.cdr().car() == four) ;
     	assertTrue(c.cdr().cdr().car() == x) ;
     	assertTrue(c.cdr().cdr().cdr().isNull()) ;
+    }
+    
+    @Test public void testMakeListFromArrayShort() {
+    	SymbolAtom plus = new SymbolAtom("+") ;
+    	LispObject[] args = { plus } ;
+    	ConsCell c = new ConsCell(args) ;
+    	
+    	System.out.println("testMakeListFromArrayShort(): List made from array:" + c.toString()) ;
+    	
+    	assertTrue(c.car() == plus) ;
+    	assertTrue(c.cdr().isNull()) ;
+    }
+    
+
+    @Test public void testMakeListFromArrayEmpty() {
+    	LispObject[] args = {} ;
+    	LispObject c = ConsCell.make(args) ;
+    	
+    	System.out.println("testMakeListFromEmptyArray(): List made from array:" + c.toString()) ;
+    	
+    	assertTrue(c.isNull()) ;
     }
 }
 

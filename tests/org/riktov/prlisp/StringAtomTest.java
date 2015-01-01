@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 
 public class StringAtomTest {
-    private StringAtom str ;
+    private LispObject str ;
 
     @Before
     public void setUp() {

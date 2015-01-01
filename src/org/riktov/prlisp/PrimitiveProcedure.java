@@ -5,6 +5,7 @@ import java.util.HashMap;
 abstract class PrimitiveProcedure extends LispProcedure {
     String symbol ;
     public String symbol() { return this.symbol ; }
+   // public LispObject apply() { return new NilAtom() ; }
     
     /**
      * @param unevaluatedArgs an Array of LispObjects, which may be symbols or forms which have not been evaluated
@@ -97,15 +98,27 @@ abstract class PrimitiveProcedure extends LispProcedure {
 					}
 				});
 		
+		primitives.put("=".toUpperCase(), 
+				new PrimitiveNumericalProcedure() {
+					public LispObject apply(LispObject[] argVals) {
+						Number[] numericalArgs = numericalArgs(argVals);
+						return Atom.make(numericalArgs[0].floatValue() == numericalArgs[1].floatValue()) ;
+					}
+				});
+
 		primitives.put(">".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
 					public LispObject apply(LispObject[] argVals) {
 						Number[] numericalArgs = numericalArgs(argVals);
-						if(numericalArgs[0].floatValue() > numericalArgs[1].floatValue()) {
-							return new SymbolAtom("t") ;
-						} else {
-							return new NilAtom() ;
-						}
+						return Atom.make(numericalArgs[0].floatValue() > numericalArgs[1].floatValue()) ;
+					}
+				});
+
+		primitives.put("<".toUpperCase(), 
+				new PrimitiveNumericalProcedure() {
+					public LispObject apply(LispObject[] argVals) {
+						Number[] numericalArgs = numericalArgs(argVals);
+						return Atom.make(numericalArgs[0].floatValue() < numericalArgs[1].floatValue()) ;
 					}
 				});
 
