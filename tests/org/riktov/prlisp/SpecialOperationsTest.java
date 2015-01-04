@@ -142,7 +142,7 @@ public class SpecialOperationsTest {
 	/**
 	 * QUOTE returns a single atom unevaluated, 
 	 * The macro ' works with lists, but the operator should not.
-	 * 
+	 * Calling QUOTE on a list should raise TooManyArguments condition
 	 */
 	@Test
 	public void testQuote() {
