@@ -2,3 +2,8 @@
 .project
 .settings/
 bin/
+*.class
+*~
+doc/
+obsolete/
+build/
