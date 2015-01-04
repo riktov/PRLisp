@@ -45,7 +45,7 @@ abstract class ObsoleteValueObject extends LispObject {
  * Integer and String are final.
  */
 
-class Atom extends LispObject {
+abstract class Atom extends LispObject {
     //constructor
     //public Atom() { this.data = new NilAtom() ; }
     /* factory methods */
@@ -87,9 +87,9 @@ class ObjectAtom extends DataAtom {
 
     public Object data() { return data ; }    
     public ObjectAtom(Object o) { this.data = o ; }
-    public String toString() { return data.toString() ; }
+    @Override public String toString() { return data.toString() ; }
     //public boolean dataEquals(Object o) { return data.equals(o);}
-    public boolean isPrimitive() { return false ; }
+    @Override public boolean isPrimitive() { return false ; }
 }
 
 /**
@@ -98,11 +98,11 @@ class ObjectAtom extends DataAtom {
 */
 
 final class NilAtom extends Atom {
-    public String toString() { return "NIL" ; }
-    public String toStringCdr() { return "" ; }
+    @Override public String toString() { return "NIL" ; }
+    @Override public String toStringCdr() { return "" ; }
     //If the cdr of a cons is nil, then the cons is the last element of a list,
     //so we just finish printing
-    public boolean isNull() { return true ; }
+    @Override public boolean isNull() { return true ; }
 }
 
 /**
@@ -113,12 +113,12 @@ class IntegerAtom extends ObjectAtom {
 
 class StringAtom extends ObjectAtom {
     public StringAtom(String s) { super(s) ; }
-    public String toString() { return '"' + super.toString() + '"' ; }
+    @Override public String toString() { return '"' + super.toString() + '"' ; }
 }
 
 class SymbolAtom extends ObjectAtom {
     public SymbolAtom(String s) { super(s.toUpperCase()) ; }
-    public LispObject eval(Environment env) {
+    @Override public LispObject eval(Environment env) {
         return env.lookup(data.toString()) ;
     }
 }

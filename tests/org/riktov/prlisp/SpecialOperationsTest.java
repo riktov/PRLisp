@@ -30,13 +30,13 @@ public class SpecialOperationsTest {
 		} ;
 		//System.out.println(forms.length) ;
 		
-		System.out.println("Just after installing specials: " + e.keySet()) ;
+		//System.out.println("Just after installing specials: " + e.keySet()) ;
 		
 		ConsCell c = new ConsCell(forms) ;
 		
 		System.out.println("testSetq() evaluating: " + c.toString()) ;
 		c.eval(e) ;
-		System.out.println("Just after calling SETQ: " + e.keySet()) ;
+		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
 		
 		assertTrue(e.containsKey("FOOBAR")) ;
 		assertTrue(e.get("FOOBAR") == assignedValue) ;
@@ -48,13 +48,13 @@ public class SpecialOperationsTest {
 	 */
 	@Test
 	public void testIfTrue() {
-		LispObject conditionObject = DataAtom.make(5) ;
+		LispObject predicateObject = DataAtom.make(5) ;
 		LispObject consequentObject = DataAtom.make(14) ;
 		LispObject alternateObject = DataAtom.make(2) ;
 		
 		LispObject[] forms = new LispObject[] {
 				new SymbolAtom("if"),
-				conditionObject,
+				predicateObject,
 				consequentObject,
 				alternateObject
 		} ;
@@ -69,13 +69,13 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testIfFalse() {
-		LispObject conditionObject = new NilAtom() ;
+		LispObject predicateObject = new NilAtom() ;
 		LispObject consequentObject = DataAtom.make(14) ;
 		LispObject alternateObject = DataAtom.make(2) ;
 		
 		LispObject[] forms = new LispObject[] {
 				new SymbolAtom("if"),
-				conditionObject,
+				predicateObject,
 				consequentObject,
 				alternateObject
 		} ;
@@ -115,7 +115,7 @@ public class SpecialOperationsTest {
 	@Test
 	public void testPrognIntermediate() {
 		LispObject exp1 = new NilAtom() ;
-		LispObject exp2 = new ConsCell(new LispObject[] { new SymbolAtom("setq"), new SymbolAtom("singer"), new StringAtom("Bob Seger") }) ;
+		LispObject exp2 = new ConsCell(new LispObject[] { new SymbolAtom("setq"), new SymbolAtom("jumbo"), Atom.make(747) }) ;
 		LispObject exp3 = DataAtom.make(221) ;
 		
 		LispObject[] forms = new LispObject[] {
@@ -127,32 +127,34 @@ public class SpecialOperationsTest {
 				
 		ConsCell c = new ConsCell(forms) ;
 		
-		assertFalse(e.containsKey("SINGER")) ;
+		assertFalse(e.containsKey("JUMBO")) ;
 		
 		ObjectAtom result = (ObjectAtom)c.eval(e) ;
 		
 		assertTrue(result.data.equals(221)) ;	//we got the value of the last form
-		assertTrue(e.containsKey("SINGER")) ; //did the intermediate form get evaluated?
-		String assignedVal = e.get("SINGER").toString() ;
+		assertTrue(e.containsKey("JUMBO")) ; //did the intermediate form get evaluated?
+		String assignedVal = e.get("JUMBO").toString() ;
 		System.out.println(assignedVal) ;
-		assertTrue(assignedVal.equals("Bob Seger")) ;
+		assertTrue(assignedVal.equals("747")) ;
 		//assertTrue(result == exp3) ;
 	}
 	
 	/**
-	 * QUOTE returns all the forms unevaluated, so we check that forms are not evaluated
+	 * QUOTE returns a single atom unevaluated, 
+	 * The macro ' works with lists, but the operator should not.
+	 * 
 	 */
 	@Test
 	public void testQuote() {
 		LispObject exp1 = new SymbolAtom("foo") ;
-		LispObject exp2 = new ConsCell(new LispObject[] { new SymbolAtom("+"), Atom.make(5), Atom.make(7) }) ;
-		LispObject exp3 = new SymbolAtom("baz") ;
+		//LispObject exp2 = new ConsCell(new LispObject[] { new SymbolAtom("+"), Atom.make(5), Atom.make(7) }) ;
+		//LispObject exp3 = new SymbolAtom("baz") ;
 		
 		LispObject[] forms = new LispObject[] {
 				new SymbolAtom("quote"),
-				exp1,
-				exp2,
-				exp3
+				exp1
+//				exp2,
+//				exp3
 		} ;
 				
 		ConsCell c = new ConsCell(forms) ;
@@ -162,25 +164,27 @@ public class SpecialOperationsTest {
 		LispObject result = c.eval(e) ;
 		
 		System.out.println("testQuote() result: " + result) ;
-		assertTrue(result.car() == exp1) ;
-		assertTrue(result.cdr().car() == exp2) ;
+		assertTrue(result == exp1) ;
+		//assertTrue(result.cdr().car() == exp2) ;
 		
-		LispObject secondForm = result.cdr().car() ;
+		//LispObject secondForm = result.cdr().car() ;
 		
-		assertFalse(secondForm.toString().equals("12")) ;
+		//assertFalse(secondForm.toString().equals("12")) ;
 	}
 	
 	/**
 	 * LAMBDA returns a CompoundProcedure.
-	 * We should not be testing APPLY here, those will go in a separate set of tests, LambdaTest.
-	 * We only test that the resulting CompoundProcedure is properly created.
+	 * We test that the resulting CompoundProcedure is properly created. With various combinations
+	 * of parameter lists (0, 1, many) and body forms (0, 1, many).
+	 * We should not be testing APPLY here, those will go in a separate set of tests, ApplyTest.
+	 *
 	 * Invoke the lambda special operation with a single parameter and a single form in its body.
 	 * Assert that when evaluated, it returns a CompoundProcedure with the parameter list and the body.
 	 */
 	@Test
 	public void testLambda() {
-		LispObject arglist = new ConsCell( new LispObject[] { new SymbolAtom("x") });
-		LispObject form1 = new ConsCell(new LispObject[] { 
+		ConsCell arglist = new ConsCell(new LispObject[] { new SymbolAtom("x") });
+		LispObject bodyForm1 = new ConsCell(new LispObject[] { 
 				new SymbolAtom("+"),
 				DataAtom.make(3),
 				new SymbolAtom("x")
@@ -189,7 +193,7 @@ public class SpecialOperationsTest {
 		LispObject[] forms = new LispObject[] {
 				new SymbolAtom("lambda"),
 				arglist,
-				form1
+				bodyForm1
 		} ;
 				
 		ConsCell c = new ConsCell(forms) ;
@@ -198,43 +202,37 @@ public class SpecialOperationsTest {
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
 		System.out.println(theLambda) ;
 		
-		//LispObject result = theLambda.apply(new LispObject[] { DataAtom.make(9)} ) ;
-		
-		assertTrue(theLambda.body() == c.cdr().cdr().car()) ;
+		assertTrue(theLambda.formalParams()[0].equals("X")) ;
+		assertTrue(theLambda.body().car() == bodyForm1) ;
 	}
 	
 	@Test
-	public void testLambdaListBody() {
-		LispObject arglist = new ConsCell( new LispObject[] { new SymbolAtom("x") });
-		LispObject form1 = new ConsCell(new LispObject[] { 
+	public void testLambdaMultipleFormBody() {
+		ConsCell arglist = new ConsCell( new LispObject[] { new SymbolAtom("x") });
+		LispObject bodyForm1 = new ConsCell(new LispObject[] { 
 				new SymbolAtom("*"),
 				DataAtom.make(5),
 				new SymbolAtom("x")
 				}) ;
-		LispObject form2 = new ConsCell(new LispObject[] { 
+		LispObject bodyForm2 = new ConsCell(new LispObject[] { 
 				new SymbolAtom("+"),
 				DataAtom.make(3),
 				new SymbolAtom("x")
 				}) ;
-		
-		//LispObject body = new ConsCell(new LispObject[] {form1, form2}) ;
-		
+				
 		LispObject[] forms = new LispObject[] {
 				new SymbolAtom("lambda"),
 				arglist,
-				form1, form2
+				bodyForm1, bodyForm2
 		} ;
 				
 		ConsCell c = new ConsCell(forms) ;
 		System.out.println("testLambdaListBody() evaluating: " + c.toString()) ;
 
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
-		
 		System.out.println(theLambda) ;
 		
-		LispObject result = theLambda.apply(new LispObject[] { DataAtom.make(9)} ) ;
-		
-		assertTrue(result.toString().equals("12.0")) ;
+		assertTrue(theLambda.body().cdr().car() == bodyForm2) ;
 	}
 
 	@Test public void testLambdaNoArgs() {

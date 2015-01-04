@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="PRLisp">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../usr/local/lib/eclipse/"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="PRLisp.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../../../../usr/share/java/junit.jar"/>
+        <pathelement location="../../../../usr/share/java/hamcrest-core.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="tests">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <src path="tests"/>
+            <classpath refid="PRLisp.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="EvalTest.testEvalApply">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.EvalTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="PRLisp">
+        <java classname="org.riktov.prlisp.PRLisp" failonerror="true" fork="yes">
+            <classpath refid="PRLisp.classpath"/>
+        </java>
+    </target>
+    <target name="EvalTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.EvalTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="LispReaderTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="EvalTest.testEvalApplyCompoundNoArgs">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.EvalTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="LispReaderTest.testReadAtoms">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest.testLambdaListBody">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="LispReaderTest.testReadListEmpty">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="org.riktov.prlisp">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.ConsCellTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.EvalTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.NilAtomTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.NumberAtomTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.StringAtomTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest.testLambda">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest.testPrognIntermediate">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="NumberAtomTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.NumberAtomTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest.testLet">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="LispReaderTest.testReadListBare">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest.testLambdaNoArgs">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="ConsCellTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.ConsCellTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="LispReaderTest.testEmptyListAsNil">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="LispReaderTest.testReadCons">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="SpecialOperationsTest.testQuote">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="tests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.ConsCellTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.EvalTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.LispReaderTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.NilAtomTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.NumberAtomTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.SpecialOperationsTest" todir="${junit.output.dir}"/>
+            <test name="org.riktov.prlisp.StringAtomTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="ConsCellTest.testMakeListFromArrayEmpty">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="org.riktov.prlisp.ConsCellTest" todir="${junit.output.dir}"/>
+            <classpath refid="PRLisp.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>

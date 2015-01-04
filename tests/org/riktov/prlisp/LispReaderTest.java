@@ -45,6 +45,7 @@ public class LispReaderTest {
         assertTrue(minus.toString().equals("-")) ;
         
         LispObject hello = lr.read("\"Hello\"") ;
+        System.out.println("testReadAtoms() : read \"Hello\" as " + hello.toString()) ;
         assertTrue(hello.toString().equals("\"Hello\"")) ;
         
         /*

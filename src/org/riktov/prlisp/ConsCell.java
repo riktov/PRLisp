@@ -1,19 +1,27 @@
 package org.riktov.prlisp;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.Iterator;
+//import java.util.Iterator;
+
 
 class ConsCell extends LispObject {
 	private LispObject car;
 	private LispObject cdr;
 
+	/**
+	 * Constructor 
+	 * @param car
+	 * @param cdr
+	 */
 	public ConsCell(LispObject car, LispObject cdr) {
 		this.car = car;
 		this.cdr = cdr;
 	}
 
 	/**
+	 * Constructor
 	 * @param argObjects
 	 *            An array of LispObjects, which are built into a list
 	 */
@@ -43,18 +51,18 @@ class ConsCell extends LispObject {
 	 */
 
 	// accessors
-	public LispObject car() {
-		return this.car;
-	}
-
-	public LispObject cdr() {
-		return this.cdr;
-	}
+	public LispObject car() { return this.car; }
+	public LispObject cdr() { return this.cdr; }
 
 	// public void setCar(LispObject o) { this.car = o ; }
 	// public void setCdr(LispObject o) { this.cdr = o ; }
 
 	// factory methods
+	/**
+	 * Factory Method
+	 * @param argList An array of LispObjects, which are built into a list
+	 * @return A newly created LispObject, of class NilAtom or ConsCell
+	 */
 	public static LispObject make(LispObject[] argList) {
 		if (argList.length == 0) {
 			return new NilAtom();
@@ -63,16 +71,21 @@ class ConsCell extends LispObject {
 		}
 	}
 
+	/**
+	 * Factory method
+	 * @param n
+	 * @return
+	 */
 	public static LispObject make(NilAtom n) {
 		return n;
 	}
 
 	// methods
-	public String toString() {
+	@Override public String toString() {
 		return '(' + this.car.toString() + this.cdr.toStringCdr() + ')';
 	}
 
-	public String toStringCdr() {
+	@Override public String toStringCdr() {
 		return ' ' + this.car.toString() + this.cdr.toStringCdr();
 	}
 
@@ -85,13 +98,13 @@ class ConsCell extends LispObject {
 	 *            The Environment in which this object is evaluated
 	 * @return The LispObject resulting from the evaluation
 	 */
-	LispObject eval(Environment env) {
+	@Override LispObject eval(Environment env) {
 		LispProcedure proc = (LispProcedure) car.eval(env);// this can return
 															// null...
 
 		LispObject rest = cdr;
 		if (rest.isNull()) {
-			return ((CompoundProcedure) proc).apply();
+			return proc.apply();
 		} else {
 
 			LispObject[] unevaluatedArgs = ((ConsCell) rest).toArray();
@@ -103,6 +116,10 @@ class ConsCell extends LispObject {
 		}
 	}
 
+	/**
+	 * Converts the ConsCell to an array of LispObject
+	 * @return an Array of LispObject
+	 */
 	LispObject[] toArray() {
 		ArrayList<LispObject> al = new ArrayList<LispObject>();
 

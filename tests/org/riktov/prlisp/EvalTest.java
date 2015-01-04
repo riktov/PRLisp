@@ -55,7 +55,7 @@ public class EvalTest {
     	// a procedure which takes no arguments and returns 42.
     	// DataAtom.make(42) makes the data have the Integer run-time type. 
     	// Since we do not call the primitive +, the result is not converted to float
-    	LispObject body = DataAtom.make(42) ;	//the body is a self-evaluating atom
+    	ConsCell body = new ConsCell(new LispObject[] { DataAtom.make(42) }) ;
     	String[] formalParams = new String[0] ;
     	
     	System.out.println("testEvalApplyCompoundNoArgs(): body is " + body.toString()) ;
@@ -66,25 +66,28 @@ public class EvalTest {
 
     	//System.out.println("[" + result + "]") ;
 
-        assertTrue(result == body) ;
+        //assertTrue(result == body) ;
         assertTrue(result.toString().equals("42")) ;
         assertTrue(result.data.equals(new Integer(42))) ;
     }    
 
+    /**
+     * (lambda (x) (+ x 4))
+     */
 	@Test public void testEvalApplyCompoundWithArgs() {
 		SymbolAtom plus = new SymbolAtom("+") ;
 		ObjectAtom four = new ObjectAtom(4) ;
 		SymbolAtom x = new SymbolAtom("x") ;
-		LispObject[] args = { plus, four, x } ;
+		LispObject[] bodyForms = { plus, four, x } ;
 		
-		ConsCell body = new ConsCell(args) ;
+		ConsCell body = new ConsCell(new ConsCell(bodyForms), new NilAtom()) ;
     	String[] formalParams = new String[] { "x" } ;
 
     	CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
     	
     	ObjectAtom result = (ObjectAtom)proc.apply(new LispObject[] { new ObjectAtom(5)} ) ;
 
-    	//System.out.println("[" + result + "]") ;
+    	System.out.println("testEvalApplyCompoundWithArgs(): " + result) ;
 
        assertTrue(result.toString().equals("9.0")) ;
        assertTrue(result.data.equals(new Float(9.0))) ;

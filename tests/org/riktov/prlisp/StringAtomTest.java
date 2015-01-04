@@ -23,7 +23,7 @@ public class StringAtomTest {
         str = new StringAtom("I am a StringAtom.") ;
     }
 
-    @Test public void testStringAtom() {
+    @Test public void testStringAtomOutputIsQuoted() {
         //System.out.println(str.toString()) ;
         assertTrue(str.toString().equals("\"I am a StringAtom.\"")) ;
     }

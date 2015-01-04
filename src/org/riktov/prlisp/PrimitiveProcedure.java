@@ -11,7 +11,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
      * @param unevaluatedArgs an Array of LispObjects, which may be symbols or forms which have not been evaluated
      * @return array of LispObject, which are the evaluated results of all the unevaluatedArgs
      */
-    public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs, Environment evalEnv) {
+    @Override public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs, Environment evalEnv) {
         int numArgs = unevaluatedArgs.length ;
         
         LispObject[] evaluatedArgs = new LispObject[numArgs] ;
@@ -28,28 +28,28 @@ abstract class PrimitiveProcedure extends LispProcedure {
     	
 		primitives.put("cons".toUpperCase(), 
 			new PrimitiveProcedure() {
-				public LispObject apply(LispObject[] argVals) {
+				@Override public LispObject apply(LispObject[] argVals) {
 					return new ConsCell(argVals[0], argVals[1]);
 				}
 			});
 		
 		primitives.put("car".toUpperCase(), 
 				new PrimitiveProcedure() {
-					public LispObject apply(LispObject[] argVals) {
+					@Override public LispObject apply(LispObject[] argVals) {
 						return argVals[0].car();
 					}
 				});
 			
 		primitives.put("cdr".toUpperCase(), 
 				new PrimitiveProcedure() {
-					public LispObject apply(LispObject[] argVals) {
+					@Override public LispObject apply(LispObject[] argVals) {
 						return argVals[0].cdr();
 					}
 				});
 
 		primitives.put("null?".toUpperCase(), 
 				new PrimitiveProcedure() {
-					public LispObject apply(LispObject[] argVals) {
+					@Override public LispObject apply(LispObject[] argVals) {
 						if(argVals[0].isNull()) {
 							return new SymbolAtom("t") ;
 						} else {
