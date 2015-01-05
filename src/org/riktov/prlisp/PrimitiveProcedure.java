@@ -3,16 +3,17 @@ package org.riktov.prlisp;
 import java.util.HashMap;
 
 abstract class PrimitiveProcedure extends LispProcedure {
-    String symbol ;
-    public String symbol() { return this.symbol ; } 
+    //String symbol ;
+    //public String symbol() { return this.symbol ; } 
 //    public LispObject apply(LispObject argForms) { return n ; } //
-    public LispObject apply(NilAtom n) { return n ; } //
+    public LispObject apply() { return new NilAtom(); } //
    // public LispObject apply() { return new NilAtom() ; }
     
     /**
      * @param unevaluatedArgs an Array of LispObjects, which may be symbols or forms which have not been evaluated
      * @return array of LispObject, which are the evaluated results of all the unevaluatedArgs
      */
+    /**
     @Override public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs, Environment evalEnv) {
         int numArgs = unevaluatedArgs.length ;
         
@@ -24,6 +25,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
         }
         return evaluatedArgs ;
     }
+    */
     
     static HashMap<String, PrimitiveProcedure> initialPrimitives() {
     	HashMap<String, PrimitiveProcedure> primitives = new HashMap<String, PrimitiveProcedure>() ;
@@ -37,21 +39,21 @@ abstract class PrimitiveProcedure extends LispProcedure {
 		
 		primitives.put("car".toUpperCase(), 
 				new PrimitiveProcedure() {
-					@Override public LispObject apply(ConsCell argForms) {
-						return argForms.car;
+					public LispObject apply(ConsCell argForms) {
+						return argForms.car();
 					}
 				});
 			
 		primitives.put("cdr".toUpperCase(), 
 				new PrimitiveProcedure() {
-					@Override public LispObject apply(ConsCell argForms) {
+					public LispObject apply(ConsCell argForms) {
 						return argForms.cdr;
 					}
 				});
 
 		primitives.put("null?".toUpperCase(), 
 				new PrimitiveProcedure() {
-					@Override public LispObject apply(ConsCell argForms) {
+					public LispObject apply(ConsCell argForms) {
 						if(argForms.car.isNull()) {
 							return new SymbolAtom("t") ;
 						} else {

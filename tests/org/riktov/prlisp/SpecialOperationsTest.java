@@ -17,6 +17,7 @@ public class SpecialOperationsTest {
 
 	/**
 	 * SETQ modifies the environment, so we check whether the environment has received the new key-value pair
+	 * TODO: Test with more pairs, test error with odd number of args
 	 */
 	@Test
 	public void testSetq() {
@@ -28,9 +29,6 @@ public class SpecialOperationsTest {
 				varName,
 				assignedValue
 		} ;
-		//System.out.println(forms.length) ;
-		
-		//System.out.println("Just after installing specials: " + e.keySet()) ;
 		
 		ConsCell c = new ConsCell(forms) ;
 		
@@ -235,6 +233,9 @@ public class SpecialOperationsTest {
 		assertTrue(theLambda.body().cdr().car() == bodyForm2) ;
 	}
 
+	/**
+	 * build (lambda () 3)
+	 */
 	@Test public void testLambdaNoArgs() {
 		LispObject arglist = new NilAtom();
 		LispObject body = DataAtom.make(3) ;

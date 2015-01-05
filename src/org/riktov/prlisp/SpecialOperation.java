@@ -10,18 +10,19 @@ abstract class SpecialOperation extends LispProcedure {
 	 */
 	protected Environment argEnv;
 
-	public LispObject apply(NilAtom n) { return n  ; }
+	public LispObject apply() { return new NilAtom()  ; }
 	/**
 	 * Override this if the procedure wants some arguments to be evaluated in
 	 * the calling environment beforehand
 	 */
+	/**
 	public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
 			Environment argEnv) {
 		this.argEnv = argEnv; // always necessary if any args need to be
 								// evaluated within apply()
 		return unevaluatedArgs;
 	}
-
+*/
 	// constructors
 
 	static HashMap<String, SpecialOperation> initialSpecials(final Environment env) {
@@ -38,11 +39,14 @@ abstract class SpecialOperation extends LispProcedure {
 
 				ConsCell current = (ConsCell)argForms ;
 				while(!current.cdr.isNull()) {
-					String symbolName = current.car().toString().toUpperCase() ;
-					current = (ConsCell)current.cdr ;
+					String symbolName = current.car().toString().toUpperCase() ;//current key
+					current = (ConsCell)current.cdr ;//current value
 					assignedValue = current.car ;
-					env.put(symbolName, assignedValue);
-					current = (ConsCell)current.cdr ;
+					System.out.println("SETQ - interning symbol " + symbolName + " with value " + assignedValue.toString()) ;
+					env.put(symbolName, assignedValue.eval(argEnv));
+					if(!current.cdr.isNull()) {
+						current = (ConsCell)current.cdr ;//next key-value pair						
+					}
 				}
 				return assignedValue;
 			}

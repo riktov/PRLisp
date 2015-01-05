@@ -9,18 +9,24 @@ package org.riktov.prlisp;
  *
  */
 abstract class LispProcedure extends LispObject {
-//	public abstract LispObject apply(LispObject[] argVals);
+//	public abstract LispObject apply(LispObject[] argVals);	
+	/**
+	 * Dispatch on argForms' type, which is its nullity.
+	 * @param argForms a ConsCell (list) or NilAtom
+	 * @return
+	 */
 	public LispObject apply(LispObject argForms) {
 		if(argForms.isNull()) {
-			return apply(new NilAtom()) ;
+			return apply() ;//or we could alternately implement apply(NilAtom n)
 		} else {
 			return apply((ConsCell)argForms) ;
 		}
 	}
 	public abstract LispObject apply(ConsCell argForms) ;
-	public abstract LispObject apply(NilAtom n) ;
-	public abstract LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
+	public abstract LispObject apply() ;
+/**	public abstract LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
 			Environment evalEnv);
+*/
 }
 
 class CompoundProcedure extends LispProcedure {
@@ -58,7 +64,7 @@ class CompoundProcedure extends LispProcedure {
 		}
 
 	/**
-	 * 
+	 * accessors
 	 */
 	String[] formalParams() { return formalParams ; }
 	LispObject body() { return body ; }
@@ -70,6 +76,11 @@ class CompoundProcedure extends LispProcedure {
 	 * @return array of LispObject, which are the evaluated results of all the
 	 *         unevaluatedArgs
 	 */
+	
+	/**
+	*/
+	
+	/**
 	@Override public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
 			Environment evalEnv) {
 		int numArgs = unevaluatedArgs.length;
@@ -82,24 +93,17 @@ class CompoundProcedure extends LispProcedure {
 		}
 		return evaluatedArgs;
 	}
-
+*/
+	
 	/**
-	 * APPLY Evaluate in turn each subform in the procedure body, in an environment created by extending
-	 * the procedure's initial environment with the argument bindings.
+	 * APPLY Evaluate in turn each subform of the procedure body, in an environment created by extending
+	 * the procedure's own environment with the argument bindings.
 	 * 
 	 * @param argVals
 	 *            This is an array of objects (evaluated) that is passed to the
 	 *            method.
 	 * @return LispObject The value of the last form in the procedure body
 	 */
-	public LispObject apply(LispObject argForms) {
-		if(argForms.isNull()) {
-			return apply(new NilAtom()) ;
-		} else {
-			return apply((ConsCell)argForms) ;
-		}
-	}
-	
 	public LispObject apply(ConsCell argForms) {
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
@@ -135,7 +139,7 @@ class CompoundProcedure extends LispProcedure {
 	 * @param n Dummy
 	 * @return
 	 */
-	public LispObject apply(NilAtom n) { 
+	public LispObject apply() { 
 		LispObject currentForm ;
 
 		//iterate through the body forms, evaluating them in turn
