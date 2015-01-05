@@ -72,7 +72,8 @@ public class EvalTest {
     }    
 
     /**
-     * (lambda (x) (+ x 4))
+     * We manually build the equivalent of (lambda (x) (+ x 4))
+     * then apply it to (5)
      */
 	@Test public void testEvalApplyCompoundWithArgs() {
 		SymbolAtom plus = new SymbolAtom("+") ;
@@ -80,13 +81,16 @@ public class EvalTest {
 		SymbolAtom x = new SymbolAtom("x") ;
 		LispObject[] bodyForms = { plus, four, x } ;
 		
-		ConsCell body = new ConsCell(bodyForms) ;
-    	String[] formalParams = new String[] { "x" } ;
+		ConsCell body = new ConsCell(new ConsCell(bodyForms), new NilAtom()) ;
+    	String[] formalParams = new String[] { "X" } ;	//TODO: lowercase or uppercase?
 
     	CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
     	System.out.println("testEvalApplyCompoundWithArgs(): " + proc) ;
     	
-    	ObjectAtom result = (ObjectAtom)proc.apply(new ConsCell(new ObjectAtom(5), new NilAtom())) ;
+    	ConsCell argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
+    	ConsCell argValues = proc.ProcessArguments(argForms, e) ;
+    	
+    	ObjectAtom result = (ObjectAtom)proc.apply(argValues) ;
 
     	System.out.println("testEvalApplyCompoundWithArgs(): " + result) ;
        assertTrue(result.toString().equals("9.0")) ;

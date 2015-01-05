@@ -84,6 +84,8 @@ public class SpecialOperationsTest {
 		assertTrue(result == alternateObject) ;
 	}
 	
+	// TODO: IF test that the skipped clause is not evaluated
+
 	/**
 	 * PROGN evaluates a sequence of forms, so we check that it returns the value of the last form
 	 */
@@ -101,6 +103,7 @@ public class SpecialOperationsTest {
 		} ;
 				
 		ConsCell c = new ConsCell(forms) ;
+		System.out.println("testPrognResult() evaluating: " + c.toString()) ;
 		LispObject result = c.eval(e) ;
 		
 		assertTrue(result == exp3) ;
@@ -124,7 +127,8 @@ public class SpecialOperationsTest {
 		} ;
 				
 		ConsCell c = new ConsCell(forms) ;
-		
+		System.out.println("testPrognIntermediate() evaluating: " + c.toString()) ;
+
 		assertFalse(e.containsKey("JUMBO")) ;
 		
 		ObjectAtom result = (ObjectAtom)c.eval(e) ;

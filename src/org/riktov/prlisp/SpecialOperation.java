@@ -11,18 +11,13 @@ abstract class SpecialOperation extends LispProcedure {
 	protected Environment argEnv;
 
 	public LispObject apply() { return new NilAtom()  ; }
-	/**
-	 * Override this if the procedure wants some arguments to be evaluated in
-	 * the calling environment beforehand
-	 */
-	/**
-	public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
+
+	@Override public ConsCell ProcessArguments(ConsCell unevaluatedArgForms,
 			Environment argEnv) {
 		this.argEnv = argEnv; // always necessary if any args need to be
-								// evaluated within apply()
-		return unevaluatedArgs;
+		return unevaluatedArgForms;
 	}
-*/
+
 	// constructors
 
 	static HashMap<String, SpecialOperation> initialSpecials(final Environment env) {
@@ -42,7 +37,7 @@ abstract class SpecialOperation extends LispProcedure {
 					String symbolName = current.car().toString().toUpperCase() ;//current key
 					current = (ConsCell)current.cdr ;//current value
 					assignedValue = current.car ;
-					System.out.println("SETQ - interning symbol " + symbolName + " with value " + assignedValue.toString()) ;
+					System.out.println("SETQ - setting symbol " + symbolName + " with value " + assignedValue.toString()) ;
 					env.put(symbolName, assignedValue.eval(argEnv));
 					if(!current.cdr.isNull()) {
 						current = (ConsCell)current.cdr ;//next key-value pair						
@@ -71,26 +66,17 @@ abstract class SpecialOperation extends LispProcedure {
 			}
 		});
 
-		// TODO: test that the skipped clause is not evaluated
 
 		specials.put("progn".toUpperCase(), new SpecialOperation() {
 			@Override
 			public LispObject apply(ConsCell argForms) {
-				LispObject result = null ;
-				
-				ConsCell current = (ConsCell)argForms ;
-				while(!current.cdr.isNull()) {
-					LispObject form = current.car ;
-					result = form.eval(argEnv) ;
-					current = (ConsCell)current.cdr ;
-				}
-				return result;
+				return argForms.evalSequence(argEnv) ;
 			}
 		});
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(ConsCell argForms) {
-				return new ConsCell(argForms.car, new NilAtom());
+				return argForms.car ;
 			}
 		});
 

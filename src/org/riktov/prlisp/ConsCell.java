@@ -99,23 +99,13 @@ class ConsCell extends LispObject {
 	 * @return The LispObject resulting from the evaluation
 	 */
 	@Override LispObject eval(Environment env) {
-		LispProcedure proc = (LispProcedure)car.eval(env);// this can return
-															// null...
+		LispProcedure proc = (LispProcedure)car.eval(env);
+				
+		ConsCell argsToApply = proc.ProcessArguments((ConsCell)cdr, env);
 
-		LispObject rest = cdr;
-
-		
-		return proc.apply(rest);
-/**
-			LispObject[] unevaluatedArgs = ((ConsCell) rest).toArray();
-			LispObject[] evaluatedArgs = proc.ProcessArguments(unevaluatedArgs,
-					env);
-
-			return proc.apply(evaluatedArgs);// ...which will raise a
-												// NullPointerException here
+		return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
 		}
-		*/
-	}
+
 
 	/**
 	 * Converts the ConsCell to an array of LispObject
@@ -139,5 +129,36 @@ class ConsCell extends LispObject {
 		// System.out.println("Arguments: " + arr) ;
 		// return arr;
 		// return new LispObject [] { new Atom(5), new Atom(13) } ;
+	}
+	
+	/**
+	 * Treat this as a list of forms, and return a list comprising the values of forms, evaluated in env
+	 * @return A list of the same length as this, comprising the evaluated subforms
+	 */
+	ConsCell evalList(Environment env) {
+		ConsCell current = this ;
+		
+		if(current.cdr().isNull()) {
+			return new ConsCell(current.car.eval(env), current.cdr) ;
+		} else {
+			return new ConsCell(current.car.eval(env), ((ConsCell)current.cdr).evalList(env)) ;
+		}
+	}
+
+	/**
+	 * Treat this as a list of forms, and evaluate them in turn in env, returning the last one
+	 * @return The value of the last subform
+	 */
+	LispObject evalSequence(Environment env) {
+		ConsCell current = this ;
+		
+		System.out.println("evalSequence()" + current.car.toString()) ;
+		
+		if(current.cdr().isNull()) {
+			return current.car.eval(env) ;
+		} else {
+			current.car.eval(env) ;
+			return ((ConsCell)current.cdr).evalSequence(env) ;
+		}
 	}
 }

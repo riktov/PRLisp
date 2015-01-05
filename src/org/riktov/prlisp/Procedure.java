@@ -24,9 +24,11 @@ abstract class LispProcedure extends LispObject {
 	}
 	public abstract LispObject apply(ConsCell argForms) ;
 	public abstract LispObject apply() ;
-/**	public abstract LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
-			Environment evalEnv);
-*/
+    public ConsCell ProcessArguments(ConsCell unevaluatedArgForms,
+			Environment evalEnv) {
+		return unevaluatedArgForms.evalList(evalEnv) ;
+	}
+
 }
 
 class CompoundProcedure extends LispProcedure {
@@ -76,24 +78,7 @@ class CompoundProcedure extends LispProcedure {
 	 * @return array of LispObject, which are the evaluated results of all the
 	 *         unevaluatedArgs
 	 */
-	
-	/**
-	*/
-	
-	/**
-	@Override public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
-			Environment evalEnv) {
-		int numArgs = unevaluatedArgs.length;
 
-		LispObject[] evaluatedArgs = new LispObject[numArgs];
-
-		int i;
-		for (i = 0; i < numArgs; i++) {
-			evaluatedArgs[i] = unevaluatedArgs[i].eval(evalEnv);
-		}
-		return evaluatedArgs;
-	}
-*/
 	
 	/**
 	 * APPLY Evaluate in turn each subform of the procedure body, in an environment created by extending
@@ -108,29 +93,31 @@ class CompoundProcedure extends LispProcedure {
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
 		int i = 0 ;
-		//System.out.println("apply(LispObject[]): argVals.length: " + argVals.length) ;
-/*
-		for (i = 0; i < argVals.length; i++) {
-			newEnv.intern(formalParams[i], argVals[i]);
-		}
-*/
+
 		LispObject currentForm ;
 
 		//iterate through the arg forms and formal params, interning them in turn
 		currentForm = argForms ;
 		while(!currentForm.cdr().isNull()) {
-			newEnv.intern(formalParams[i++], currentForm.car().eval(env)) ;
+			String symbolName = formalParams[i++] ;
+			System.out.println("apply(ConsCell): interning " + symbolName) ;
+			newEnv.intern(symbolName, currentForm.car().eval(env)) ;
 			currentForm = currentForm.cdr();
 		}		
-		newEnv.intern(formalParams[i], currentForm.car().eval(env)) ;
+		
+		return body.evalSequence(newEnv) ;
+		//newEnv.intern(formalParams[i], currentForm.car().eval(env)) ;
 		
 		//iterate through the body forms, evaluating them in turn
-		currentForm = body ;
+		/**
+		 * currentForm = body ;
+
 		while(!currentForm.cdr().isNull()) {
 			currentForm.car().eval(newEnv) ;
 			currentForm = currentForm.cdr();
 		}		
 		return currentForm.car().eval(newEnv);	
+		*/
 	}
 	
 	/**
@@ -140,15 +127,6 @@ class CompoundProcedure extends LispProcedure {
 	 * @return
 	 */
 	public LispObject apply() { 
-		LispObject currentForm ;
-
-		//iterate through the body forms, evaluating them in turn
-		currentForm = body ;
-		while(!currentForm.cdr().isNull()) {
-			currentForm.car().eval(env) ;
-			currentForm = currentForm.cdr();
-		}		
-		return currentForm.car().eval(env);	
+		return body.evalSequence(env) ;
 	}
-
 }

@@ -95,5 +95,23 @@ public class ConsCellTest {
     	
     	assertTrue(c.isNull()) ;
     }
+    
+    @Test public void testEvalList() {
+    	Environment env = new Environment() ;
+    	
+    	ObjectAtom sevenFortySeven = new ObjectAtom(747) ;
+    	env.intern("JUMBO", sevenFortySeven) ;
+    	
+       ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom()) ;
+       ConsCell ct1 = new ConsCell(new SymbolAtom("jumbo"), ct2) ;
+       ConsCell ct0 = new ConsCell(Atom.make(55), ct1) ;
+        
+       System.out.println("testEvalList(): " + ct0.toString()) ;
+       ConsCell evaluated = ct0.evalList(env) ;
+       System.out.println("testEvalList() result: " + evaluated.toString()) ;
+       
+       ObjectAtom evaluatedSecondElement = (ObjectAtom)evaluated.cdr().car();
+       assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
+    }
 }
 

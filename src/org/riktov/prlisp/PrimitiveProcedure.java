@@ -8,25 +8,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
 //    public LispObject apply(LispObject argForms) { return n ; } //
     public LispObject apply() { return new NilAtom(); } //
    // public LispObject apply() { return new NilAtom() ; }
-    
-    /**
-     * @param unevaluatedArgs an Array of LispObjects, which may be symbols or forms which have not been evaluated
-     * @return array of LispObject, which are the evaluated results of all the unevaluatedArgs
-     */
-    /**
-    @Override public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs, Environment evalEnv) {
-        int numArgs = unevaluatedArgs.length ;
         
-        LispObject[] evaluatedArgs = new LispObject[numArgs] ;
-
-        int i ;
-        for(i = 0 ; i < numArgs ; i++) {
-            evaluatedArgs[i] = unevaluatedArgs[i].eval(evalEnv) ;
-        }
-        return evaluatedArgs ;
-    }
-    */
-    
     static HashMap<String, PrimitiveProcedure> initialPrimitives() {
     	HashMap<String, PrimitiveProcedure> primitives = new HashMap<String, PrimitiveProcedure>() ;
     	
