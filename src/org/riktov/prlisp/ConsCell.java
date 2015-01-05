@@ -91,7 +91,7 @@ class ConsCell extends LispObject {
 
 	/**
 	 * EVAL
-	 * Take the value of the first form as a procedure, and APPLY the evaluated results 
+	 * Take the value of the first form as a procedure, and APPLY it to the evaluated results 
 	 * of the remaining forms, in the environment env.
 	 * 
 	 * @param env
@@ -103,6 +103,8 @@ class ConsCell extends LispObject {
 															// null...
 
 		LispObject rest = cdr;
+
+		
 		return proc.apply(rest);
 /**
 			LispObject[] unevaluatedArgs = ((ConsCell) rest).toArray();

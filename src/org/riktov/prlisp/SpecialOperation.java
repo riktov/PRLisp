@@ -96,7 +96,7 @@ abstract class SpecialOperation extends LispProcedure {
 
 		specials.put("lambda".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(ConsCell argForms) {
-				ConsCell formalParamList = (ConsCell)argForms.car ;
+				LispObject formalParamList = argForms.car ;
 				// LispObject body = argForms[1] ; // TODO: gather the rest not
 				// just [1]
 
