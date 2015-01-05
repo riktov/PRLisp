@@ -23,7 +23,7 @@ abstract class SpecialOperation extends LispProcedure {
 
 	// constructors
 
-	static HashMap<String, SpecialOperation> initialSpecials(Environment env) {
+	static HashMap<String, SpecialOperation> initialSpecials(final Environment env) {
 		HashMap<String, SpecialOperation> specials = new HashMap<String, SpecialOperation>();
 
 		/**
