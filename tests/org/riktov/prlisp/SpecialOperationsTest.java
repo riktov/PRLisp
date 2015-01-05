@@ -252,7 +252,7 @@ public class SpecialOperationsTest {
 		
 		System.out.println(theLambda) ;
 		
-		ObjectAtom result = (ObjectAtom)theLambda.apply(new LispObject[0]) ;
+		ObjectAtom result = (ObjectAtom)theLambda.apply(new NilAtom()) ;
 		
 		assertTrue(result.data.equals(3)) ;
 	}

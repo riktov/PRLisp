@@ -80,15 +80,15 @@ public class EvalTest {
 		SymbolAtom x = new SymbolAtom("x") ;
 		LispObject[] bodyForms = { plus, four, x } ;
 		
-		ConsCell body = new ConsCell(new ConsCell(bodyForms), new NilAtom()) ;
+		ConsCell body = new ConsCell(bodyForms) ;
     	String[] formalParams = new String[] { "x" } ;
 
     	CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
+    	System.out.println("testEvalApplyCompoundWithArgs(): " + proc) ;
     	
-    	ObjectAtom result = (ObjectAtom)proc.apply(new LispObject[] { new ObjectAtom(5)} ) ;
+    	ObjectAtom result = (ObjectAtom)proc.apply(new ConsCell(new ObjectAtom(5), new NilAtom())) ;
 
     	System.out.println("testEvalApplyCompoundWithArgs(): " + result) ;
-
        assertTrue(result.toString().equals("9.0")) ;
        assertTrue(result.data.equals(new Float(9.0))) ;
 	}

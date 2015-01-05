@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 abstract class PrimitiveProcedure extends LispProcedure {
     String symbol ;
-    public String symbol() { return this.symbol ; }
+    public String symbol() { return this.symbol ; } 
+//    public LispObject apply(LispObject argForms) { return n ; } //
+    public LispObject apply(NilAtom n) { return n ; } //
    // public LispObject apply() { return new NilAtom() ; }
     
     /**
@@ -28,29 +30,29 @@ abstract class PrimitiveProcedure extends LispProcedure {
     	
 		primitives.put("cons".toUpperCase(), 
 			new PrimitiveProcedure() {
-				@Override public LispObject apply(LispObject[] argVals) {
-					return new ConsCell(argVals[0], argVals[1]);
+				public LispObject apply(ConsCell argForms) {
+					return new ConsCell(argForms.car, argForms.cdr.car());
 				}
 			});
 		
 		primitives.put("car".toUpperCase(), 
 				new PrimitiveProcedure() {
-					@Override public LispObject apply(LispObject[] argVals) {
-						return argVals[0].car();
+					@Override public LispObject apply(ConsCell argForms) {
+						return argForms.car;
 					}
 				});
 			
 		primitives.put("cdr".toUpperCase(), 
 				new PrimitiveProcedure() {
-					@Override public LispObject apply(LispObject[] argVals) {
-						return argVals[0].cdr();
+					@Override public LispObject apply(ConsCell argForms) {
+						return argForms.cdr;
 					}
 				});
 
 		primitives.put("null?".toUpperCase(), 
 				new PrimitiveProcedure() {
-					@Override public LispObject apply(LispObject[] argVals) {
-						if(argVals[0].isNull()) {
+					@Override public LispObject apply(ConsCell argForms) {
+						if(argForms.car.isNull()) {
 							return new SymbolAtom("t") ;
 						} else {
 							return new NilAtom() ;
@@ -60,8 +62,8 @@ abstract class PrimitiveProcedure extends LispProcedure {
 	
 		primitives.put("+".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						if(numericalArgs[0].getClass() == numericalArgs[1].getClass()) {
 							numericalArgs[0] = numericalArgs[0].floatValue() + numericalArgs[1].floatValue() ;
 							return new ObjectAtom(numericalArgs[0]) ;
@@ -73,8 +75,8 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			
 		primitives.put("-".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						return new ObjectAtom(numericalArgs[0].floatValue()
 								- numericalArgs[1].floatValue());
 					}
@@ -82,8 +84,8 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			
 		primitives.put("*".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						return new ObjectAtom(numericalArgs[0].floatValue()
 								* numericalArgs[1].floatValue());
 					}
@@ -91,8 +93,8 @@ abstract class PrimitiveProcedure extends LispProcedure {
 		
 		primitives.put("/".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						return new ObjectAtom(numericalArgs[0].floatValue()
 								/ numericalArgs[1].floatValue());
 					}
@@ -100,24 +102,24 @@ abstract class PrimitiveProcedure extends LispProcedure {
 		
 		primitives.put("=".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						return Atom.make(numericalArgs[0].floatValue() == numericalArgs[1].floatValue()) ;
 					}
 				});
 
 		primitives.put(">".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						return Atom.make(numericalArgs[0].floatValue() > numericalArgs[1].floatValue()) ;
 					}
 				});
 
 		primitives.put("<".toUpperCase(), 
 				new PrimitiveNumericalProcedure() {
-					public LispObject apply(LispObject[] argVals) {
-						Number[] numericalArgs = numericalArgs(argVals);
+					public LispObject apply(ConsCell argForms) {
+						Number[] numericalArgs = numericalArgs(argForms.toArray());
 						return Atom.make(numericalArgs[0].floatValue() < numericalArgs[1].floatValue()) ;
 					}
 				});

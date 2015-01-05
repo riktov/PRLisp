@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 
 class ConsCell extends LispObject {
-	private LispObject car;
-	private LispObject cdr;
+	LispObject car;
+	LispObject cdr;
 
 	/**
 	 * Constructor 
@@ -99,14 +99,12 @@ class ConsCell extends LispObject {
 	 * @return The LispObject resulting from the evaluation
 	 */
 	@Override LispObject eval(Environment env) {
-		LispProcedure proc = (LispProcedure) car.eval(env);// this can return
+		LispProcedure proc = (LispProcedure)car.eval(env);// this can return
 															// null...
 
 		LispObject rest = cdr;
-		if (rest.isNull()) {
-			return proc.apply();
-		} else {
-
+		return proc.apply(rest);
+/**
 			LispObject[] unevaluatedArgs = ((ConsCell) rest).toArray();
 			LispObject[] evaluatedArgs = proc.ProcessArguments(unevaluatedArgs,
 					env);
@@ -114,6 +112,7 @@ class ConsCell extends LispObject {
 			return proc.apply(evaluatedArgs);// ...which will raise a
 												// NullPointerException here
 		}
+		*/
 	}
 
 	/**

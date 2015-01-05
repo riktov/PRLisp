@@ -10,6 +10,7 @@ abstract class SpecialOperation extends LispProcedure {
 	 */
 	protected Environment argEnv;
 
+	public LispObject apply(NilAtom n) { return n  ; }
 	/**
 	 * Override this if the procedure wants some arguments to be evaluated in
 	 * the calling environment beforehand
@@ -29,37 +30,21 @@ abstract class SpecialOperation extends LispProcedure {
 		/**
 		 * setq - Treat the first argument as a symbol(unevaluated), and intern
 		 * it with the value of the second argument
+		 * TODO: Implement the paired-setq
 		 */
 		specials.put("setq".toUpperCase(), new SpecialOperation() {
-			@Override
-			public LispObject apply(LispObject[] argForms) {
-				String symbolName = argForms[0].toString().toUpperCase();
-				LispObject assignedValue = argForms[1];
+			public LispObject apply(ConsCell argForms) {
+				LispObject assignedValue = null ;
 
-				env.put(symbolName, assignedValue);
-				return assignedValue;
-			}
-
-			/**
-			 * Unevaluated: 0 Evaluated: 1
-			 */
-			@Override
-			public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
-					Environment argEnv) {
-				this.argEnv = argEnv; // always necessary if any args need to be
-										// evaluated within apply()
-				int numArgs = unevaluatedArgs.length;
-				// System.out.println(unevaluatedArgs) ;
-
-				LispObject[] evaluatedArgs = new LispObject[numArgs];
-
-				evaluatedArgs[0] = unevaluatedArgs[0];
-				int i;
-				for (i = 1; i < numArgs; i++) {
-					evaluatedArgs[i] = unevaluatedArgs[i].eval(argEnv);
+				ConsCell current = (ConsCell)argForms ;
+				while(!current.cdr.isNull()) {
+					String symbolName = current.car().toString().toUpperCase() ;
+					current = (ConsCell)current.cdr ;
+					assignedValue = current.car ;
+					env.put(symbolName, assignedValue);
+					current = (ConsCell)current.cdr ;
 				}
-				// System.out.println(evaluatedArgs) ;
-				return evaluatedArgs;
+				return assignedValue;
 			}
 		});
 
@@ -69,37 +54,16 @@ abstract class SpecialOperation extends LispProcedure {
 		 */
 		specials.put("if".toUpperCase(), new SpecialOperation() {
 			@Override
-			public LispObject apply(LispObject[] argForms) {
-				LispObject condition = argForms[0];
-				LispObject consequent = argForms[1];
-				LispObject alternate = argForms[2];
+			public LispObject apply(ConsCell argForms) {
+				LispObject condition = argForms.car;
+				LispObject consequent = argForms.cdr().car();
+				LispObject alternate = argForms.cdr().cdr().car();
 
-				if (!condition.isNull()) {
+				if (!condition.eval(argEnv).isNull()) {
 					return consequent.eval(argEnv);
 				} else {
 					return alternate.eval(argEnv);
 				}
-			}
-
-			/**
-			 * Evaluated: 0 Unevaluated: 1, 2
-			 */
-			@Override
-			public LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
-					Environment argEnv) {
-				this.argEnv = argEnv; // always necessary if any args need to be
-										// evaluated within apply()
-				int numArgs = unevaluatedArgs.length;
-
-				LispObject[] evaluatedArgs = new LispObject[numArgs];
-
-				evaluatedArgs[0] = unevaluatedArgs[0].eval(argEnv);
-
-				int i;
-				for (i = 1; i < numArgs; i++) {
-					evaluatedArgs[i] = unevaluatedArgs[i];
-				}
-				return evaluatedArgs;
 			}
 		});
 
@@ -107,30 +71,33 @@ abstract class SpecialOperation extends LispProcedure {
 
 		specials.put("progn".toUpperCase(), new SpecialOperation() {
 			@Override
-			public LispObject apply(LispObject[] argForms) {
-				int i;
-				LispObject result = new NilAtom();
-				for (i = 0; i < argForms.length; i++) {
-					result = argForms[i].eval(argEnv);
+			public LispObject apply(ConsCell argForms) {
+				LispObject result = null ;
+				
+				ConsCell current = (ConsCell)argForms ;
+				while(!current.cdr.isNull()) {
+					LispObject form = current.car ;
+					result = form.eval(argEnv) ;
+					current = (ConsCell)current.cdr ;
 				}
 				return result;
 			}
 		});
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
-			public LispObject apply(LispObject[] argForms) {
-				return new ConsCell(argForms);
+			public LispObject apply(ConsCell argForms) {
+				return new ConsCell(argForms.car, new NilAtom());
 			}
 		});
 
 		specials.put("lambda".toUpperCase(), new SpecialOperation() {
-			public LispObject apply(LispObject[] argForms) {
-				LispObject formalParamList = argForms[0];
+			public LispObject apply(ConsCell argForms) {
+				ConsCell formalParamList = (ConsCell)argForms.car ;
 				// LispObject body = argForms[1] ; // TODO: gather the rest not
 				// just [1]
 
-				ConsCell argsAsLispList = new ConsCell(argForms);
-				ConsCell body = (ConsCell) argsAsLispList.cdr();
+//				ConsCell argsAsLispList = formalParamList;
+				ConsCell body = (ConsCell)argForms.cdr();
 
 				String[] paramNames;
 
@@ -152,10 +119,10 @@ abstract class SpecialOperation extends LispProcedure {
 		});
 
 		specials.put("let".toUpperCase(), new SpecialOperation() {
-			public LispObject apply(LispObject[] argForms) {
-				ConsCell bindingList = (ConsCell) argForms[0];
-				LispObject body = argForms[1];
-
+			public LispObject apply(ConsCell argForms) {
+				ConsCell bindingList = (ConsCell)argForms.car;
+				LispObject body = argForms.cdr.car();
+				
 				LispObject[] bindings = bindingList.toArray();
 
 				ChildEnvironment letEnv = new ChildEnvironment(argEnv);

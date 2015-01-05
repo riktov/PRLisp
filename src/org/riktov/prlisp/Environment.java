@@ -6,6 +6,11 @@ import java.util.HashMap;
  * Environment
  */
 class Environment extends HashMap<String, LispObject> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** 
      */
 	Environment() {

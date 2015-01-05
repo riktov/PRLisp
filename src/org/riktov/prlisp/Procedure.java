@@ -3,12 +3,24 @@ package org.riktov.prlisp;
 //import java.util.List ;
 //import java.util.ArrayList ;
 
+/**
+ * A LispProcedure can be a compound procedure (lambda), a primitive procedure, or a special operation
+ * @author paul
+ *
+ */
 abstract class LispProcedure extends LispObject {
-	public abstract LispObject apply(LispObject[] argVals);
+//	public abstract LispObject apply(LispObject[] argVals);
+	public LispObject apply(LispObject argForms) {
+		if(argForms.isNull()) {
+			return apply(new NilAtom()) ;
+		} else {
+			return apply((ConsCell)argForms) ;
+		}
+	}
+	public abstract LispObject apply(ConsCell argForms) ;
+	public abstract LispObject apply(NilAtom n) ;
 	public abstract LispObject[] ProcessArguments(LispObject[] unevaluatedArgs,
 			Environment evalEnv);
-	public LispObject apply() {	return apply(new LispObject[0]) ; }
-	public LispObject apply(NilAtom n) { return apply(new LispObject[0]) ; }
 }
 
 class CompoundProcedure extends LispProcedure {
@@ -80,23 +92,59 @@ class CompoundProcedure extends LispProcedure {
 	 *            method.
 	 * @return LispObject The value of the last form in the procedure body
 	 */
-	@Override public LispObject apply(LispObject[] argVals) {
+	public LispObject apply(LispObject argForms) {
+		if(argForms.isNull()) {
+			return apply(new NilAtom()) ;
+		} else {
+			return apply((ConsCell)argForms) ;
+		}
+	}
+	
+	public LispObject apply(ConsCell argForms) {
 		ChildEnvironment newEnv = new ChildEnvironment(env);
-		int i;
 		
+		int i = 0 ;
 		//System.out.println("apply(LispObject[]): argVals.length: " + argVals.length) ;
-		
+/*
 		for (i = 0; i < argVals.length; i++) {
 			newEnv.intern(formalParams[i], argVals[i]);
 		}
+*/
+		LispObject currentForm ;
+
+		//iterate through the arg forms and formal params, interning them in turn
+		currentForm = argForms ;
+		while(!currentForm.cdr().isNull()) {
+			newEnv.intern(formalParams[i++], currentForm.car().eval(env)) ;
+			currentForm = currentForm.cdr();
+		}		
+		newEnv.intern(formalParams[i], currentForm.car().eval(env)) ;
 		
-		LispObject currentForm = body ;
-		
+		//iterate through the body forms, evaluating them in turn
+		currentForm = body ;
 		while(!currentForm.cdr().isNull()) {
 			currentForm.car().eval(newEnv) ;
 			currentForm = currentForm.cdr();
-		}
-		
+		}		
 		return currentForm.car().eval(newEnv);	
 	}
+	
+	/**
+	 * If there are no arguments, there is no need to extend the environment with new bindings. 
+	 * Just evaluate the forms
+	 * @param n Dummy
+	 * @return
+	 */
+	public LispObject apply(NilAtom n) { 
+		LispObject currentForm ;
+
+		//iterate through the body forms, evaluating them in turn
+		currentForm = body ;
+		while(!currentForm.cdr().isNull()) {
+			currentForm.car().eval(env) ;
+			currentForm = currentForm.cdr();
+		}		
+		return currentForm.car().eval(env);	
+	}
+
 }
