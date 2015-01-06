@@ -95,14 +95,22 @@ class ObjectAtom extends DataAtom {
 /**
 * NilAtom does not extend DataAtom because it requires no data. 
 * It could also be a singleton class
+* NilAtom implements the LispList interface because it is equivalent to an empty list
 */
 
-final class NilAtom extends Atom {
+final class NilAtom extends Atom implements LispList {
     @Override public String toString() { return "NIL" ; }
     @Override public String toStringCdr() { return "" ; }
     //If the cdr of a cons is nil, then the cons is the last element of a list,
     //so we just finish printing
-    @Override public boolean isNull() { return true ; }
+    @Override 
+    public boolean isNull() { return true ; }
+	@Override
+	public LispList evalList(Environment env) { return this ; }
+	@Override
+	public LispObject evalSequence(Environment env) { return this ; }
+	@Override
+	public LispObject[] toArray() { return new LispObject[0] ; }
 }
 
 /**

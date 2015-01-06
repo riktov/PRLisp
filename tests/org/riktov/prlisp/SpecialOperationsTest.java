@@ -87,59 +87,10 @@ public class SpecialOperationsTest {
 	// TODO: IF test that the skipped clause is not evaluated
 
 	/**
-	 * PROGN evaluates a sequence of forms, so we check that it returns the value of the last form
+	 * PROGN just calls evalSequence. evalSequence is tested on its own
 	 */
 	@Test
-	public void testPrognResult() {
-		LispObject exp1 = new NilAtom() ;
-		LispObject exp2 = new StringAtom("Bob Seger") ;
-		LispObject exp3 = DataAtom.make(221) ;
-		
-		LispObject[] forms = new LispObject[] {
-				new SymbolAtom("progn"),
-				exp1,
-				exp2,
-				exp3
-		} ;
-				
-		ConsCell c = new ConsCell(forms) ;
-		System.out.println("testPrognResult() evaluating: " + c.toString()) ;
-		LispObject result = c.eval(e) ;
-		
-		assertTrue(result == exp3) ;
-	}
-	
-	/**
-	 * PROGN evaluates a sequence of forms, so we check that the intermediate forms are evaluated, 
-	 * even though we do not get their results
-	 */
-	@Test
-	public void testPrognIntermediate() {
-		LispObject exp1 = new NilAtom() ;
-		LispObject exp2 = new ConsCell(new LispObject[] { new SymbolAtom("setq"), new SymbolAtom("jumbo"), Atom.make(747) }) ;
-		LispObject exp3 = DataAtom.make(221) ;
-		
-		LispObject[] forms = new LispObject[] {
-				new SymbolAtom("progn"),
-				exp1,
-				exp2,
-				exp3
-		} ;
-				
-		ConsCell c = new ConsCell(forms) ;
-		System.out.println("testPrognIntermediate() evaluating: " + c.toString()) ;
-
-		assertFalse(e.containsKey("JUMBO")) ;
-		
-		ObjectAtom result = (ObjectAtom)c.eval(e) ;
-		
-		assertTrue(result.data.equals(221)) ;	//we got the value of the last form
-		assertTrue(e.containsKey("JUMBO")) ; //did the intermediate form get evaluated?
-		String assignedVal = e.get("JUMBO").toString() ;
-		System.out.println(assignedVal) ;
-		assertTrue(assignedVal.equals("747")) ;
-		//assertTrue(result == exp3) ;
-	}
+	public void testProgn() {}
 	
 	/**
 	 * QUOTE returns a single atom unevaluated, 

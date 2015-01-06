@@ -52,11 +52,7 @@ class Environment extends HashMap<String, LispObject> {
 		putAll(SpecialOperation.initialSpecials(this)) ;
 		return true;
 	}
-	/**
-	boolean installPrimitive(PrimitiveProcedure proc) {
-		return intern(proc.symbol(), proc);
-	}
-*/
+
 	boolean intern(String symName, LispObject o) {
 		put(symName.toUpperCase(), o);
 		return true;

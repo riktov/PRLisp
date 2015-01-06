@@ -1,12 +1,20 @@
 package org.riktov.prlisp;
 
 import java.util.ArrayList;
-
 import java.util.Arrays;
 //import java.util.Iterator;
 
+interface LispList {
+	public LispList evalList(Environment env) ;
+	public LispObject evalSequence(Environment env) ;
+	boolean isNull();
+	public LispObject car() ;
+	public LispObject cdr() ;
+	public LispObject[] toArray();
 
-class ConsCell extends LispObject {
+}
+
+class ConsCell extends LispObject implements LispList {
 	LispObject car;
 	LispObject cdr;
 
@@ -80,15 +88,6 @@ class ConsCell extends LispObject {
 		return n;
 	}
 
-	// methods
-	@Override public String toString() {
-		return '(' + this.car.toString() + this.cdr.toStringCdr() + ')';
-	}
-
-	@Override public String toStringCdr() {
-		return ' ' + this.car.toString() + this.cdr.toStringCdr();
-	}
-
 	/**
 	 * EVAL
 	 * Take the value of the first form as a procedure, and APPLY it to the evaluated results 
@@ -99,19 +98,29 @@ class ConsCell extends LispObject {
 	 * @return The LispObject resulting from the evaluation
 	 */
 	@Override LispObject eval(Environment env) {
+		System.out.println("eval(Environment): " + this.toString()) ;
 		LispProcedure proc = (LispProcedure)car.eval(env);
 				
-		ConsCell argsToApply = proc.ProcessArguments((ConsCell)cdr, env);
-
+		LispList argsToApply = proc.ProcessArguments((LispList)cdr, env);
+	
+		//System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
 		return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
 		}
 
+	// methods
+	@Override public String toString() {
+		return '(' + this.car.toString() + this.cdr.toStringCdr() + ')';
+	}
+
+	@Override public String toStringCdr() {
+		return ' ' + this.car.toString() + this.cdr.toStringCdr();
+	}
 
 	/**
 	 * Converts the ConsCell to an array of LispObject
 	 * @return an Array of LispObject
 	 */
-	LispObject[] toArray() {
+	public LispObject[] toArray() {
 		ArrayList<LispObject> al = new ArrayList<LispObject>();
 
 		LispObject c = this;
@@ -135,13 +144,13 @@ class ConsCell extends LispObject {
 	 * Treat this as a list of forms, and return a list comprising the values of forms, evaluated in env
 	 * @return A list of the same length as this, comprising the evaluated subforms
 	 */
-	ConsCell evalList(Environment env) {
+	@Override public LispList evalList(Environment env) {
 		ConsCell current = this ;
 		
 		if(current.cdr().isNull()) {
-			return new ConsCell(current.car.eval(env), current.cdr) ;
+			return (LispList) new ConsCell(current.car.eval(env), current.cdr) ;
 		} else {
-			return new ConsCell(current.car.eval(env), ((ConsCell)current.cdr).evalList(env)) ;
+			return (LispList) new ConsCell(current.car.eval(env), (LispObject) ((ConsCell)current.cdr).evalList(env)) ;
 		}
 	}
 
@@ -149,10 +158,10 @@ class ConsCell extends LispObject {
 	 * Treat this as a list of forms, and evaluate them in turn in env, returning the last one
 	 * @return The value of the last subform
 	 */
-	LispObject evalSequence(Environment env) {
+	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
 		
-		System.out.println("evalSequence()" + current.car.toString()) ;
+		System.out.println("evalSequence(Environment): " + current.car.toString()) ;
 		
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
@@ -162,3 +171,4 @@ class ConsCell extends LispObject {
 		}
 	}
 }
+

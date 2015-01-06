@@ -5,26 +5,12 @@ package org.riktov.prlisp;
 
 /**
  * A LispProcedure can be a compound procedure (lambda), a primitive procedure, or a special operation
- * @author paul
+ * @author Paul RICHTER &lt;riktov@freeshell.de&gt;
  *
  */
 abstract class LispProcedure extends LispObject {
-//	public abstract LispObject apply(LispObject[] argVals);	
-	/**
-	 * Dispatch on argForms' type, which is its nullity.
-	 * @param argForms a ConsCell (list) or NilAtom
-	 * @return
-	 */
-	public LispObject apply(LispObject argForms) {
-		if(argForms.isNull()) {
-			return apply() ;//or we could alternately implement apply(NilAtom n)
-		} else {
-			return apply((ConsCell)argForms) ;
-		}
-	}
-	public abstract LispObject apply(ConsCell argForms) ;
-	public abstract LispObject apply() ;
-    public ConsCell ProcessArguments(ConsCell unevaluatedArgForms,
+	public abstract LispObject apply(LispList argsToApply) ;
+    public LispList ProcessArguments(LispList unevaluatedArgForms,
 			Environment evalEnv) {
 		return unevaluatedArgForms.evalList(evalEnv) ;
 	}
@@ -33,11 +19,11 @@ abstract class LispProcedure extends LispObject {
 
 class CompoundProcedure extends LispProcedure {
 	private String formalParams[];
-	private ConsCell body;
+	private LispList body;
 	private Environment env;
 
 	// constructors
-	public CompoundProcedure(String[] formalParams, ConsCell body, Environment env) {
+	public CompoundProcedure(String[] formalParams, LispList body, Environment env) {
 		this.formalParams = formalParams;
 		this.body = body;
 		this.env = env;
@@ -69,7 +55,7 @@ class CompoundProcedure extends LispProcedure {
 	 * accessors
 	 */
 	String[] formalParams() { return formalParams ; }
-	LispObject body() { return body ; }
+	LispList body() { return body ; }
 	
 	/**
 	 * @param unevaluatedArgs
@@ -89,44 +75,22 @@ class CompoundProcedure extends LispProcedure {
 	 *            method.
 	 * @return LispObject The value of the last form in the procedure body
 	 */
-	public LispObject apply(ConsCell argForms) {
+	public LispObject apply(LispList argForms) {
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
-		int i = 0 ;
+		if(!argForms.isNull()) {
+			int i = 0 ;
 
-		LispObject currentForm ;
+			ConsCell currentCell = (ConsCell) argForms ;
 
-		//iterate through the arg forms and formal params, interning them in turn
-		currentForm = argForms ;
-		while(!currentForm.cdr().isNull()) {
-			String symbolName = formalParams[i++] ;
-			System.out.println("apply(ConsCell): interning " + symbolName) ;
-			newEnv.intern(symbolName, currentForm.car().eval(env)) ;
-			currentForm = currentForm.cdr();
-		}		
-		
+			//iterate through the arg forms and formal params, interning them in turn
+			while(!currentCell.cdr().isNull()) {
+				String symbolName = formalParams[i++] ;
+				System.out.println("apply(ConsCell): interning " + symbolName) ;
+				newEnv.intern(symbolName, currentCell.car().eval(env)) ;
+				currentCell = (ConsCell) currentCell.cdr();
+			}					
+		}
 		return body.evalSequence(newEnv) ;
-		//newEnv.intern(formalParams[i], currentForm.car().eval(env)) ;
-		
-		//iterate through the body forms, evaluating them in turn
-		/**
-		 * currentForm = body ;
-
-		while(!currentForm.cdr().isNull()) {
-			currentForm.car().eval(newEnv) ;
-			currentForm = currentForm.cdr();
-		}		
-		return currentForm.car().eval(newEnv);	
-		*/
-	}
-	
-	/**
-	 * If there are no arguments, there is no need to extend the environment with new bindings. 
-	 * Just evaluate the forms
-	 * @param n Dummy
-	 * @return
-	 */
-	public LispObject apply() { 
-		return body.evalSequence(env) ;
-	}
+	}	
 }

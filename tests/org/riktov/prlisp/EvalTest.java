@@ -81,14 +81,14 @@ public class EvalTest {
 		SymbolAtom x = new SymbolAtom("x") ;
 		LispObject[] bodyForms = { plus, four, x } ;
 		
-		ConsCell body = new ConsCell(new ConsCell(bodyForms), new NilAtom()) ;
+		LispList body = new ConsCell(new ConsCell(bodyForms), new NilAtom()) ;
     	String[] formalParams = new String[] { "X" } ;	//TODO: lowercase or uppercase?
 
     	CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
     	System.out.println("testEvalApplyCompoundWithArgs(): " + proc) ;
     	
-    	ConsCell argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
-    	ConsCell argValues = proc.ProcessArguments(argForms, e) ;
+    	LispList argForms = (LispList) new ConsCell(new ObjectAtom(5), new NilAtom()) ;
+    	LispList argValues = proc.ProcessArguments(argForms, e) ;
     	
     	ObjectAtom result = (ObjectAtom)proc.apply(argValues) ;
 
