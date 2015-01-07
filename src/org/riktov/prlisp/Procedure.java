@@ -10,8 +10,9 @@ package org.riktov.prlisp;
  */
 abstract class LispProcedure extends LispObject {
 	public abstract LispObject apply(LispList argsToApply) ;
-    public LispList ProcessArguments(LispList unevaluatedArgForms,
+    public LispList processArguments(LispList unevaluatedArgForms,
 			Environment evalEnv) {
+    	System.out.println("processArguments() : unevaluated: " + unevaluatedArgForms) ;
 		return unevaluatedArgForms.evalList(evalEnv) ;
 	}
 
@@ -65,7 +66,6 @@ class CompoundProcedure extends LispProcedure {
 	 *         unevaluatedArgs
 	 */
 
-	
 	/**
 	 * APPLY Evaluate in turn each subform of the procedure body, in an environment created by extending
 	 * the procedure's own environment with the argument bindings.
@@ -76,20 +76,29 @@ class CompoundProcedure extends LispProcedure {
 	 * @return LispObject The value of the last form in the procedure body
 	 */
 	public LispObject apply(LispList argForms) {
+		System.out.println("apply() : argForms: " + argForms) ;
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
 		if(!argForms.isNull()) {
 			int i = 0 ;
 
 			ConsCell currentCell = (ConsCell) argForms ;
-
+			String symbolName ;
+			LispObject val ;
+			
+			System.out.println("apply(): currentCell : " + currentCell.toString()) ;
 			//iterate through the arg forms and formal params, interning them in turn
 			while(!currentCell.cdr().isNull()) {
-				String symbolName = formalParams[i++] ;
-				System.out.println("apply(ConsCell): interning " + symbolName) ;
-				newEnv.intern(symbolName, currentCell.car().eval(env)) ;
+				symbolName = formalParams[i++] ;
+				val = currentCell.car().eval(env) ;
+				System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
+				newEnv.intern(symbolName, val) ;
 				currentCell = (ConsCell) currentCell.cdr();
-			}					
+			}
+			symbolName = formalParams[i++] ;
+			val = currentCell.car().eval(env) ;
+			System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
+			newEnv.intern(symbolName, val) ;			
 		}
 		return body.evalSequence(newEnv) ;
 	}	

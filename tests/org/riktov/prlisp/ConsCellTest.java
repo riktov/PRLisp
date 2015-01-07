@@ -1,6 +1,8 @@
 package org.riktov.prlisp;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 
 
 //import org.junit.Test ;
@@ -18,17 +20,19 @@ import org.junit.Test;
 public class ConsCellTest {
 	private ConsCell c;
 	private Environment env ;
+	ObjectAtom sevenFortySeven = new ObjectAtom(747);  ;
+	
 	@Before
 	public void setUp() {
+		env = new Environment();
 		/**
 		 * We create a cons cell "by hand", without relying on the reader.
 		 */
 		ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom());
 		ConsCell ct1 = new ConsCell(Atom.make(147), ct2);
 		c = new ConsCell(Atom.make(55), ct1);
-		// c -> (55 147 23)
-		
-		env = new Environment();
+		// c -> (55 147 23)		
+		env.intern("JUMBO", sevenFortySeven);
 	}
 
 	@Test
@@ -141,7 +145,7 @@ public class ConsCellTest {
 	public void testEvalSequenceValue() {
 		LispObject exp1 = new NilAtom() ;
 		LispObject exp2 = new StringAtom("Bob Seger") ;
-		LispObject exp3 = DataAtom.make(221) ;
+		LispObject exp3 = new SymbolAtom("JUMBO") ;
 		
 		LispObject[] forms = new LispObject[] {
 				exp1,
@@ -152,8 +156,9 @@ public class ConsCellTest {
 		LispList c = new ConsCell(forms) ;
 		System.out.println("testEvalSequenceResult(): " + c.toString()) ;
 		LispObject result = c.evalSequence(env) ;
+		System.out.println("testEvalSequenceResult(): result: " + result.toString()) ;
 		
-		assertTrue(result == exp3) ;
+		assertTrue(result == sevenFortySeven) ;
 	}
 	
 	/**
@@ -161,8 +166,13 @@ public class ConsCellTest {
 	 */
 	@Test
 	public void testEvalSequenceIntermediate() {
+		LispObject sevenEightySeven = new ObjectAtom(787) ;
 		LispObject exp1 = new NilAtom() ;
-		LispObject exp2 = new SymbolAtom("jumbo") ;
+		LispObject exp2 = new ConsCell(new LispObject[] { 
+			new SymbolAtom("setq"),
+			new SymbolAtom("dreamliner"),
+			sevenEightySeven
+			}) ;
 		LispObject exp3 = DataAtom.make(221) ;
 		
 		LispObject[] forms = new LispObject[] {
@@ -174,11 +184,11 @@ public class ConsCellTest {
 		LispList c = new ConsCell(forms) ;
 		System.out.println("testEvalSequenceIntermediate(): " + c.toString()) ;
 
-		ObjectAtom sevenFortySeven = new ObjectAtom(747);
-		env.intern("JUMBO", sevenFortySeven);
-		LispObject result = c.evalSequence(env) ;
-		
-		LispObject evaluatedSecondElement = result.cdr().car();
-		assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
+		assertFalse(env.containsKey("DREAMLINER"));
+
+		c.evalSequence(env);
+
+		assertTrue(env.containsKey("DREAMLINER"));
+		assertTrue(env.get("DREAMLINER").equals(sevenEightySeven)) ;
 	}	
 }

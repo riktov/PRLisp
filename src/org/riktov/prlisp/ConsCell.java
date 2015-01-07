@@ -1,8 +1,12 @@
 package org.riktov.prlisp;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 //import java.util.Iterator;
+
+import org.junit.Test;
 
 interface LispList {
 	public LispList evalList(Environment env) ;
@@ -101,9 +105,9 @@ class ConsCell extends LispObject implements LispList {
 		System.out.println("eval(Environment): " + this.toString()) ;
 		LispProcedure proc = (LispProcedure)car.eval(env);
 				
-		LispList argsToApply = proc.ProcessArguments((LispList)cdr, env);
+		LispList argsToApply = proc.processArguments((LispList)cdr, env);
 	
-		//System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
+		System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
 		return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
 		}
 
@@ -161,7 +165,7 @@ class ConsCell extends LispObject implements LispList {
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
 		
-		System.out.println("evalSequence(Environment): " + current.car.toString()) ;
+		System.out.println("evalSequence(Environment): form: " + current.car.toString()) ;
 		
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
