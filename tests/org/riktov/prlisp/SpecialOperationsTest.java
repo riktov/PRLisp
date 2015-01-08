@@ -39,7 +39,58 @@ public class SpecialOperationsTest {
 		assertTrue(e.containsKey("FOOBAR")) ;
 		assertTrue(e.get("FOOBAR") == assignedValue) ;
 	}
+	
+	@Test
+	public void testDefineAtom() {
+		LispObject varName = new SymbolAtom("foobar") ;
+		LispObject assignedValue = DataAtom.make(32) ;
+		
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("define"),
+				varName,
+				assignedValue
+		} ;
+		
+		ConsCell c = new ConsCell(forms) ;
+		
+		System.out.println("testDefineAtom() evaluating: " + c.toString()) ;
+		c.eval(e) ;
+		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
+		
+		assertTrue(e.containsKey("FOOBAR")) ;
+		assertTrue(e.get("FOOBAR") == assignedValue) ;		
+	}
 
+	@Test
+	public void testDefineFunction() {
+		LispObject varNameAndParams = new ConsCell(new LispObject[] {
+				new SymbolAtom("foobar"),
+				new SymbolAtom("x")
+		}) ;
+		
+		LispObject funcBody = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
+		
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("define"),
+				varNameAndParams,
+				funcBody
+		} ;
+		
+		//c -> (define (foobar x) x)
+		ConsCell c = new ConsCell(forms) ;
+		
+		System.out.println("testDefineFunction() evaluating: " + c.toString()) ;
+		c.eval(e) ;
+		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
+		
+		assertTrue(e.containsKey("FOOBAR")) ;
+//		Come.get("FOOBAR").				
+	}
+
+	@Test
+	public void testDefineVariadicFunction() {
+		
+	}
 	/**
 	 * IF evaluates one of two forms conditionally, so we check the returned value with various conditions
 	 * (if 5 14 2)
@@ -236,5 +287,28 @@ public class SpecialOperationsTest {
 		LispObject result = c.eval(e) ;
 				
 		assertTrue(result.toString().equals("5")) ;
+	}
+
+	/**
+	 * LET can be passed empty bindings - just symbol names, which are bound to nil
+	 */
+	@Test
+	public void testLetEmptyBinding() {
+		LispObject binding1 = new SymbolAtom("x") ;
+		LispObject bindingList = new ConsCell(binding1, nil) ;
+		LispObject body = new SymbolAtom("x") ;
+		
+		LispObject[] formAsArray = new LispObject[] {
+				new SymbolAtom("let"),
+				bindingList,
+				body
+		} ;
+
+		ConsCell c = new ConsCell(formAsArray) ;
+		System.out.println("testLet() evaluating: " + c.toString()) ;
+
+		LispObject result = c.eval(e) ;
+				
+		assertTrue(result.isNull()) ;
 	}
 }

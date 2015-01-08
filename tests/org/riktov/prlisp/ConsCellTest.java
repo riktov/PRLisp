@@ -1,8 +1,13 @@
 package org.riktov.prlisp;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.Before;
@@ -18,17 +23,30 @@ import org.junit.Test;
 public class ConsCellTest {
 	private ConsCell c;
 	private Environment env ;
+<<<<<<< Updated upstream
 	@Before
 	public void setUp() {
+=======
+	ObjectAtom sevenFortySeven = new ObjectAtom(747);  ;
+	
+	@Before
+	public void setUp() {
+		env = new Environment();
+>>>>>>> Stashed changes
 		/**
 		 * We create a cons cell "by hand", without relying on the reader.
 		 */
 		ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom());
 		ConsCell ct1 = new ConsCell(Atom.make(147), ct2);
 		c = new ConsCell(Atom.make(55), ct1);
+<<<<<<< Updated upstream
 		// c -> (55 147 23)
 		
 		env = new Environment();
+=======
+		// c -> (55 147 23)		
+		env.intern("JUMBO", sevenFortySeven);
+>>>>>>> Stashed changes
 	}
 
 	@Test
@@ -141,7 +159,11 @@ public class ConsCellTest {
 	public void testEvalSequenceValue() {
 		LispObject exp1 = new NilAtom() ;
 		LispObject exp2 = new StringAtom("Bob Seger") ;
+<<<<<<< Updated upstream
 		LispObject exp3 = DataAtom.make(221) ;
+=======
+		LispObject exp3 = new SymbolAtom("JUMBO") ;
+>>>>>>> Stashed changes
 		
 		LispObject[] forms = new LispObject[] {
 				exp1,
@@ -152,8 +174,14 @@ public class ConsCellTest {
 		LispList c = new ConsCell(forms) ;
 		System.out.println("testEvalSequenceResult(): " + c.toString()) ;
 		LispObject result = c.evalSequence(env) ;
+<<<<<<< Updated upstream
 		
 		assertTrue(result == exp3) ;
+=======
+		System.out.println("testEvalSequenceResult(): result: " + result.toString()) ;
+		
+		assertTrue(result == sevenFortySeven) ;
+>>>>>>> Stashed changes
 	}
 	
 	/**
@@ -161,8 +189,18 @@ public class ConsCellTest {
 	 */
 	@Test
 	public void testEvalSequenceIntermediate() {
+<<<<<<< Updated upstream
 		LispObject exp1 = new NilAtom() ;
 		LispObject exp2 = new SymbolAtom("jumbo") ;
+=======
+		LispObject sevenEightySeven = new ObjectAtom(787) ;
+		LispObject exp1 = new NilAtom() ;
+		LispObject exp2 = new ConsCell(new LispObject[] { 
+			new SymbolAtom("setq"),
+			new SymbolAtom("dreamliner"),
+			sevenEightySeven
+			}) ;
+>>>>>>> Stashed changes
 		LispObject exp3 = DataAtom.make(221) ;
 		
 		LispObject[] forms = new LispObject[] {
@@ -174,11 +212,20 @@ public class ConsCellTest {
 		LispList c = new ConsCell(forms) ;
 		System.out.println("testEvalSequenceIntermediate(): " + c.toString()) ;
 
+<<<<<<< Updated upstream
 		ObjectAtom sevenFortySeven = new ObjectAtom(747);
 		env.intern("JUMBO", sevenFortySeven);
 		LispObject result = c.evalSequence(env) ;
 		
 		LispObject evaluatedSecondElement = result.cdr().car();
 		assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
+=======
+		assertFalse(env.containsKey("DREAMLINER"));
+
+		c.evalSequence(env);
+
+		assertTrue(env.containsKey("DREAMLINER"));
+		assertTrue(env.get("DREAMLINER").equals(sevenEightySeven)) ;
+>>>>>>> Stashed changes
 	}	
 }

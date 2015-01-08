@@ -16,7 +16,7 @@ public class EvalTest {
     NilAtom nil = new NilAtom() ;
     String helloString = "Hello, I am foo." ;
     
-    private Environment e ;
+    public Environment e ;
 
     @Before
     public void setUp() {
@@ -50,6 +50,7 @@ public class EvalTest {
     	
        assertTrue(sum.data.equals(new Float(70))) ;
     }
+<<<<<<< Updated upstream
  
     @Test public void testEvalApplyCompoundNoArgs() {
     	// a procedure which takes no arguments and returns 42.
@@ -96,4 +97,6 @@ public class EvalTest {
        assertTrue(result.toString().equals("9.0")) ;
        assertTrue(result.data.equals(new Float(9.0))) ;
 	}
+=======
+>>>>>>> Stashed changes
 }
