@@ -1,19 +1,38 @@
 package org.riktov.prlisp;
 
+<<<<<<< Updated upstream
+=======
+import static org.junit.Assert.assertTrue;
+
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.Arrays;
 //import java.util.Iterator;
 
+<<<<<<< Updated upstream
 interface LispList {
+=======
+import java.util.Iterator;
+
+import org.junit.Test;
+
+interface LispList extends Iterable {
+>>>>>>> Stashed changes
 	public LispList evalList(Environment env) ;
 	public LispObject evalSequence(Environment env) ;
 	boolean isNull();
 	public LispObject car() ;
 	public LispObject cdr() ;
 	public LispObject[] toArray();
+<<<<<<< Updated upstream
 
 }
 
+=======
+
+}
+
+>>>>>>> Stashed changes
 class ConsCell extends LispObject implements LispList {
 	LispObject car;
 	LispObject cdr;
@@ -58,6 +77,8 @@ class ConsCell extends LispObject implements LispList {
 	 * }
 	 */
 
+    public boolean isAtom() { return false ; }
+
 	// accessors
 	public LispObject car() { return this.car; }
 	public LispObject cdr() { return this.cdr; }
@@ -101,9 +122,15 @@ class ConsCell extends LispObject implements LispList {
 		System.out.println("eval(Environment): " + this.toString()) ;
 		LispProcedure proc = (LispProcedure)car.eval(env);
 				
+<<<<<<< Updated upstream
 		LispList argsToApply = proc.ProcessArguments((LispList)cdr, env);
 	
 		//System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
+=======
+		LispList argsToApply = proc.processArguments((LispList)cdr, env);
+	
+		System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
+>>>>>>> Stashed changes
 		return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
 		}
 
@@ -161,14 +188,47 @@ class ConsCell extends LispObject implements LispList {
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
 		
+<<<<<<< Updated upstream
 		System.out.println("evalSequence(Environment): " + current.car.toString()) ;
+=======
+		System.out.println("evalSequence(Environment): form: " + current.car.toString()) ;
+>>>>>>> Stashed changes
 		
+		LispObject lastValue = null ;
+		
+		for(Iterator<LispObject> i = this.iterator(); i.hasNext(); ) {
+			lastValue = i.next().eval(env) ;
+		}
+		return lastValue ;
+		/**
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
 		} else {
 			current.car.eval(env) ;
 			return ((ConsCell)current.cdr).evalSequence(env) ;
 		}
+		*/
 	}
+<<<<<<< Updated upstream
+=======
+
+	@Override
+	public Iterator<LispObject> iterator() {
+		LispList theList = this ;
+		return new Iterator<LispObject>() {
+			LispObject current = (LispObject) theList ;
+			public boolean hasNext() { 
+				return (!current.cdr().isNull()) ;
+				}
+
+			@Override
+			public LispObject next() {
+				LispObject currentItem = current.car() ;
+				current = current.cdr() ;
+				return currentItem;
+			}
+		} ;
+	}
+>>>>>>> Stashed changes
 }
 
