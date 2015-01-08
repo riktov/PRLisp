@@ -45,7 +45,7 @@ class ConsCell extends LispObject implements LispList {
 			this.cdr = new ConsCell(Arrays.copyOfRange(argObjects, 1,
 					argObjects.length));
 		} else {
-			this.cdr = new NilAtom();
+			this.cdr = NilAtom.nil;
 		}
 	}
 

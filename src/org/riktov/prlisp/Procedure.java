@@ -12,10 +12,9 @@ import java.util.Iterator;
  */
 abstract class LispProcedure extends LispObject {
 	public abstract LispObject apply(LispList argsToApply) ;
-    public LispList processArguments(LispList unevaluatedArgForms,
-			Environment evalEnv) {
-    	System.out.println("processArguments() : unevaluated: " + unevaluatedArgForms) ;
-		return unevaluatedArgForms.evalList(evalEnv) ;
+    public LispList processArguments(LispList argForms, Environment evalEnv) {
+    	//System.out.println("processArguments() : unevaluated: " + unevaluatedArgForms) ;
+		return argForms.evalList(evalEnv) ;
 	}
 
 }

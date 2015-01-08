@@ -39,7 +39,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
 						if(argForms.car().isNull()) {
 							return new SymbolAtom("t") ;
 						} else {
-							return new NilAtom() ;
+							return NilAtom.nil ;
 						}
 					}
 				});

@@ -119,7 +119,7 @@ abstract class SpecialOperation extends LispProcedure {
 		specials.put("let".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
 				LispList bindingList = (LispList)argForms.car();
-				LispObject body = argForms.cdr().car();
+				LispList body = (LispList) argForms.cdr().car();
 				
 				LispObject[] bindings = bindingList.toArray();
 
@@ -139,7 +139,7 @@ abstract class SpecialOperation extends LispProcedure {
 					letEnv.intern(symName.toString(), value);
 				}
 
-				LispObject result = body.eval(letEnv);
+				LispObject result = body.evalSequence(letEnv);
 
 				return result;
 			}
