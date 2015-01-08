@@ -62,13 +62,16 @@ class CompoundProcedure extends LispProcedure {
 	 */
 	public LispObject apply(LispList argForms) {
 		System.out.println("apply() : argForms: " + argForms) ;
+		System.out.println("apply() : formalParams: " + formalParams) ;
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
 		if(!argForms.isNull()) {
-			int i = 0 ;
+			//int i = 0 ;
 
 			LispObject currentCell = (LispObject)argForms ;
-			String symbolName ;
+
+			/*
+			 * String symbolName ;
 			LispObject val ;
 			
 			System.out.println("apply(): currentCell : " + currentCell.toString()) ;
@@ -86,10 +89,15 @@ class CompoundProcedure extends LispProcedure {
 				} else {
 					symbolName = next.car().toString() ;					
 				}
-				val = itrForms.next().eval(env) ;
-				env.intern(symbolName, val) ;
-			}
+				val = itrForms.next().eval(newEnv) ;
 
+				System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
+				newEnv.intern(symbolName, val) ;
+			}
+			*/
+
+			formalParams.bindParamsToValues(argForms, newEnv) ;
+			newEnv.printKeys();
 			/*
 			while(!currentCell.isNull()) {
 				symbolName = formalParams[i++] ;

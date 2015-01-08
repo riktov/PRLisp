@@ -133,6 +133,10 @@ final class NilAtom extends Atom implements LispList {
 			}			
 		};
 	}
+	@Override
+	public void bindParamsToValues(LispList argForms, Environment env) {
+		// do-nothing
+	}
 }
 
 /**

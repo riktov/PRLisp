@@ -69,7 +69,7 @@ class ChildEnvironment extends Environment {
 	 */
 	private static final long serialVersionUID = 1L;
 	// members
-	private Environment parent;
+	private final Environment parent;
 
 	/**
 	 * constructor

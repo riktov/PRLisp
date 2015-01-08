@@ -13,6 +13,7 @@ import org.junit.Test;
 interface LispList extends Iterable {
 	public LispList evalList(Environment env) ;
 	public LispObject evalSequence(Environment env) ;
+	public void bindParamsToValues(LispList argForms, Environment env) ;
 	boolean isNull();
 	public LispObject car() ;
 	public LispObject cdr() ;
@@ -200,9 +201,30 @@ class ConsCell extends LispObject implements LispList {
 			public void remove() {
 				// TODO Auto-generated method stub
 				
-			}
-			
+			}			
 		} ;
+	}
+	
+	public void bindParamsToValues(LispList argForms, Environment env) {
+		Iterator<LispObject> itrParams = this.iterator() ;
+		Iterator<LispObject> itrForms  = argForms.iterator() ;
+		String symbolName ;
+		LispObject val ;
+		
+		System.out.println("bindParamsToValues(): argForms :" + argForms) ;
+		while(itrParams.hasNext()) {
+			LispObject nextParam = itrParams.next() ;
+			if(nextParam.isAtom()) {
+				symbolName = nextParam.toString() ;
+			} else {
+				symbolName = nextParam.car().toString() ;					
+			}
+			val = itrForms.next().eval(env) ;
+
+			System.out.println("bindParamsToValues(): interning " + symbolName + " with value: " + val ) ;
+			env.intern(symbolName, val) ;
+		}
+
 	}
 }
 
