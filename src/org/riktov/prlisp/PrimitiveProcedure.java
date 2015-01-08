@@ -114,13 +114,18 @@ abstract class PrimitiveProcedure extends LispProcedure {
 }
 
 abstract class PrimitiveNumericalProcedure extends PrimitiveProcedure {
+	/**
+	 * Returns an array of Number objects
+	 * @param args Array of ObjectAtoms
+	 * @return Array of Numbers
+	 */
 	Number[] numericalArgs(LispObject[] args) {
 		System.out.println("numericalArgs(LispObject[]):") ;
 		Number[] numArgs = new Number[args.length] ; 
 		int i ;
 		for (i = 0 ; i < args.length ; i++) {
 			ObjectAtom nda = (ObjectAtom)args[i] ;
-			System.out.println(nda.toString()) ;
+			//System.out.println(nda.toString()) ;
 			numArgs[i] = (Number)(nda.data) ;
 		}
 		return numArgs ;

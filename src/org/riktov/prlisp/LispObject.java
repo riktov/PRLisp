@@ -1,7 +1,10 @@
 package org.riktov.prlisp ;
 
+import java.util.Iterator;
+
 abstract class LispObject {
     public boolean isNull() { return false ; }
+    boolean isAtom() { return true ; }
     /**
      * Most objects are self-evaluating. The two exceptions are symbols, 
      * whose values are looked up in the environment,
@@ -100,6 +103,7 @@ class ObjectAtom extends DataAtom {
 */
 
 final class NilAtom extends Atom implements LispList {
+	public static final NilAtom nil = new NilAtom() ;
     @Override public String toString() { return "NIL" ; }
     @Override public String toStringCdr() { return "" ; }
     //If the cdr of a cons is nil, then the cons is the last element of a list,
@@ -112,6 +116,23 @@ final class NilAtom extends Atom implements LispList {
 	public LispObject evalSequence(Environment env) { return this ; }
 	@Override
 	public LispObject[] toArray() { return new LispObject[0] ; }
+	@Override
+	public Iterator iterator() {
+		return new Iterator() {
+
+			@Override
+			public boolean hasNext() { return false; }
+
+			@Override
+			public Object next() { return this ; }
+
+			@Override
+			public void remove() {
+				// TODO Auto-generated method stub
+				
+			}			
+		};
+	}
 }
 
 /**

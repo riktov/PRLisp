@@ -28,7 +28,7 @@ public class ConsCellTest {
 		/**
 		 * We create a cons cell "by hand", without relying on the reader.
 		 */
-		ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom());
+		ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil);
 		ConsCell ct1 = new ConsCell(Atom.make(147), ct2);
 		c = new ConsCell(Atom.make(55), ct1);
 		// c -> (55 147 23)		
@@ -113,7 +113,7 @@ public class ConsCellTest {
 		ObjectAtom sevenFortySeven = new ObjectAtom(747);
 		env.intern("JUMBO", sevenFortySeven);
 
-		ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom());
+		ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil);
 		ConsCell ct1 = new ConsCell(new SymbolAtom("jumbo"), ct2);
 		LispList ct0 = new ConsCell(Atom.make(55), ct1);
 
@@ -129,7 +129,7 @@ public class ConsCellTest {
 
 	@Test
 	public void testEvalListNil() {
-		LispList ct0 = new NilAtom() ;
+		LispList ct0 = NilAtom.nil ;
 		
 		System.out.println("testEvalList(): " + ct0.toString());
 		LispList evaluated = ct0.evalList(env);
@@ -143,7 +143,7 @@ public class ConsCellTest {
 	 */
 	@Test
 	public void testEvalSequenceValue() {
-		LispObject exp1 = new NilAtom() ;
+		LispObject exp1 = NilAtom.nil ;
 		LispObject exp2 = new StringAtom("Bob Seger") ;
 		LispObject exp3 = new SymbolAtom("JUMBO") ;
 		
@@ -167,7 +167,7 @@ public class ConsCellTest {
 	@Test
 	public void testEvalSequenceIntermediate() {
 		LispObject sevenEightySeven = new ObjectAtom(787) ;
-		LispObject exp1 = new NilAtom() ;
+		LispObject exp1 = NilAtom.nil ;
 		LispObject exp2 = new ConsCell(new LispObject[] { 
 			new SymbolAtom("setq"),
 			new SymbolAtom("dreamliner"),

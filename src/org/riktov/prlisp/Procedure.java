@@ -1,5 +1,7 @@
 package org.riktov.prlisp;
 
+import java.util.Iterator;
+
 //import java.util.List ;
 //import java.util.ArrayList ;
 
@@ -19,52 +21,36 @@ abstract class LispProcedure extends LispObject {
 }
 
 class CompoundProcedure extends LispProcedure {
-	private String formalParams[];
+	private LispList formalParams;
 	private LispList body;
 	private Environment env;
 
 	// constructors
-	public CompoundProcedure(String[] formalParams, LispList body, Environment env) {
+	/**
+	 * Constructor
+	 * @param formalParams
+	 * @param body
+	 * @param env
+	 */
+	public CompoundProcedure(LispList formalParams, LispList body, Environment env) {
 		this.formalParams = formalParams;
 		this.body = body;
 		this.env = env;
 	}
 
 	// implementation of LispObject
+	/**
+	 * Copying CLISP
+	 */
 	@Override public String toString() {
-		String paramList = new String() ;
-		String sep = "" ;
-		int i ;
-		for(i = 0 ; i < formalParams.length ; i++) {
-			if(i > 0) { sep = " " ; }
-			paramList = paramList + formalParams[i] + sep ;
-		}
-		
-		LispObject[] bodyForms = body.toArray() ;
-		String bodyFormsString = new String() ;
-		
-		sep = "" ;
-		for(i = 0 ; i < bodyForms.length ; i++) {
-			if(i > 0) { sep = " " ; }			
-			bodyFormsString = bodyFormsString + sep + bodyForms[i].toString() ;
-		}
-		
-		return "#<FUNCTION :LAMBDA (" + paramList + ") " + bodyFormsString + ">"; 
+		return "#<FUNCTION :LAMBDA " + formalParams.toString() + body.toString() + ">"; 
 		}
 
 	/**
 	 * accessors
 	 */
-	String[] formalParams() { return formalParams ; }
-	LispList body() { return body ; }
-	
-	/**
-	 * @param unevaluatedArgs
-	 *            an Array of LispObjects, which may be symbols or forms which
-	 *            have not been evaluated
-	 * @return array of LispObject, which are the evaluated results of all the
-	 *         unevaluatedArgs
-	 */
+	LispList formalParams() { return formalParams ; }
+	LispList body() { return body ; }	
 
 	/**
 	 * APPLY Evaluate in turn each subform of the procedure body, in an environment created by extending
@@ -82,23 +68,38 @@ class CompoundProcedure extends LispProcedure {
 		if(!argForms.isNull()) {
 			int i = 0 ;
 
-			ConsCell currentCell = (ConsCell) argForms ;
+			LispObject currentCell = (LispObject)argForms ;
 			String symbolName ;
 			LispObject val ;
 			
 			System.out.println("apply(): currentCell : " + currentCell.toString()) ;
+			
+			//TODO: Refactor this with LET for pairing formalParams and values
 			//iterate through the arg forms and formal params, interning them in turn
-			while(!currentCell.cdr().isNull()) {
+						
+			Iterator<LispObject> itrParams = formalParams.iterator() ;
+			Iterator<LispObject> itrForms  = argForms.iterator() ;
+
+			while(itrParams.hasNext()) {
+				LispObject next = itrParams.next() ;
+				if(next.isAtom()) {
+					symbolName = next.toString() ;
+				} else {
+					symbolName = next.car().toString() ;					
+				}
+				val = itrForms.next().eval(env) ;
+				env.intern(symbolName, val) ;
+			}
+
+			/*
+			while(!currentCell.isNull()) {
 				symbolName = formalParams[i++] ;
 				val = currentCell.car().eval(env) ;
 				System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
 				newEnv.intern(symbolName, val) ;
-				currentCell = (ConsCell) currentCell.cdr();
+				currentCell = currentCell.cdr();
 			}
-			symbolName = formalParams[i++] ;
-			val = currentCell.car().eval(env) ;
-			System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
-			newEnv.intern(symbolName, val) ;			
+			*/
 		}
 		return body.evalSequence(newEnv) ;
 	}	

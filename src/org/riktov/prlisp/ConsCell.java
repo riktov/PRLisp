@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 //import java.util.Iterator;
 
+import java.util.Iterator;
+
 import org.junit.Test;
 
-interface LispList {
+interface LispList extends Iterable {
 	public LispList evalList(Environment env) ;
 	public LispObject evalSequence(Environment env) ;
 	boolean isNull();
@@ -62,6 +64,8 @@ class ConsCell extends LispObject implements LispList {
 	 * }
 	 */
 
+    public boolean isAtom() { return false ; }
+
 	// accessors
 	public LispObject car() { return this.car; }
 	public LispObject cdr() { return this.cdr; }
@@ -102,12 +106,12 @@ class ConsCell extends LispObject implements LispList {
 	 * @return The LispObject resulting from the evaluation
 	 */
 	@Override LispObject eval(Environment env) {
-		System.out.println("eval(Environment): " + this.toString()) ;
+		//System.out.println("eval(Environment): " + this.toString()) ;
 		LispProcedure proc = (LispProcedure)car.eval(env);
 				
 		LispList argsToApply = proc.processArguments((LispList)cdr, env);
 	
-		System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
+		//System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
 		return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
 		}
 
@@ -173,6 +177,32 @@ class ConsCell extends LispObject implements LispList {
 			current.car.eval(env) ;
 			return ((ConsCell)current.cdr).evalSequence(env) ;
 		}
+	}
+
+	@Override
+	public Iterator<LispObject> iterator() {
+		final ConsCell origin = this ;
+		return new Iterator<LispObject>() {
+			LispObject current = origin ;
+			@Override
+			public boolean hasNext() {
+				return !current.cdr().isNull() ;
+			}
+
+			@Override
+			public LispObject next() {
+				LispObject currentCar = current.car() ;
+				current = current.cdr() ;
+				return currentCar ;
+			}
+
+			@Override
+			public void remove() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		} ;
 	}
 }
 

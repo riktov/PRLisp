@@ -82,7 +82,10 @@ abstract class SpecialOperation extends LispProcedure {
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
-				return argForms.car() ;
+				if(!argForms.cdr().isNull()) {
+					new LispDebugger(";Ill-formed special form", env) ;
+				}
+				return argForms.car() ;//unevaluated
 			}
 		});
 
@@ -91,24 +94,28 @@ abstract class SpecialOperation extends LispProcedure {
 				LispList formalParamList = (LispList)argForms.car() ;
 				LispList body = (LispList)argForms.cdr();
 
-				String[] paramNames;
+				LispObject[] argList = formalParamList.toArray();
+				String[] paramNames = new String[argList.length];
 
-				if (formalParamList.isNull()) {
-					paramNames = new String[0];
-				} else {
-					LispObject[] argList = formalParamList.toArray();
-
-					paramNames = new String[argList.length];
-
-					int i;
-					for (i = 0; i < argList.length; i++) {
-						paramNames[i] = argList[i].toString();
-					}
+				int i;
+				for (i = 0; i < argList.length; i++) {
+					paramNames[i] = argList[i].toString();
 				}
-				return new CompoundProcedure(paramNames, body, argEnv);
+				
+				return new CompoundProcedure(formalParamList, body, argEnv);
 			}
 		});
 
+		specials.put("define".toUpperCase(), new SpecialOperation() {
+			public LispObject apply(LispList argForms) {
+				//extract components
+				LispObject varNameForm = argForms.car();
+				
+				return varNameForm;
+				
+			}
+		}) ;
+		
 		specials.put("let".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
 				LispList bindingList = (LispList)argForms.car();
@@ -118,10 +125,14 @@ abstract class SpecialOperation extends LispProcedure {
 
 				ChildEnvironment letEnv = new ChildEnvironment(argEnv);
 
+				//TODO: refactor this with APPLY, or EvalSequence
 				int i;
 				for (i = 0; i < bindings.length; i++) {
 					//TODO: handle atoms (bound to null) in the bindingList
-					ConsCell binding = (ConsCell) bindings[i];
+					LispObject binding = bindings[i];
+					if(binding.isAtom()) {
+						binding = new ConsCell(binding, new NilAtom()) ;
+					}
 					SymbolAtom symName = (SymbolAtom) binding.car();
 					LispObject value = binding.cdr().car();
 

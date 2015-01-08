@@ -13,7 +13,6 @@ import org.junit.Test;
 
 public class EvalTest {
     private ConsCell c ;
-    NilAtom nil = new NilAtom() ;
     String helloString = "Hello, I am foo." ;
     
     public Environment e ;
@@ -25,7 +24,7 @@ public class EvalTest {
 	 */
     	e = new Environment() ;
 
-        ConsCell ct2 = new ConsCell(Atom.make(23), new NilAtom()) ;
+        ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil) ;
         ConsCell ct1 = new ConsCell(Atom.make(47), ct2) ;
         c = new ConsCell(new SymbolAtom("+"), ct1) ;
         

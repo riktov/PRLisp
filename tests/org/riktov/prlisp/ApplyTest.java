@@ -22,7 +22,7 @@ public class ApplyTest {
     	
     	System.out.println("testEvalApplyCompoundNoArgs(): body is " + body.toString()) ;
 
-    	CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
+    	CompoundProcedure proc = new CompoundProcedure(new NilAtom(), body, e) ;
     	
     	ObjectAtom result = (ObjectAtom)proc.apply(new NilAtom()) ;
 
@@ -36,7 +36,8 @@ public class ApplyTest {
 	 * @param evalTest TODO
 	 */
 	@Test public void testApplyCompoundWithArgs() {
-		String[] formalParams = new String[] { "X" } ;	//TODO: lowercase or uppercase?
+//		String[] formalParams = new String[] { "X" } ;	//TODO: lowercase or uppercase?
+		LispList formalParams = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("X"), new NilAtom()) ;
 	
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
