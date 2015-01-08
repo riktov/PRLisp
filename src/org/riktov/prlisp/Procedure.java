@@ -10,8 +10,13 @@ package org.riktov.prlisp;
  */
 abstract class LispProcedure extends LispObject {
 	public abstract LispObject apply(LispList argsToApply) ;
+<<<<<<< Updated upstream
     public LispList ProcessArguments(LispList unevaluatedArgForms,
+=======
+    public LispList processArguments(LispList unevaluatedArgForms,
+>>>>>>> Stashed changes
 			Environment evalEnv) {
+    	System.out.println("processArguments() : unevaluated: " + unevaluatedArgForms) ;
 		return unevaluatedArgForms.evalList(evalEnv) ;
 	}
 
@@ -23,6 +28,15 @@ class CompoundProcedure extends LispProcedure {
 	private Environment env;
 
 	// constructors
+<<<<<<< Updated upstream
+=======
+	/**
+	 * Constructor
+	 * @param formalParams
+	 * @param body
+	 * @param env
+	 */
+>>>>>>> Stashed changes
 	public CompoundProcedure(String[] formalParams, LispList body, Environment env) {
 		this.formalParams = formalParams;
 		this.body = body;
@@ -30,6 +44,9 @@ class CompoundProcedure extends LispProcedure {
 	}
 
 	// implementation of LispObject
+	/**
+	 * Copying CLISP
+	 */
 	@Override public String toString() {
 		String paramList = new String() ;
 		String sep = "" ;
@@ -55,6 +72,7 @@ class CompoundProcedure extends LispProcedure {
 	 * accessors
 	 */
 	String[] formalParams() { return formalParams ; }
+<<<<<<< Updated upstream
 	LispList body() { return body ; }
 	
 	/**
@@ -64,8 +82,10 @@ class CompoundProcedure extends LispProcedure {
 	 * @return array of LispObject, which are the evaluated results of all the
 	 *         unevaluatedArgs
 	 */
+=======
+	LispList body() { return body ; }	
+>>>>>>> Stashed changes
 
-	
 	/**
 	 * APPLY Evaluate in turn each subform of the procedure body, in an environment created by extending
 	 * the procedure's own environment with the argument bindings.
@@ -76,11 +96,16 @@ class CompoundProcedure extends LispProcedure {
 	 * @return LispObject The value of the last form in the procedure body
 	 */
 	public LispObject apply(LispList argForms) {
+<<<<<<< Updated upstream
+=======
+		System.out.println("apply() : argForms: " + argForms) ;
+>>>>>>> Stashed changes
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
 		if(!argForms.isNull()) {
 			int i = 0 ;
 
+<<<<<<< Updated upstream
 			ConsCell currentCell = (ConsCell) argForms ;
 
 			//iterate through the arg forms and formal params, interning them in turn
@@ -90,6 +115,28 @@ class CompoundProcedure extends LispProcedure {
 				newEnv.intern(symbolName, currentCell.car().eval(env)) ;
 				currentCell = (ConsCell) currentCell.cdr();
 			}					
+=======
+			LispObject currentCell = (LispObject)argForms ;
+			String symbolName ;
+			LispObject val ;
+			
+			System.out.println("apply(): currentCell : " + currentCell.toString()) ;
+			
+			//TODO: Refactor this with LET for pairing formalParams and values
+			//iterate through the arg forms and formal params, interning them in turn
+			while(!currentCell.isNull()) {
+				symbolName = formalParams[i++] ;
+				val = currentCell.car().eval(env) ;
+				System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
+				newEnv.intern(symbolName, val) ;
+				currentCell = currentCell.cdr();
+			}
+/*			symbolName = formalParams[i++] ;
+			val = currentCell.car().eval(env) ;
+			System.out.println("apply(ConsCell): interning " + symbolName + " with value: " + val ) ;
+			newEnv.intern(symbolName, val) ;			
+*/
+>>>>>>> Stashed changes
 		}
 		return body.evalSequence(newEnv) ;
 	}	

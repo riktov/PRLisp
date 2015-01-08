@@ -1,7 +1,10 @@
 package org.riktov.prlisp ;
 
+import java.util.Iterator;
+
 abstract class LispObject {
     public boolean isNull() { return false ; }
+    boolean isAtom() { return true ; }
     /**
      * Most objects are self-evaluating. The two exceptions are symbols, 
      * whose values are looked up in the environment,
@@ -23,6 +26,7 @@ abstract class LispObject {
         return new NilAtom() ;
     }
     */
+
 
     public LispObject car() {
         System.out.println("CAR: " + this.toString() + " is not a list") ;
@@ -111,6 +115,26 @@ final class NilAtom extends Atom implements LispList {
 	public LispObject evalSequence(Environment env) { return this ; }
 	@Override
 	public LispObject[] toArray() { return new LispObject[0] ; }
+<<<<<<< Updated upstream
+=======
+	@Override
+	public Iterator<LispObject> iterator() {
+		return new Iterator<LispObject>() {
+
+			@Override
+			public boolean hasNext() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public LispObject next() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		} ;
+	}
+>>>>>>> Stashed changes
 }
 
 /**

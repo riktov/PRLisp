@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  */
@@ -122,4 +123,14 @@ class LispReader {
 		System.out.print("PR-USER> ");
 	}
 
+}
+
+abstract class ReaderMacro {
+	abstract String process(String st) ;
+	
+	static HashMap<String, ReaderMacro> initialReaderMacros() {
+		HashMap<String, ReaderMacro> macros = new HashMap<String, ReaderMacro>() ;
+		
+		return macros;
+	}
 }

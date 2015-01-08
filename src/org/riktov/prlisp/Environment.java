@@ -24,6 +24,7 @@ class Environment extends HashMap<String, LispObject> {
 
 		if (o == null) {
 			System.out.println("EVAL: variable " + str + " has no value");
+			LispDebugger debugger = new LispDebugger("Some error", this) ;
 		}
 
 		return o;

@@ -12,7 +12,11 @@ abstract class SpecialOperation extends LispProcedure {
 
 	//public LispObject apply() { return new NilAtom()  ; }
 
+<<<<<<< Updated upstream
 	@Override public LispList ProcessArguments(LispList unevaluatedArgForms,
+=======
+	@Override public LispList processArguments(LispList unevaluatedArgForms,
+>>>>>>> Stashed changes
 			Environment argEnv) {
 		this.argEnv = argEnv; // always necessary if any args need to be
 		return unevaluatedArgForms;
@@ -82,7 +86,11 @@ abstract class SpecialOperation extends LispProcedure {
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
+<<<<<<< Updated upstream
 				return argForms.car() ;
+=======
+				return argForms.car() ;//unevaluated
+>>>>>>> Stashed changes
 			}
 		});
 
@@ -90,6 +98,7 @@ abstract class SpecialOperation extends LispProcedure {
 			public LispObject apply(LispList argForms) {
 				LispList formalParamList = (LispList)argForms.car() ;
 				LispList body = (LispList)argForms.cdr();
+<<<<<<< Updated upstream
 
 				String[] paramNames;
 
@@ -104,11 +113,30 @@ abstract class SpecialOperation extends LispProcedure {
 					for (i = 0; i < argList.length; i++) {
 						paramNames[i] = argList[i].toString();
 					}
+=======
+
+				LispObject[] argList = formalParamList.toArray();
+				String[] paramNames = new String[argList.length];
+
+				int i;
+				for (i = 0; i < argList.length; i++) {
+					paramNames[i] = argList[i].toString();
+>>>>>>> Stashed changes
 				}
 				return new CompoundProcedure(paramNames, body, argEnv);
 			}
 		});
 
+		specials.put("define".toUpperCase(), new SpecialOperation() {
+			public LispObject apply(LispList argForms) {
+				//extract components
+				LispObject varNameForm = argForms.car();
+				
+				return varNameForm;
+				
+			}
+		}) ;
+		
 		specials.put("let".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
 				LispList bindingList = (LispList)argForms.car();
@@ -118,10 +146,21 @@ abstract class SpecialOperation extends LispProcedure {
 
 				ChildEnvironment letEnv = new ChildEnvironment(argEnv);
 
+<<<<<<< Updated upstream
 				int i;
 				for (i = 0; i < bindings.length; i++) {
 					//TODO: handle atoms (bound to null) in the bindingList
 					ConsCell binding = (ConsCell) bindings[i];
+=======
+				//TODO: refactor this with APPLY, or EvalSequence
+				int i;
+				for (i = 0; i < bindings.length; i++) {
+					//TODO: handle atoms (bound to null) in the bindingList
+					LispObject binding = bindings[i];
+					if(binding.isAtom()) {
+						binding = new ConsCell(binding, new NilAtom()) ;
+					}
+>>>>>>> Stashed changes
 					SymbolAtom symName = (SymbolAtom) binding.car();
 					LispObject value = binding.cdr().car();
 
