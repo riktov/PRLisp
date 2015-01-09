@@ -66,12 +66,12 @@ public class SpecialOperationsTest {
 				new SymbolAtom("x")
 		}) ;
 		
-		LispObject funcBody = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
+		LispObject funcBodyForm1 = new SymbolAtom("x") ;
 		
 		LispObject[] forms = new LispObject[] {
 				new SymbolAtom("define"),
 				varNameAndParams,
-				funcBody
+				funcBodyForm1
 		} ;
 		
 		//c -> (define (foobar x) x)
@@ -82,12 +82,39 @@ public class SpecialOperationsTest {
 		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
 		
 		assertTrue(e.containsKey("FOOBAR")) ;
+		
+		System.out.println(e.get("FOOBAR")) ;
+		
+		LispList argList = new ConsCell(new ObjectAtom(352), NilAtom.nil) ;
+		
+		CompoundProcedure builtProc = (CompoundProcedure)(e.get("FOOBAR")) ;
+		LispObject applyResult = builtProc.apply(argList);
+		
+		assertTrue(applyResult.toString().equals("352")) ;
 		//Come.get("FOOBAR").			
 	}
 
 	@Test
 	public void testDefineVariadicFunction() {
+		LispObject varNameAndParams = new ConsCell(
+				new SymbolAtom("foobar"),
+				new SymbolAtom("x")) ;
 		
+		LispObject funcBodyForm1 = new SymbolAtom("x") ;
+		
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("define"),
+				varNameAndParams,
+				funcBodyForm1
+		} ;
+		
+		//c -> (define (foobar x) x)
+		ConsCell c = new ConsCell(forms) ;
+		
+		System.out.println("testDefineFunction() evaluating: " + c.toString()) ;
+		c.eval(e) ;
+		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
+		assertTrue(false) ;
 	}
 	/**
 	 * IF evaluates one of two forms conditionally, so we check the returned value with various conditions
@@ -203,7 +230,7 @@ public class SpecialOperationsTest {
 		System.out.println("testLambda() evaluating: " + c.toString()) ;
 
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
-		System.out.println(theLambda) ;
+		//System.out.println(theLambda) ;
 		
 		assertTrue(theLambda.formalParams().car().toString().equals("X")) ;
 		assertTrue(theLambda.body().car() == bodyForm1) ;
@@ -230,10 +257,10 @@ public class SpecialOperationsTest {
 		} ;
 				
 		ConsCell c = new ConsCell(forms) ;
-		System.out.println("testLambdaListBody() evaluating: " + c.toString()) ;
+		System.out.println("testLambdaMultipleFormBody() evaluating: " + c.toString()) ;
 
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
-		System.out.println(theLambda) ;
+		//System.out.println(theLambda) ;
 		
 		assertTrue(theLambda.body().cdr().car() == bodyForm2) ;
 	}
@@ -256,7 +283,7 @@ public class SpecialOperationsTest {
 
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
 		
-		System.out.println(theLambda) ;
+		//System.out.println(theLambda) ;
 		
 		ObjectAtom result = (ObjectAtom)theLambda.apply(new NilAtom()) ;
 		

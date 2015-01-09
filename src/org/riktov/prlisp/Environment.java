@@ -35,7 +35,7 @@ class Environment extends HashMap<String, LispObject> {
 	}
 	
 	boolean installConstants() {
-		NilAtom nil = new NilAtom();// the singleton in the environment
+		NilAtom nil = NilAtom.nil;// the singleton in the environment
 		intern(nil.toString(), nil);
 
 		SymbolAtom t = new SymbolAtom("t");// the singleton in the environment
@@ -58,6 +58,12 @@ class Environment extends HashMap<String, LispObject> {
 		put(symName.toUpperCase(), o);
 		return true;
 	}
+
+	/*
+	boolean intern(SymbolAtom symAtom, LispObject o) {
+		return intern(symAtom.toString(), o) ;
+	}
+	*/
 }
 
 /**

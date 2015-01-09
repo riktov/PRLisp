@@ -1,19 +1,15 @@
 package org.riktov.prlisp;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 //import java.util.Iterator;
 
 import java.util.Iterator;
 
-import org.junit.Test;
-
-interface LispList extends Iterable {
+interface LispList extends Iterable<LispObject> {
 	public LispList evalList(Environment env) ;
 	public LispObject evalSequence(Environment env) ;
-	public void bindParamsToValues(LispList argForms, Environment env) ;
+	public void bindParamsToValues(Iterable<LispObject> argForms, Environment env) ;
 	boolean isNull();
 	public LispObject car() ;
 	public LispObject cdr() ;
@@ -118,7 +114,17 @@ class ConsCell extends LispObject implements LispList {
 
 	// methods
 	@Override public String toString() {
-		return '(' + this.car.toString() + this.cdr.toStringCdr() + ')';
+		return toString(false) ;
+	}
+	
+	public String toString(boolean omitParentheses) {
+		String openParen = "" ;
+		String closeParen = "";
+		if(!omitParentheses) {
+			openParen ="(" ;
+			closeParen = ")" ;
+		}
+		return openParen + this.car.toString() + this.cdr.toStringCdr() + closeParen;
 	}
 
 	@Override public String toStringCdr() {
@@ -150,8 +156,8 @@ class ConsCell extends LispObject implements LispList {
 	}
 	
 	/**
-	 * Treat this as a list of forms, and return a list comprising the values of forms, evaluated in env
-	 * @return A list of the same length as this, comprising the evaluated subforms
+	 * Treat this as a list of forms, and return a list comprising the values of the forms, evaluated in env.
+	 * @return A list of the same length as this, comprising the evaluated forms
 	 */
 	@Override public LispList evalList(Environment env) {
 		ConsCell current = this ;
@@ -169,8 +175,7 @@ class ConsCell extends LispObject implements LispList {
 	 */
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
-		
-		System.out.println("evalSequence(Environment): form: " + current.car.toString()) ;
+		//System.out.println("evalSequence(Environment): form: " + current.car.toString()) ;
 		
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
@@ -183,11 +188,13 @@ class ConsCell extends LispObject implements LispList {
 	@Override
 	public Iterator<LispObject> iterator() {
 		final ConsCell origin = this ;
+//		System.out.println("Creating iterator from " + this) ;
 		return new Iterator<LispObject>() {
 			LispObject current = origin ;
 			@Override
 			public boolean hasNext() {
-				return !current.cdr().isNull() ;
+//				System.out.println("Iterator.hasNext(): " + current) ;
+				return !current.isNull() ;
 			}
 
 			@Override
@@ -205,23 +212,24 @@ class ConsCell extends LispObject implements LispList {
 		} ;
 	}
 	
-	public void bindParamsToValues(LispList argForms, Environment env) {
+	public void bindParamsToValues(Iterable<LispObject> argVals, Environment env) {
 		Iterator<LispObject> itrParams = this.iterator() ;
-		Iterator<LispObject> itrForms  = argForms.iterator() ;
+		Iterator<LispObject> itrVals  = argVals.iterator() ;
 		String symbolName ;
 		LispObject val ;
 		
-		System.out.println("bindParamsToValues(): argForms :" + argForms) ;
+		//System.out.println("bindParamsToValues(): formalParams: " + this + " argVals :" + argVals) ;
+		//System.out.println(itrParams.hasNext()) ;
 		while(itrParams.hasNext()) {
-			LispObject nextParam = itrParams.next() ;
-			if(nextParam.isAtom()) {
-				symbolName = nextParam.toString() ;
+			LispObject param = itrParams.next() ;
+			if(param.isAtom()) {	//rest-binding
+				symbolName = param.toString() ;
 			} else {
-				symbolName = nextParam.car().toString() ;					
+				symbolName = param.car().toString() ;					
 			}
-			val = itrForms.next().eval(env) ;
+			val = itrVals.next() ;
 
-			System.out.println("bindParamsToValues(): interning " + symbolName + " with value: " + val ) ;
+			//System.out.println("bindParamsToValues(): interning " + symbolName + " with value: " + val ) ;
 			env.intern(symbolName, val) ;
 		}
 

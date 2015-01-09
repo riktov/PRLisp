@@ -140,4 +140,14 @@ public class LispReaderTest {
     	
     	assertTrue(expectedFive.data().equals(5)) ;
     }
+    
+    @Test public void testReadSymbolWithSpecialChar() {
+    	String exp = "(let* ((x 5)))" ;
+    	
+    	LispObject result = lr.read(exp) ;
+    	
+    	ObjectAtom expectedLetStar = (ObjectAtom)result.car();
+    	
+    	assertTrue(expectedLetStar.data().toString().equals("LET*")) ;
+    }
 }

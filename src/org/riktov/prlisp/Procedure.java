@@ -20,7 +20,7 @@ abstract class LispProcedure extends LispObject {
 }
 
 class CompoundProcedure extends LispProcedure {
-	private LispList formalParams;
+	private LispList formalParams; //may be a list, or an Atom for list-binding
 	private LispList body;
 	private Environment env;
 
@@ -42,7 +42,8 @@ class CompoundProcedure extends LispProcedure {
 	 * Copying CLISP
 	 */
 	@Override public String toString() {
-		return "#<FUNCTION :LAMBDA " + formalParams.toString() + body.toString() + ">"; 
+		ConsCell paramsAndBody = new ConsCell((LispObject)formalParams, (LispObject) body) ;
+		return "#<FUNCTION :LAMBDA " + paramsAndBody.toString(true) + ">"; 
 		}
 
 	/**
@@ -61,8 +62,7 @@ class CompoundProcedure extends LispProcedure {
 	 * @return LispObject The value of the last form in the procedure body
 	 */
 	public LispObject apply(LispList argForms) {
-		System.out.println("apply() : argForms: " + argForms) ;
-		System.out.println("apply() : formalParams: " + formalParams) ;
+		//System.out.println("apply() : argForms: " + argForms + " formalParams: " + formalParams) ;
 		ChildEnvironment newEnv = new ChildEnvironment(env);
 		
 		if(!argForms.isNull()) {
@@ -95,9 +95,9 @@ class CompoundProcedure extends LispProcedure {
 				newEnv.intern(symbolName, val) ;
 			}
 			*/
-
-			formalParams.bindParamsToValues(argForms, newEnv) ;
-			newEnv.printKeys();
+			LispList argVals = argForms.evalList(env) ;
+			formalParams.bindParamsToValues(argVals, newEnv) ;
+			//newEnv.printKeys();
 			/*
 			while(!currentCell.isNull()) {
 				symbolName = formalParams[i++] ;

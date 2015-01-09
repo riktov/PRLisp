@@ -27,7 +27,6 @@ abstract class LispObject {
     }
     */
 
-
     public LispObject car() {
         System.out.println("CAR: " + this.toString() + " is not a list") ;
         return new NilAtom() ;
@@ -133,8 +132,7 @@ final class NilAtom extends Atom implements LispList {
 			}			
 		};
 	}
-	@Override
-	public void bindParamsToValues(LispList argForms, Environment env) {
+	@Override public void bindParamsToValues(Iterable<LispObject> argForms, Environment env) {
 		// do-nothing
 	}
 }

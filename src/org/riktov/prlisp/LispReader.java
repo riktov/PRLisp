@@ -23,7 +23,8 @@ class LispReader {
 		st.wordChars('A', 'Z');
 		st.wordChars('0', '9');
 		st.wordChars('.', '.');
-		st.wordChars('?', '?');	//null? zero?
+		st.wordChars('?', '?');	//examples: NULL? zero?
+		st.wordChars('*', '*');	//examples: LET*
 		//st.ordinaryChar('+');
 		st.quoteChar('"');
 		// st.parseNumbers() ;

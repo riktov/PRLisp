@@ -48,7 +48,7 @@ public class PRLisp {
 
 			LispObject evaluated = o.eval(env);// EVALUATE
 
-			System.out.println(evaluated.toString());// PRINT (evaluated)
+			System.out.println(evaluated);// PRINT (evaluated)
 			//System.out.println(o.toString()) ; //print unevaluated
 
 			lr.prompt();

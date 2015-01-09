@@ -1,6 +1,7 @@
 package org.riktov.prlisp;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 abstract class SpecialOperation extends LispProcedure {
 	/**
@@ -43,7 +44,7 @@ abstract class SpecialOperation extends LispProcedure {
 					String symbolName = current.car().toString().toUpperCase() ;//current key
 					current = (ConsCell)current.cdr ;//current value
 					assignedValue = current.car ;
-					System.out.println("SETQ - setting symbol " + symbolName + " with value " + assignedValue.toString()) ;
+					//System.out.println("SETQ - setting symbol " + symbolName + " with value " + assignedValue.toString()) ;
 					env.put(symbolName, assignedValue.eval(argEnv));
 					if(!current.cdr.isNull()) {
 						current = (ConsCell)current.cdr ;//next key-value pair						
@@ -111,6 +112,18 @@ abstract class SpecialOperation extends LispProcedure {
 				//extract components
 				LispObject varNameForm = argForms.car();
 				
+				if(varNameForm.isAtom()) {
+					LispObject value = argForms.cdr().car().eval(argEnv) ;
+					argEnv.intern(varNameForm.toString(), value) ;
+				} else {
+					SymbolAtom procName = (SymbolAtom) varNameForm.car() ;
+					
+					LispList procParamList = (LispList) varNameForm.cdr() ;
+					
+					LispList procBody = (LispList) argForms.cdr() ;
+					argEnv.intern(procName.toString(),
+							new CompoundProcedure(procParamList, procBody, argEnv)) ;
+				}
 				return varNameForm;
 				
 			}
@@ -121,11 +134,26 @@ abstract class SpecialOperation extends LispProcedure {
 				LispList bindingList = (LispList)argForms.car();
 				LispList body = (LispList) argForms.cdr().car();
 				
-				LispObject[] bindings = bindingList.toArray();
+//				LispObject[] bindings = bindingList.toArray();
 
 				ChildEnvironment letEnv = new ChildEnvironment(argEnv);
 
-				//TODO: refactor this with APPLY, or EvalSequence
+				Iterator<LispObject> itrBindings = bindingList.iterator();
+				
+				while(itrBindings.hasNext()) {
+					LispObject binding = itrBindings.next() ;
+					
+					if(binding.isAtom()) {
+						binding = new ConsCell(binding, NilAtom.nil) ;
+					}
+					SymbolAtom symName = (SymbolAtom) binding.car();
+					LispObject value = binding.cdr().car();
+
+					letEnv.intern(symName.toString(), value);
+				}
+
+				/*
+				 //TODO: refactor this with APPLY, or EvalSequence
 				int i;
 				for (i = 0; i < bindings.length; i++) {
 					//TODO: handle atoms (bound to null) in the bindingList
@@ -138,7 +166,8 @@ abstract class SpecialOperation extends LispProcedure {
 
 					letEnv.intern(symName.toString(), value);
 				}
-
+				*/
+				
 				LispObject result = body.evalSequence(letEnv);
 
 				return result;
