@@ -116,14 +116,14 @@ final class NilAtom extends Atom implements LispList {
 	@Override
 	public LispObject[] toArray() { return new LispObject[0] ; }
 	@Override
-	public Iterator iterator() {
-		return new Iterator() {
+	public Iterator<LispObject> iterator() {
+		return new Iterator<LispObject>() {
 
 			@Override
 			public boolean hasNext() { return false; }
 
 			@Override
-			public Object next() { return this ; }
+			public LispObject next() { return nil ; }
 
 			@Override
 			public void remove() {

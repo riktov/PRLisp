@@ -35,23 +35,29 @@ public class PRLisp {
 		LispReader lr = new LispReader();
 		lr.prompt();
 
-		Scanner in = new Scanner(System.in);
-
-		while (in.hasNextLine()) {
-			String input = in.nextLine();
-			if(input.isEmpty()) {
-				System.out.println(";No value") ;
+		Scanner in = null ;
+		try{		
+			in = new Scanner(System.in);
+	
+			while (in.hasNextLine()) {
+				String input = in.nextLine();
+				if(input.isEmpty()) {
+					System.out.println(";No value") ;
+					lr.prompt();
+					continue ;
+				}
+				LispObject o = lr.read(input);// READ
+	
+				LispObject evaluated = o.eval(env);// EVALUATE
+	
+				System.out.println(evaluated);// PRINT (evaluated)
+				//System.out.println(o.toString()) ; //print unevaluated
+	
 				lr.prompt();
-				continue ;
-			}
-			LispObject o = lr.read(input);// READ
-
-			LispObject evaluated = o.eval(env);// EVALUATE
-
-			System.out.println(evaluated);// PRINT (evaluated)
-			//System.out.println(o.toString()) ; //print unevaluated
-
-			lr.prompt();
-		}// LOOP!
+			}// LOOP!
+		}finally {
+			if(in!=null)
+				in.close();
+		}
 	}
 }
