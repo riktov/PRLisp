@@ -9,7 +9,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
 	// public LispObject apply() { return new NilAtom(); } //
 	// public LispObject apply() { return new NilAtom() ; }
 
-	static HashMap<String, PrimitiveProcedure> initialPrimitives() {
+	static HashMap<String, PrimitiveProcedure> initialPrimitives(Environment env) {
 		HashMap<String, PrimitiveProcedure> primitives = new HashMap<String, PrimitiveProcedure>();
 
 		primitives.put("cons".toUpperCase(), new PrimitiveProcedure() {
@@ -30,6 +30,13 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
+		primitives.put("showenv".toUpperCase(), new PrimitiveProcedure() {
+			public LispObject apply(LispList argForms) {
+				env.printKeys();
+				return NilAtom.nil ;
+			}
+		});
+
 		primitives.put("null?".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				if (argForms.car().isNull()) {
@@ -45,6 +52,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
 				// System.out.println("primitive + apply():" + argForms) ;
 				Number[] numericalArgs = numericalArgs(argForms.toArray());
 				if (numericalArgs[0].getClass() == numericalArgs[1].getClass()) {
+					
 					numericalArgs[0] = numericalArgs[0].floatValue()
 							+ numericalArgs[1].floatValue();
 					return new ObjectAtom(numericalArgs[0]);
