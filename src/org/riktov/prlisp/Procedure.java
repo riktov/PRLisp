@@ -20,7 +20,7 @@ abstract class LispProcedure extends LispObject {
 }
 
 class CompoundProcedure extends LispProcedure {
-	private LispList formalParams; //may be a list, or an Atom for list-binding
+	private LispObject formalParams; //may be a list, or an Atom for list-binding
 	private LispList body;
 	private Environment env;
 
@@ -31,7 +31,7 @@ class CompoundProcedure extends LispProcedure {
 	 * @param body
 	 * @param env
 	 */
-	public CompoundProcedure(LispList formalParams, LispList body, Environment env) {
+	public CompoundProcedure(LispObject formalParams, LispList body, Environment env) {
 		this.formalParams = formalParams;
 		this.body = body;
 		this.env = env;
@@ -49,7 +49,7 @@ class CompoundProcedure extends LispProcedure {
 	/**
 	 * accessors
 	 */
-	LispList formalParams() { return formalParams ; }
+	LispObject formalParams() { return formalParams ; }
 	LispList body() { return body ; }	
 
 	/**
@@ -96,7 +96,8 @@ class CompoundProcedure extends LispProcedure {
 			}
 			*/
 			LispList argVals = argForms.evalList(env) ;
-			formalParams.bindParamsToValues(argVals, newEnv) ;
+//			formalParams.bindParamsToValues(argVals, newEnv) ;
+			((ConsCell)argVals).bindToParams(formalParams, newEnv) ;
 			//newEnv.printKeys();
 			/*
 			while(!currentCell.isNull()) {

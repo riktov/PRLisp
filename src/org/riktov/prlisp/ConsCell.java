@@ -9,7 +9,7 @@ import java.util.Iterator;
 interface LispList extends Iterable<LispObject> {
 	public LispList evalList(Environment env) ;
 	public LispObject evalSequence(Environment env) ;
-	public void bindParamsToValues(Iterable<LispObject> argForms, Environment env) ;
+	//public void bindParamsToValues(Iterable<LispObject> argForms, Environment env) ;
 	boolean isNull();
 	public LispObject car() ;
 	public LispObject cdr() ;
@@ -212,6 +212,37 @@ class ConsCell extends LispObject implements LispList {
 		} ;
 	}
 	
+	/**
+	 * We cannot use iterators because we may need to bind the entire cdr instead of the car of a cell.
+	 * @param formalParams
+	 * @param env
+	 */
+	public void bindToParams(LispObject formalParams, Environment env) {
+		//System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
+
+		LispObject currentParam = formalParams ;
+		LispObject currentValCell = this ;	//cell may be ConsCell or Atom
+		LispObject val  ;
+		
+		
+		while(!currentValCell.isNull()) {
+			if (!currentParam.isAtom()) {
+				val = currentValCell.car() ;
+				//System.out.println("bindToParams(): cell key: " + currentParam + " val :" + val  ) ;
+				env.intern(currentParam.car().toString(), val) ;
+				currentValCell = currentValCell.cdr() ;
+				currentParam = currentParam.cdr() ;
+			} else {
+				val = currentValCell ;
+				//System.out.println("bindToParams(): atom key: " + currentParam + " val :" + val  ) ;
+				env.intern(currentParam.toString(), currentValCell) ;
+				return ;
+			}
+		}
+		//env.printKeys();
+	}
+	
+	/*
 	public void bindParamsToValues(Iterable<LispObject> argVals, Environment env) {
 		Iterator<LispObject> itrParams = this.iterator() ;
 		Iterator<LispObject> itrVals  = argVals.iterator() ;
@@ -234,5 +265,6 @@ class ConsCell extends LispObject implements LispList {
 		}
 
 	}
+	*/
 }
 

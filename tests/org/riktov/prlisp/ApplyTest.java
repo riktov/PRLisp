@@ -35,7 +35,7 @@ public class ApplyTest {
 	 */
 	@Test public void testApplyCompoundWithArgs() {
 //		String[] formalParams = new String[] { "X" } ;
-		LispList formalParams = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
+		LispObject formalParams = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 	
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;

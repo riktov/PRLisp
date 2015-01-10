@@ -92,9 +92,10 @@ abstract class SpecialOperation extends LispProcedure {
 
 		specials.put("lambda".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
-				LispList formalParamList = (LispList)argForms.car() ;
+				LispObject formalParamList = argForms.car() ;
 				LispList body = (LispList)argForms.cdr();
 
+				/*
 				LispObject[] argList = formalParamList.toArray();
 				String[] paramNames = new String[argList.length];
 
@@ -102,7 +103,7 @@ abstract class SpecialOperation extends LispProcedure {
 				for (i = 0; i < argList.length; i++) {
 					paramNames[i] = argList[i].toString();
 				}
-				
+				*/
 				return new CompoundProcedure(formalParamList, body, argEnv);
 			}
 		});
@@ -118,7 +119,7 @@ abstract class SpecialOperation extends LispProcedure {
 				} else {
 					SymbolAtom procName = (SymbolAtom) varNameForm.car() ;
 					
-					LispList procParamList = (LispList) varNameForm.cdr() ;
+					LispObject procParamList = varNameForm.cdr() ;
 					
 					LispList procBody = (LispList) argForms.cdr() ;
 					argEnv.intern(procName.toString(),
