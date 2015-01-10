@@ -37,6 +37,13 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
+		primitives.put("read".toUpperCase(), new PrimitiveProcedure() {
+			public LispObject apply(LispList argForms) {
+				LispReader lr = new LispReader() ;
+				return lr.read(argForms.car().toString()) ;
+			}
+		});
+
 		primitives.put("null?".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				if (argForms.car().isNull()) {
