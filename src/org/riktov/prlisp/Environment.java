@@ -17,6 +17,7 @@ class Environment extends HashMap<String, LispObject> {
 		installConstants();
 		installPrimitives();
 		installSpecials();
+		installBuiltIns();
 	}
 
 	LispObject lookup(String str) {
@@ -45,13 +46,18 @@ class Environment extends HashMap<String, LispObject> {
 	}
 
 	boolean installPrimitives() {		
-		putAll(PrimitiveProcedure.initialPrimitives()) ;
+		putAll(PrimitiveProcedure.initialPrimitives(this)) ;
 		return true;
 	}
 
 	boolean installSpecials() {		
 		putAll(SpecialOperation.initialSpecials(this)) ;
 		return true;
+	}
+	
+	boolean installBuiltIns() {
+		BuiltIn.initialBuiltIns(this) ;
+		return true ;
 	}
 
 	boolean intern(String symName, LispObject o) {
