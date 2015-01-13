@@ -14,7 +14,6 @@ interface LispList extends Iterable<LispObject> {
 	public LispObject car() ;
 	public LispObject cdr() ;
 	public LispObject[] toArray();
-
 }
 
 class ConsCell extends LispObject implements LispList {
