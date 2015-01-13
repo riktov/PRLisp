@@ -190,5 +190,56 @@ public class ConsCellTest {
 
 		assertTrue(env.containsKey("DREAMLINER"));
 		assertTrue(env.get("DREAMLINER").equals(sevenEightySeven)) ;
-	}	
-}
+	}
+	
+	/**
+	 * Test that a list of LispObject values gets correctly bound to a list of parameter names.
+	 * The list of parameters can have list-binding.
+	 */
+	@Test
+	public void testBindToParamsProperList() {
+		ConsCell params = new ConsCell(new SymbolAtom[] {
+				new SymbolAtom("foo"),
+				new SymbolAtom("bar"),
+				new SymbolAtom("baz"),
+		} ) ;
+	
+		ConsCell vals = new ConsCell(new ObjectAtom[] {
+				new ObjectAtom(5),
+				new ObjectAtom(6),
+				new ObjectAtom(7),
+		} ) ;
+		
+		vals.bindToParams(params, env);
+		
+		assertTrue(env.containsKey("BAR"));
+		LispObject six = env.get("BAR") ;
+		assertTrue(((ObjectAtom)six).data.equals(6)) ;
+	}
+
+	@Test
+	public void testBindToParamsImproperList() {
+		SymbolAtom foo = new SymbolAtom("foo");
+		SymbolAtom bar = new SymbolAtom("bar");
+		SymbolAtom baz = new SymbolAtom("baz");
+
+		ConsCell params = new ConsCell(foo, new ConsCell(bar, baz)) ;
+		
+		ConsCell vals = new ConsCell(new ObjectAtom[] {
+				new ObjectAtom(5),
+				new ObjectAtom(6),
+				new ObjectAtom(7),
+				new ObjectAtom(8),
+				new ObjectAtom(9),
+		} ) ;
+		
+		vals.bindToParams(params, env);
+		
+		env.printKeys();
+		assertTrue(env.containsKey("BAZ"));
+		LispObject sevenEightNine = env.get("BAZ") ;
+		
+		System.out.println(sevenEightNine) ;
+		ObjectAtom eight = (ObjectAtom)sevenEightNine.cdr().car() ;
+		assertTrue(eight.data.equals(8)) ;
+	}}

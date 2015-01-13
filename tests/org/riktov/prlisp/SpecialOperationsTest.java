@@ -113,8 +113,14 @@ public class SpecialOperationsTest {
 		
 		System.out.println("testDefineFunction() evaluating: " + c.toString()) ;
 		c.eval(e) ;
+		
+		assertTrue(e.containsKey("FOOBAR")) ;
+		
+		System.out.println(e.get("FOOBAR")) ;
+		
+
 		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
-		assertTrue(false) ;
+		//assertTrue(false) ;
 	}
 	/**
 	 * IF evaluates one of two forms conditionally, so we check the returned value with various conditions
