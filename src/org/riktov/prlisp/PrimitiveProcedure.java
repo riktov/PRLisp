@@ -30,17 +30,22 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
-		primitives.put("showenv".toUpperCase(), new PrimitiveProcedure() {
+		primitives.put("env".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				env.printKeys();
-				return NilAtom.nil ;
+				Object[] envKeyNames = env.keySet().toArray() ;
+				LispObject[] envKeys = new LispObject[envKeyNames.length] ;
+				int i ;
+				for (i = 0 ; i < envKeyNames.length ; i++) {
+					envKeys[i] = new SymbolAtom((String)envKeyNames[i]) ;
+				}
+				return new ConsCell(envKeys) ;
 			}
 		});
 
 		primitives.put("read".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				LispReader lr = new LispReader() ;
-				return lr.read(argForms.car().toString()) ;
+				return lr.read(((StringAtom)argForms.car()).toStringUnquoted()) ;
 			}
 		});
 
