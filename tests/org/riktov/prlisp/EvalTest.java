@@ -1,0 +1,52 @@
+package org.riktov.prlisp;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+* Test
+* 
+* @author riktov@freeshell.org (Paul Richter)
+*/
+
+public class EvalTest {
+    private ConsCell c ;
+    String helloString = "Hello, I am foo." ;
+    
+    public Environment e ;
+
+    @Before
+    public void setUp() {
+	/**
+	 * We create a cons cell "by hand", without relying on the reader. 
+	 */
+    	e = new Environment() ;
+
+        ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil) ;
+        ConsCell ct1 = new ConsCell(Atom.make(47), ct2) ;
+        c = new ConsCell(new SymbolAtom("+"), ct1) ;
+        
+	// c -> (+ 47 23)
+    }
+
+    @Test public void testEvalSymbol() {
+    	e.intern("foo", new StringAtom(helloString)) ;
+    	  	
+    	LispObject sexp = new SymbolAtom("foo") ;
+    	ObjectAtom value = (ObjectAtom)sexp.eval(e) ;
+    	
+    	assertTrue(value.data() == helloString) ;
+    }
+    
+    
+    @Test public void testEvalApplyPrimitive() {
+    	// The primitive + converts the result to float
+    	ObjectAtom sum = (ObjectAtom)c.eval(e) ;
+
+    	//System.out.println(sum) ;
+    	
+       assertTrue(sum.data.equals(new Float(70))) ;
+    }
+}

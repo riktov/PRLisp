@@ -143,6 +143,7 @@ class IntegerAtom extends ObjectAtom {
 class StringAtom extends ObjectAtom {
     public StringAtom(String s) { super(s) ; }
     @Override public String toString() { return '"' + super.toString() + '"' ; }
+    public String toStringUnquoted() { return super.toString(); }
 }
 
 class SymbolAtom extends ObjectAtom {
