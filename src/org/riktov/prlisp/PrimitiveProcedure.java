@@ -9,7 +9,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
 	// public LispObject apply() { return new NilAtom(); } //
 	// public LispObject apply() { return new NilAtom() ; }
 
-	static HashMap<String, PrimitiveProcedure> initialPrimitives(Environment env) {
+	static HashMap<String, PrimitiveProcedure> initialPrimitives(final Environment env) {
 		HashMap<String, PrimitiveProcedure> primitives = new HashMap<String, PrimitiveProcedure>();
 
 		primitives.put("cons".toUpperCase(), new PrimitiveProcedure() {

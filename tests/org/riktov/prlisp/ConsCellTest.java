@@ -18,9 +18,9 @@ import org.junit.Test;
  */
 
 public class ConsCellTest {
-	private ConsCell c;
+	private ConsCell c, d ;
 	private Environment env ;
-	ObjectAtom sevenFortySeven = new ObjectAtom(747);  ;
+	ObjectAtom sevenFortySeven = new ObjectAtom(747);
 	
 	@Before
 	public void setUp() {
@@ -33,6 +33,8 @@ public class ConsCellTest {
 		c = new ConsCell(Atom.make(55), ct1);
 		// c -> (55 147 23)		
 		env.intern("JUMBO", sevenFortySeven);
+		
+		d = new ConsCell(Atom.make(13), Atom.make(89)) ;
 	}
 
 	@Test
@@ -41,14 +43,24 @@ public class ConsCellTest {
 		assertTrue(s.equals("(55 147 23)"));
 	}
 
-	/**
-	 * too simple to test
-	 * 
-	 * @Test public void testCar() { LispObject car = c.car() ;
-	 *       assertTrue(car.toString().equals("55")) ; }
-	 * @Test public void testCdr() { LispObject cd = c.cdr() ;
-	 *       assertTrue(cd.toString().equals("(147 23)")) ; }
-	 */
+	 @Test public void testCar() { 
+		LispObject car = c.car() ;
+        assertTrue(car.toString().equals("55")) ; }
+	 
+	 @Test public void testCarCons() {
+		 System.out.println("testCarCons(): car of " + d) ;
+		String s = (d.car()).toString();
+		assertTrue(s.equals("13")) ;
+	 }
+
+	 @Test public void testCdrCons() {
+		 System.out.println("testCdrCons(): cdr of " + d) ;
+		String s = (d.cdr()).toString();
+		assertTrue(s.equals("89")) ;
+	 }
+
+	 @Test public void testCdr() { LispObject cd = c.cdr() ;
+	        assertTrue(cd.toString().equals("(147 23)")) ; }
 
 	@Test
 	public void testArraySize() {
@@ -127,6 +139,18 @@ public class ConsCellTest {
 		assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
 	}
 
+	@Test
+	public void testEvalListPair() {
+		ConsCell c = new ConsCell(Atom.make(55), Atom.make(13)) ;
+		
+		System.out.println("testEvalListPair(): " + c.toString());
+		LispList evaluated = c.evalList(env);
+		System.out.println("testEvalListPair() result: " + evaluated.toString());
+
+		ObjectAtom evaluatedCdr = (ObjectAtom)evaluated.cdr();
+		assertTrue(evaluatedCdr.data.equals(13));
+	}
+	
 	@Test
 	public void testEvalListNil() {
 		LispList ct0 = NilAtom.nil ;

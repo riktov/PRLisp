@@ -15,10 +15,12 @@ public class BuiltIn {
 		/**
 		 * System calls
 		 */
+
 		
 		(lr.read("(define (list . x) x)")).eval(env) ;
 		(lr.read("(define (not x) (if (null? x) t nil))")).eval(env) ;
 		(lr.read("(define (cadr x) (car (cdr x)))")).eval(env) ;
+		
 		
 		return builtIns;
 	}

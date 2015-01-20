@@ -15,7 +15,7 @@ abstract class LispObject {
     public String toStringCdr() { return " . " + this.toString() ; }
 
     /**
-     * The methods below here are the base error implementations of the 
+     * The methods below here are the base "error" implementations of the 
      * fundamental methods that can be called on 
      * a LispObject. Some of these might be unnecessary with judicious use of 
      * downcasting and handling of the resulting ClassCastException

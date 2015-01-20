@@ -157,6 +157,8 @@ class ConsCell extends LispObject implements LispList {
 	/**
 	 * Treat this as a list of forms, and return a list comprising the values of the forms, evaluated in env.
 	 * @return A list of the same length as this, comprising the evaluated forms
+	 * 
+	 * TODO: change this to evalAllAtoms
 	 */
 	@Override public LispList evalList(Environment env) {
 		ConsCell current = this ;
