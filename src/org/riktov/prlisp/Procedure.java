@@ -13,8 +13,7 @@ import java.util.Iterator;
 abstract class LispProcedure extends LispObject {
 	public abstract LispObject apply(LispList argsToApply) ;
     public LispList processArguments(LispList argForms, Environment evalEnv) {
-    	//System.out.println("processArguments() : unevaluated: " + unevaluatedArgForms) ;
-    	//TODO: handle dotted pairs; In "(car (cons 4 5))", argForms becomes ((4 . 5)) rather than (4 . 5)
+    	System.out.println("processArguments() : unevaluated: " + argForms) ;
 		return argForms.evalList(evalEnv) ;
 	}
 

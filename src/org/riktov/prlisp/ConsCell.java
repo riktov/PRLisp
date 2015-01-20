@@ -166,7 +166,12 @@ class ConsCell extends LispObject implements LispList {
 		if(current.cdr().isNull()) {
 			return (LispList) new ConsCell(current.car.eval(env), current.cdr) ;
 		} else {
-			return (LispList) new ConsCell(current.car.eval(env), (LispObject) ((ConsCell)current.cdr).evalList(env)) ;
+			/*
+			if(current.cdr.isAtom()) {
+				return (LispList) new ConsCell(current.car.eval(env), current.cdr.eval(env)) ;								
+			} else { */
+				return (LispList) new ConsCell(current.car.eval(env), (LispObject) ((ConsCell)current.cdr).evalList(env)) ;				
+			//}
 		}
 	}
 

@@ -20,13 +20,13 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("car".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				return argForms.car();
+				return argForms.car().car();
 			}
 		});
 
 		primitives.put("cdr".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				return argForms.cdr();
+				return argForms.car().cdr();
 			}
 		});
 
