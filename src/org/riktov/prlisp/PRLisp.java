@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class PRLisp {
 	public static void main(String args[]) {
 		Environment env = new Environment();
+		env.initialize();
 		// env.put("FOO", DataAtom.make(45)) ;
 		// env.put("BAR", DataAtom.make("Bargle")) ;
 

@@ -6,11 +6,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ApplyTest {
-    Environment e ;
+    Environment env ;
 
     @Before
     public void setUp() {
-    	e = new Environment() ;
+    	/* No constants, primitives, or built-ins are necessary for these tests
+    	 * so the environment does not need to be initialized
+    	 * 
+    	 */
+    	env = new Environment() ;
     }
 
     @Test public void testApplyCompoundNoArgs() {
@@ -20,7 +24,7 @@ public class ApplyTest {
     	ConsCell body = new ConsCell(new LispObject[] { DataAtom.make(42) }) ;
     	System.out.println("testEvalApplyCompoundNoArgs(): body is " + body.toString()) ;
 
-    	CompoundProcedure proc = new CompoundProcedure(NilAtom.nil, body, e) ;
+    	CompoundProcedure proc = new CompoundProcedure(NilAtom.nil, body, env) ;
     	
     	ObjectAtom result = (ObjectAtom)proc.apply(NilAtom.nil) ;
 
@@ -38,11 +42,11 @@ public class ApplyTest {
 		LispObject formalParams = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 	
-		CompoundProcedure proc = new CompoundProcedure(formalParams, body, e) ;
+		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
 		System.out.println("testEvalApplyCompoundWithArgs(): proc: " + proc) ;
 		
 		LispList argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
-		LispList argValues = proc.processArguments(argForms, e) ;
+		LispList argValues = proc.processArguments(argForms, env) ;
 		
 		System.out.println("testEvalApplyCompoundWithArgs(): argValues: " + argValues) ;
 		
@@ -51,5 +55,26 @@ public class ApplyTest {
 		System.out.println("testEvalApplyCompoundWithArgs(): result :  " + result) ;
 		assertTrue(result.toString().equals("5")) ;
 		//assertTrue(((ObjectAtom)result).data.equals(new Float(5.0))) ;
+	}
+	
+	@Test public void testApplyCompoundWithListBoundArg() {
+		/* We make formalParams an atom instead of a list so that it will be bound
+		to the entire list argParams */
+		LispObject formalParams = new SymbolAtom("rest") ;
+		LispList body = new ConsCell(new SymbolAtom("rest"), new NilAtom()) ;
+		
+		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
+		System.out.println("testApplyCompoundWithListBoundArg(): proc: " + proc) ;
+		
+		ConsCell argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
+		argForms = new ConsCell(new ObjectAtom(13), argForms) ;
+		LispList argValues = proc.processArguments(argForms, env) ;
+		
+		System.out.println("testApplyCompoundWithListBoundArg(): argValues: " + argValues) ;
+		
+		LispObject result = proc.apply(argValues) ;
+	
+		System.out.println("testApplyCompoundWithListBoundArg(): result :  " + result) ;
+		assertTrue(result.toString().equals("(13 5)")) ;
 	}
 }

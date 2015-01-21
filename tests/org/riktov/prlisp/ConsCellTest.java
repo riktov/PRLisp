@@ -25,6 +25,7 @@ public class ConsCellTest {
 	@Before
 	public void setUp() {
 		env = new Environment();
+		env.initialize();
 		/**
 		 * We create a cons cell "by hand", without relying on the reader.
 		 */
@@ -212,14 +213,11 @@ public class ConsCellTest {
 		LispList c = new ConsCell(forms) ;
 		System.out.println("testEvalSequenceIntermediate(): " + c.toString()) ;
 
-		assertFalse(env.containsKey("DREAMLINER"));
-
-		c.evalSequence(env);
-
+		c.evalSequence(env) ;
 		assertTrue(env.containsKey("DREAMLINER"));
 		assertTrue(env.get("DREAMLINER").equals(sevenEightySeven)) ;
 	}
-	
+
 	/**
 	 * Test that a list of LispObject values gets correctly bound to a list of parameter names.
 	 * The list of parameters can have list-binding.

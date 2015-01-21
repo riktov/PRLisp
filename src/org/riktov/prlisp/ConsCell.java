@@ -102,14 +102,22 @@ class ConsCell extends LispObject implements LispList {
 	 * @return The LispObject resulting from the evaluation
 	 */
 	@Override LispObject eval(Environment env) {
-		//System.out.println("eval(Environment): " + this.toString()) ;
-		LispProcedure proc = (LispProcedure)car.eval(env);
-				
-		LispList argsToApply = proc.processArguments((LispList)cdr, env);
-	
-		//System.out.println("eval(Environment): argsToApply: " + argsToApply.toString()) ;		
-		return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
+		System.out.println("ConsCell.eval(): " + this.toString()) ;
+		
+		LispProcedure proc = null;
+		LispObject first = car.eval(env) ;
+		
+		try {
+			proc = (LispProcedure)first;
+			LispList argsToApply = proc.processArguments((LispList)cdr, env);
+			
+			//System.out.println("eval(): argsToApply: " + argsToApply.toString()) ;		
+			return proc.apply(argsToApply);// ...which will raise a										// NullPointerException here
+		} catch(ClassCastException exc) {
+			new LispDebugger("ConsCell.eval(): ; The object " + first + " is not applicable.  " + exc.toString(), env) ;
 		}
+		return new NilAtom() ;
+	}
 
 	// methods
 	@Override public String toString() {
@@ -181,7 +189,7 @@ class ConsCell extends LispObject implements LispList {
 	 */
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
-		//System.out.println("evalSequence(Environment): form: " + current.car.toString()) ;
+		System.out.println("ConsCell.evalSequence(Environment): form: " + current.car.toString()) ;
 		
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
@@ -234,18 +242,19 @@ class ConsCell extends LispObject implements LispList {
 		while(!currentValCell.isNull()) {
 			if (!currentParam.isAtom()) {
 				val = currentValCell.car() ;
-				//System.out.println("bindToParams(): cell key: " + currentParam + " val :" + val  ) ;
+				System.out.println("ConsCell.bindToParams(): cell key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.car().toString(), val) ;
 				currentValCell = currentValCell.cdr() ;
 				currentParam = currentParam.cdr() ;
 			} else {
 				val = currentValCell ;
-				//System.out.println("bindToParams(): atom key: " + currentParam + " val :" + val  ) ;
+				System.out.println("ConsCell.bindToParams(): atom key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.toString(), currentValCell) ;
+				env.printKeys();
 				return ;
 			}
 		}
-		//env.printKeys();
+		env.printKeys();
 	}
 	
 	/*

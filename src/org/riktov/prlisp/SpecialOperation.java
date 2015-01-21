@@ -112,7 +112,7 @@ abstract class SpecialOperation extends LispProcedure {
 			public LispObject apply(LispList argForms) {
 				//extract components
 				LispObject varNameForm = argForms.car();
-				
+
 				if(varNameForm.isAtom()) {
 					LispObject value = argForms.cdr().car().eval(argEnv) ;
 					argEnv.intern(varNameForm.toString(), value) ;
@@ -126,7 +126,6 @@ abstract class SpecialOperation extends LispProcedure {
 							new CompoundProcedure(procParamList, procBody, argEnv)) ;
 				}
 				return varNameForm;
-				
 			}
 		}) ;
 		

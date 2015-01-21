@@ -7,11 +7,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SpecialOperationsTest {
-	private Environment e;
+	private Environment env;
 	@Before
 	public void setUp() {
-		e = new Environment();
-		SpecialOperation.initialSpecials(e) ;
+		env = new Environment();
+		env.initialize();
+		SpecialOperation.initialSpecials(env) ;
 	}
 
 	/**
@@ -32,11 +33,11 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(forms) ;
 		
 		System.out.println("testSetq() evaluating: " + c.toString()) ;
-		c.eval(e) ;
+		c.eval(env) ;
 		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
 		
-		assertTrue(e.containsKey("FOOBAR")) ;
-		assertTrue(e.get("FOOBAR") == assignedValue) ;
+		assertTrue(env.containsKey("FOOBAR")) ;
+		assertTrue(env.get("FOOBAR") == assignedValue) ;
 	}
 	
 	@Test
@@ -53,10 +54,10 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(forms) ;
 		
 		System.out.println("testDefineAtom() evaluating: " + c.toString()) ;
-		c.eval(e) ;
+		c.eval(env) ;
 
-		System.out.println("testDefineAtom(): got " + e.get("FOOBAR")) ;
-		assertTrue(e.get("FOOBAR") == assignedValue) ;		
+		System.out.println("testDefineAtom(): got " + env.get("FOOBAR")) ;
+		assertTrue(env.get("FOOBAR") == assignedValue) ;		
 	}
 
 	@Test
@@ -78,16 +79,16 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(forms) ;
 		
 		System.out.println("testDefineFunction() evaluating: " + c.toString()) ;
-		c.eval(e) ;
+		c.eval(env) ;
 		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
 		
-		assertTrue(e.containsKey("FOOBAR")) ;
+		assertTrue(env.containsKey("FOOBAR")) ;
 		
-		System.out.println(e.get("FOOBAR")) ;
+		System.out.println(env.get("FOOBAR")) ;
 		
 		LispList argList = new ConsCell(new ObjectAtom(352), NilAtom.nil) ;
 		
-		CompoundProcedure builtProc = (CompoundProcedure)(e.get("FOOBAR")) ;
+		CompoundProcedure builtProc = (CompoundProcedure)(env.get("FOOBAR")) ;
 		LispObject applyResult = builtProc.apply(argList);
 		
 		assertTrue(applyResult.toString().equals("352")) ;
@@ -112,11 +113,11 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(forms) ;
 		
 		System.out.println("testDefineFunction() evaluating: " + c.toString()) ;
-		c.eval(e) ;
+		c.eval(env) ;
 		
-		assertTrue(e.containsKey("FOOBAR")) ;
+		assertTrue(env.containsKey("FOOBAR")) ;
 		
-		System.out.println(e.get("FOOBAR")) ;
+		System.out.println(env.get("FOOBAR")) ;
 		
 
 		//System.out.println("Just after calling SETQ: " + e.keySet()) ;
@@ -142,7 +143,7 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(forms) ;
 		System.out.println("testIfTrue() evaluating: " + c.toString()) ;
 
-		LispObject result = c.eval(e) ;
+		LispObject result = c.eval(env) ;
 		
 		assertTrue(result == consequentObject) ;
 	}
@@ -161,7 +162,7 @@ public class SpecialOperationsTest {
 		} ;
 		
 		ConsCell c = new ConsCell(forms) ;
-		LispObject result = c.eval(e) ;
+		LispObject result = c.eval(env) ;
 		
 		assertTrue(result == alternateObject) ;
 	}
@@ -196,7 +197,7 @@ public class SpecialOperationsTest {
 
 		System.out.println("testQuote() evaluating: " + c.toString()) ;
 
-		LispObject result = c.eval(e) ;
+		LispObject result = c.eval(env) ;
 		
 		System.out.println("testQuote() result: " + result) ;
 		assertTrue(result == exp1) ;
@@ -235,7 +236,7 @@ public class SpecialOperationsTest {
 		// c-> (lambda (x) (+ 3 x))
 		System.out.println("testLambda() evaluating: " + c.toString()) ;
 
-		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
+		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
 		//System.out.println(theLambda) ;
 		
 		assertTrue(theLambda.formalParams().car().toString().equals("X")) ;
@@ -265,7 +266,7 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(forms) ;
 		System.out.println("testLambdaMultipleFormBody() evaluating: " + c.toString()) ;
 
-		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
+		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
 		//System.out.println(theLambda) ;
 		
 		assertTrue(theLambda.body().cdr().car() == bodyForm2) ;
@@ -287,7 +288,7 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(exp) ;
 		System.out.println("testLambdaNoArgs() evaluating: " + c.toString()) ;
 
-		CompoundProcedure theLambda = (CompoundProcedure)c.eval(e) ;
+		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
 		
 		//System.out.println(theLambda) ;
 		
@@ -316,7 +317,7 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(formAsArray) ;
 		System.out.println("testLet() evaluating: " + c.toString()) ;
 
-		LispObject result = c.eval(e) ;
+		LispObject result = c.eval(env) ;
 				
 		assertTrue(result.toString().equals("5")) ;
 	}
@@ -339,7 +340,7 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(formAsArray) ;
 		System.out.println("testLet() evaluating: " + c.toString()) ;
 
-		LispObject result = c.eval(e) ;
+		LispObject result = c.eval(env) ;
 				
 		assertTrue(result.isNull()) ;
 	}

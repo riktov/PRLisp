@@ -15,14 +15,15 @@ public class EvalTest {
     private ConsCell c ;
     String helloString = "Hello, I am foo." ;
     
-    public Environment e ;
+    public Environment env ;
 
     @Before
     public void setUp() {
 	/**
 	 * We create a cons cell "by hand", without relying on the reader. 
 	 */
-    	e = new Environment() ;
+    	env = new Environment() ;
+    	env.initialize();
 
         ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil) ;
         ConsCell ct1 = new ConsCell(Atom.make(47), ct2) ;
@@ -32,10 +33,10 @@ public class EvalTest {
     }
 
     @Test public void testEvalSymbol() {
-    	e.intern("foo", new StringAtom(helloString)) ;
+    	env.intern("foo", new StringAtom(helloString)) ;
     	  	
     	LispObject sexp = new SymbolAtom("foo") ;
-    	ObjectAtom value = (ObjectAtom)sexp.eval(e) ;
+    	ObjectAtom value = (ObjectAtom)sexp.eval(env) ;
     	
     	assertTrue(value.data() == helloString) ;
     }
@@ -43,7 +44,7 @@ public class EvalTest {
     
     @Test public void testEvalApplyPrimitive() {
     	// The primitive + converts the result to float
-    	ObjectAtom sum = (ObjectAtom)c.eval(e) ;
+    	ObjectAtom sum = (ObjectAtom)c.eval(env) ;
 
     	//System.out.println(sum) ;
     	

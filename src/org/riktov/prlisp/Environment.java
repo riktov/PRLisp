@@ -14,10 +14,7 @@ class Environment extends HashMap<String, LispObject> {
 	/** 
      */
 	Environment() {
-		installConstants();
-		installPrimitives();
-		installSpecials();
-		installBuiltIns();
+		System.out.println("Environment constructor") ;
 	}
 
 	LispObject lookup(String str) {
@@ -31,6 +28,12 @@ class Environment extends HashMap<String, LispObject> {
 		return o;
 	}
 
+	void initialize() {
+		installConstants();
+		installPrimitives();
+		installSpecials();
+		installBuiltIns();		
+	}
 	void printKeys() {
 		System.out.println(keySet());	
 	}
