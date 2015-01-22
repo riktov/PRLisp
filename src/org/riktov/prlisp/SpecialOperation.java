@@ -13,9 +13,8 @@ abstract class SpecialOperation extends LispProcedure {
 
 	//public LispObject apply() { return new NilAtom()  ; }
 
-	@Override public LispList processArguments(LispList unevaluatedArgForms,
-			Environment argEnv) {
-		this.argEnv = argEnv; // always necessary if any args need to be
+	@Override public LispList processArguments(LispList unevaluatedArgForms, Environment argEnv) {
+		this.argEnv = argEnv;
 		return unevaluatedArgForms;
 	}
 

@@ -21,7 +21,7 @@ public class ApplyTest {
     	// a procedure which takes no arguments and returns 42.
     	// DataAtom.make(42) makes the data have the Integer run-time type. 
     	// Since we do not call the primitive +, the result is not converted to float
-    	ConsCell body = new ConsCell(new LispObject[] { DataAtom.make(42) }) ;
+    	LispList body = new ConsCell(new LispObject[] { DataAtom.make(42) }) ;
     	System.out.println("testEvalApplyCompoundNoArgs(): body is " + body.toString()) ;
 
     	CompoundProcedure proc = new CompoundProcedure(NilAtom.nil, body, env) ;
@@ -76,5 +76,30 @@ public class ApplyTest {
 	
 		System.out.println("testApplyCompoundWithListBoundArg(): result :  " + result) ;
 		assertTrue(result.toString().equals("(13 5)")) ;
+	}
+	
+	@Test public void testApplyCompoundWithListArg() {
+		/* It should be possible to apply a procedure where one of the arguments is a list,
+		 * without the list being evaluated as a procedure application at some intermediate poing
+		 * */
+		LispObject formalParams = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
+		LispList body = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
+		
+		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
+		System.out.println("testApplyCompoundWithListArg(): proc: " + proc) ;
+		
+		ConsCell argForms = new ConsCell(new ObjectAtom(5), NilAtom.nil) ;
+		argForms = new ConsCell(new ObjectAtom(13), argForms) ;
+		argForms = new ConsCell(argForms, NilAtom.nil) ;
+		//argForms is a list containing one item, the list (13 5)
+		
+		//LispList argValues = proc.processArguments(argForms, env) ;
+		
+		System.out.println("testApplyCompoundWithListArg(): argForms: " + argForms) ;
+		
+		LispObject result = proc.apply(argForms) ;
+	
+		System.out.println("testApplyCompoundWithListBoundArg(): result :  " + result) ;
+		assertTrue(result.toString().equals("(13 5)")) ;		
 	}
 }

@@ -110,7 +110,7 @@ final class NilAtom extends Atom implements LispList {
     @Override 
     public boolean isNull() { return true ; }
 	@Override
-	public LispList evalList(Environment env) { return this ; }
+	public LispList listOfValues(Environment env) { return this ; }
 	@Override
 	public LispObject evalSequence(Environment env) { return this ; }
 	@Override

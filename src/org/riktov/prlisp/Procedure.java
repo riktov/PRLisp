@@ -14,7 +14,7 @@ abstract class LispProcedure extends LispObject {
 	public abstract LispObject apply(LispList argsToApply) ;
     public LispList processArguments(LispList argForms, Environment evalEnv) {
     	System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
-		return argForms.evalList(evalEnv) ;
+		return argForms.listOfValues(evalEnv) ;
 	}
 
 }
@@ -67,11 +67,7 @@ class CompoundProcedure extends LispProcedure {
 
 		if(!argForms.isNull()) {
 			newEnv = new ChildEnvironment(env);
-			LispList argVals = argForms.evalList(env) ;
-
-			//TODO: If formalParams is rest-bound then don't evalList
-			
-			((ConsCell)argVals).bindToParams(formalParams, newEnv) ;
+			((ConsCell)argForms).bindToParams(formalParams, newEnv) ;
 		} else {
 			newEnv = env ;
 		}

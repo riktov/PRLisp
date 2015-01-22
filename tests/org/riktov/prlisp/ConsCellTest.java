@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 
 public class ConsCellTest {
-	private ConsCell c, d ;
+	private LispList c, d ;
 	private Environment env ;
 	ObjectAtom sevenFortySeven = new ObjectAtom(747);
 	
@@ -84,7 +84,7 @@ public class ConsCellTest {
 		ObjectAtom four = new ObjectAtom(4);
 		SymbolAtom x = new SymbolAtom("x");
 		LispObject[] args = { plus, four, x };
-		ConsCell c = new ConsCell(args);
+		LispList c = new ConsCell(args);
 
 		System.out.println("testMakeListFromArray(): List made from array:"
 				+ c.toString());
@@ -99,7 +99,7 @@ public class ConsCellTest {
 	public void testMakeListFromArrayShort() {
 		SymbolAtom plus = new SymbolAtom("+");
 		LispObject[] args = { plus };
-		ConsCell c = new ConsCell(args);
+		LispList c = new ConsCell(args);
 
 		System.out
 				.println("testMakeListFromArrayShort(): List made from array:"
@@ -133,11 +133,34 @@ public class ConsCellTest {
 		//ct0 => (55 JUMBO 23)
 		
 		System.out.println("testEvalList(): " + ct0.toString());
-		LispList evaluated = ct0.evalList(env);
+		LispList evaluated = ct0.listOfValues(env);
 		System.out.println("testEvalList() result: " + evaluated.toString());
 
 		LispObject evaluatedSecondElement = evaluated.cdr().car();
 		assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
+	}
+
+	/**
+	 * If one of the elements of a list is a variable whose value is a list,
+	 * evalList should not try to evaluate that list
+	 */
+	@Test
+	public void testEvalListWithListArg() {
+		ConsCell theList = new ConsCell(new Atom[] {
+				Atom.make(12), 
+				Atom.make(55), 
+				Atom.make(67)}) ;
+		
+		env.intern("thelist", theList) ;
+		
+		LispList argList = new ConsCell(new SymbolAtom("thelist"), NilAtom.nil) ;
+		
+		System.out.println("testEvalListWithListArg(): " + argList);
+		LispList evaluated = argList.listOfValues(env);
+		System.out.println("testEvalListWithListArg() result: " + evaluated);
+
+		LispObject evaluatedFirstElement = evaluated.car();
+		assertTrue(evaluatedFirstElement.toString().equals("(12 55 67)"));
 	}
 
 	/** This tests something under a situation that should never occur: the argsList not being a proper list.
@@ -161,7 +184,7 @@ public class ConsCellTest {
 		LispList ct0 = NilAtom.nil ;
 		
 		System.out.println("testEvalList(): " + ct0.toString());
-		LispList evaluated = ct0.evalList(env);
+		LispList evaluated = ct0.listOfValues(env);
 		System.out.println("testEvalList() result: " + evaluated.toString());
 
 		assertTrue(evaluated.isNull()) ;

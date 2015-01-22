@@ -9,13 +9,16 @@ public class BuiltIn {
 		LispReader lr = new LispReader();
 			
 		String[] builtInDefs = new String[] {
-			"(define (list . x) x)"
+			"(define (list . x) x)",
+			"(define (not x) (if (null? x) t nil))",
+			"(define (first x) (car x))",
+			"(define (cadr x) (car (cdr x)))"
 		} ;
-
-		(lr.read("(define (list . rest) rest)")).eval(env) ;
-		(lr.read("(define (not x) (if (null? x) t nil))")).eval(env) ;
-		(lr.read("(define (first x) (car x))")).eval(env) ;
-//		(lr.read("(define (cadr x) (car (cdr x)))")).eval(env) ;
+		
+		int i ;
+		for(i = 0 ; i < builtInDefs.length ; i++) {
+			lr.read(builtInDefs[i]).eval(env) ;
+		}
 		
 		return builtIns;
 	}
