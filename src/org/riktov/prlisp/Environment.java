@@ -14,7 +14,7 @@ class Environment extends HashMap<String, LispObject> {
 	/** 
      */
 	Environment() {
-		System.out.println("Environment constructor") ;
+		//System.out.println("Environment constructor") ;
 	}
 
 	LispObject lookup(String str) {

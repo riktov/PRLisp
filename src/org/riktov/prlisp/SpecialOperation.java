@@ -81,6 +81,7 @@ abstract class SpecialOperation extends LispProcedure {
 		});
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
+			@Override
 			public LispObject apply(LispList argForms) {
 				if(!argForms.cdr().isNull()) {
 					new LispDebugger(";Ill-formed special form", env) ;
@@ -90,20 +91,9 @@ abstract class SpecialOperation extends LispProcedure {
 		});
 
 		specials.put("lambda".toUpperCase(), new SpecialOperation() {
+			@Override
 			public LispObject apply(LispList argForms) {
-				LispObject formalParamList = argForms.car() ;
-				LispList body = (LispList)argForms.cdr();
-
-				/*
-				LispObject[] argList = formalParamList.toArray();
-				String[] paramNames = new String[argList.length];
-
-				int i;
-				for (i = 0; i < argList.length; i++) {
-					paramNames[i] = argList[i].toString();
-				}
-				*/
-				return new CompoundProcedure(formalParamList, body, argEnv);
+				return new CompoundProcedure(argForms.car(), (ConsCell)argForms.cdr(), argEnv);
 			}
 		});
 

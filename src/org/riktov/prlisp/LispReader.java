@@ -11,8 +11,12 @@ import java.util.HashMap;
 /**
  */
 class LispReader {
+	private HashMap<String, ReaderMacro> macros;
+
 	public LispObject read(String sExp) {
 		Reader r = new BufferedReader(new StringReader(sExp));
+		macros = ReaderMacro.initialReaderMacros() ;
+		
 		StreamTokenizer st = new StreamTokenizer(r);
 		st.whitespaceChars(' ', ' ');
 		st.commentChar(';');
@@ -25,7 +29,7 @@ class LispReader {
 		st.wordChars('.', '.');
 		st.wordChars('?', '?');	//examples: NULL? zero?
 		st.wordChars('*', '*');	//examples: LET*
-		st.wordChars('-', '-');	//examples: variable-names
+		st.wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
 		//st.ordinaryChar('+');
 		st.quoteChar('"');
 		// st.parseNumbers() ;
@@ -74,7 +78,12 @@ class LispReader {
 				return a ;
 			} else {
 				String sym = Character.toString((char) st.ttype);
-				return new SymbolAtom(sym);
+				
+				if(macros.containsKey(sym)) {
+					return macros.get(sym).process(readFrom(st)) ;
+				} else {
+					return new SymbolAtom(sym);					
+				}
 			} 
 		}	//end of while loop
 		return new NilAtom();
@@ -109,7 +118,7 @@ class LispReader {
 				items.add(readFrom(st)) ;
 			}
 		}
-		System.out.println("Finishing reading list") ;
+		System.out.println("Premature end of list") ;
 		return new NilAtom() ;
 	}
 	
@@ -128,10 +137,18 @@ class LispReader {
 }
 
 abstract class ReaderMacro {
-	abstract String process(String st) ;
+	abstract LispObject process(LispObject o) ;
 	
 	static HashMap<String, ReaderMacro> initialReaderMacros() {
 		HashMap<String, ReaderMacro> macros = new HashMap<String, ReaderMacro>() ;
+		
+		macros.put("'", new ReaderMacro() {
+			@Override
+			LispObject process(LispObject o) {
+				// TODO Auto-generated method stub
+					return Atom.make(o) ;
+			}
+		}) ;
 		
 		return macros;
 	}

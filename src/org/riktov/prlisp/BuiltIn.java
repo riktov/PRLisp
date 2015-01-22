@@ -12,6 +12,7 @@ public class BuiltIn {
 			"(define (list . x) x)",
 			"(define (not x) (if (null? x) t nil))",
 			"(define (first alis) (car alis))",
+			"(define (caar alis) (car (car alis)))",
 			"(define (cadr alis) (car (cdr alis)))",
 			"(define (append lis1 lis2) (if (null? lis1) lis2 (cons (car lis1) (append (cdr lis1) lis2))))",
 			"(define (reverse alis) (if (null? alis) alis (append (reverse (cdr alis)) (list (car alis)))))",
