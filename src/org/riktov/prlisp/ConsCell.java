@@ -164,7 +164,7 @@ class ConsCell extends LispObject implements LispList {
 	@Override public LispList listOfValues(Environment env) {
 		ConsCell current = this ;
 
-		System.out.println("ConsCell.listOfValues(): form: " + current) ;
+		//System.out.println("ConsCell.listOfValues(): form: " + current) ;
 		
 		if(current.cdr().isNull()) {
 			return (LispList) new ConsCell(current.car.eval(env), current.cdr) ;
@@ -227,23 +227,22 @@ class ConsCell extends LispObject implements LispList {
 	 * @param env
 	 */
 	public void bindToParams(LispObject formalParams, Environment env) {
-		//System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
+		System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
 
 		LispObject currentParam = formalParams ;
 		LispObject currentValCell = this ;	//cell may be ConsCell or Atom
 		LispObject val  ;
 		
-		
 		while(!currentValCell.isNull()) {
 			if (!currentParam.isAtom()) {
 				val = currentValCell.car() ;
-				System.out.println("ConsCell.bindToParams(): cell key: " + currentParam + " val :" + val  ) ;
+				System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.car().toString(), val) ;
 				currentValCell = currentValCell.cdr() ;
 				currentParam = currentParam.cdr() ;
 			} else {
 				val = currentValCell ;
-				System.out.println("ConsCell.bindToParams(): atom key: " + currentParam + " val :" + val  ) ;
+				System.out.println("- binding atom key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.toString(), val) ;
 				env.printKeys();
 				return ;

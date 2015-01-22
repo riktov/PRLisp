@@ -131,7 +131,7 @@ abstract class SpecialOperation extends LispProcedure {
 		specials.put("let".toUpperCase(), new SpecialOperation() {
 			public LispObject apply(LispList argForms) {
 				LispList bindingList = (LispList)argForms.car();
-				LispList body = (LispList) argForms.cdr().car();
+				LispList body = (LispList) argForms.cdr();
 				
 //				LispObject[] bindings = bindingList.toArray();
 
@@ -146,7 +146,7 @@ abstract class SpecialOperation extends LispProcedure {
 						binding = new ConsCell(binding, NilAtom.nil) ;
 					}
 					SymbolAtom symName = (SymbolAtom) binding.car();
-					LispObject value = binding.cdr().car();
+					LispObject value = binding.cdr().car().eval(argEnv);
 
 					letEnv.intern(symName.toString(), value);
 				}

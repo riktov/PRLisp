@@ -13,7 +13,7 @@ import java.util.Iterator;
 abstract class LispProcedure extends LispObject {
 	public abstract LispObject apply(LispList argsToApply) ;
     public LispList processArguments(LispList argForms, Environment evalEnv) {
-    	System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
+    	//System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
 		return argForms.listOfValues(evalEnv) ;
 	}
 

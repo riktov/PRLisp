@@ -25,6 +25,7 @@ class LispReader {
 		st.wordChars('.', '.');
 		st.wordChars('?', '?');	//examples: NULL? zero?
 		st.wordChars('*', '*');	//examples: LET*
+		st.wordChars('-', '-');	//examples: variable-names
 		//st.ordinaryChar('+');
 		st.quoteChar('"');
 		// st.parseNumbers() ;

@@ -143,11 +143,13 @@ public class LispReaderTest {
     
     @Test public void testReadSymbolWithSpecialChar() {
     	String exp = "(let* ((x 5)))" ;
-    	
     	LispObject result = lr.read(exp) ;
-    	
     	ObjectAtom expectedLetStar = (ObjectAtom)result.car();
-    	
     	assertTrue(expectedLetStar.data().toString().equals("LET*")) ;
-    }
+
+    	exp = "(let ((hyphenated-variable-name 5)))" ;
+    	result = lr.read(exp) ;
+    	ObjectAtom expected = (ObjectAtom)result.car();
+    	//assertTrue(expected.data().toString().equals("LET*")) ;
+}
 }

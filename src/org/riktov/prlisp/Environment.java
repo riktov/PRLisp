@@ -64,6 +64,7 @@ class Environment extends HashMap<String, LispObject> {
 	}
 
 	boolean intern(String symName, LispObject o) {
+		System.out.println("Environment.intern(): " + symName + " => " + o) ;
 		put(symName.toUpperCase(), o);
 		return true;
 	}

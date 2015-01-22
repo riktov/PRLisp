@@ -306,8 +306,8 @@ public class SpecialOperationsTest {
 	public void testLet() {
 		LispObject binding1 = new ConsCell( new LispObject[] { new SymbolAtom("x"), DataAtom.make(5) });
 		LispObject bindingList = new ConsCell(binding1, NilAtom.nil) ;
-		LispObject body = new ConsCell(new SymbolAtom("x"), NilAtom.nil) ;
-		
+		LispObject body = new SymbolAtom("x") ;
+	
 		LispObject[] formAsArray = new LispObject[] {
 				new SymbolAtom("let"),
 				bindingList,
@@ -315,7 +315,7 @@ public class SpecialOperationsTest {
 		} ;
 
 		ConsCell c = new ConsCell(formAsArray) ;
-		System.out.println("testLet() evaluating: " + c.toString()) ;
+		System.out.println("testLet() evaluating: " + c) ;
 
 		LispObject result = c.eval(env) ;
 				
@@ -329,7 +329,7 @@ public class SpecialOperationsTest {
 	public void testLetEmptyBinding() {
 		LispObject binding1 = new SymbolAtom("x") ;
 		LispObject bindingList = new ConsCell(binding1, NilAtom.nil) ;
-		LispObject body = new ConsCell(new SymbolAtom("x"), NilAtom.nil) ;
+		LispObject body = new SymbolAtom("x") ;
 		
 		LispObject[] formAsArray = new LispObject[] {
 				new SymbolAtom("let"),
