@@ -59,7 +59,7 @@ abstract class Atom extends LispObject {
     	if (b) {
     		return new SymbolAtom("t") ;
     	} else {
-    		return new NilAtom() ;
+    		return NilAtom.nil ;
     	}
     }
     //accessors

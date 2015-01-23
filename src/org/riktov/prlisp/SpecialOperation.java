@@ -140,22 +140,6 @@ abstract class SpecialOperation extends LispProcedure {
 
 					letEnv.intern(symName.toString(), value);
 				}
-
-				/*
-				 //TODO: refactor this with APPLY, or EvalSequence
-				int i;
-				for (i = 0; i < bindings.length; i++) {
-					//TODO: handle atoms (bound to null) in the bindingList
-					LispObject binding = bindings[i];
-					if(binding.isAtom()) {
-						binding = new ConsCell(binding, new NilAtom()) ;
-					}
-					SymbolAtom symName = (SymbolAtom) binding.car();
-					LispObject value = binding.cdr().car();
-
-					letEnv.intern(symName.toString(), value);
-				}
-				*/
 				
 				LispObject result = body.evalSequence(letEnv);
 
