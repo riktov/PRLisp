@@ -48,13 +48,6 @@ class LispReader {
 	 * readFrom(StreamTokenizer st)
 	 */
 	public LispObject readFrom(StreamTokenizer st) throws IOException {
-		// Atom a = new Atom() ;
-		// ConsCell c = new ConsCell() ;
-		//LispObject theCar, theCdr;
-		//ArrayList<LispObject> cdrList = new ArrayList<LispObject>() ;
-		//theCar = null;
-		//theCdr = null;
-
 		while (st.nextToken() != StreamTokenizer.TT_EOF) {
 			//System.out.println(st.toString());
 
@@ -80,7 +73,7 @@ class LispReader {
 				String sym = Character.toString((char) st.ttype);
 				
 				if(macros.containsKey(sym)) {
-					return macros.get(sym).process(readFrom(st)) ;
+					return macros.get(sym).process(readTextFrom(st)) ;
 				} else {
 					return new SymbolAtom(sym);					
 				}
@@ -122,6 +115,51 @@ class LispReader {
 		return new NilAtom() ;
 	}
 	
+	/**
+	 * 
+	 * @param st a StreamTokenizer
+	 * @return the next entire string enclosed in parentheses (possible nested), spaces, or quotes
+	 * @throws IOException
+	 */
+	public String readTextFrom(StreamTokenizer st) throws IOException {
+		while (st.nextToken() != StreamTokenizer.TT_EOF) {
+			//System.out.println(st.toString());
+
+			if (st.ttype == '(') {					
+				return readTextListFrom(st) ;
+			} else if (st.ttype == '"') {
+				// System.out.println("Read quoted string") ;
+				return st.sval;
+			} else if (st.ttype == StreamTokenizer.TT_WORD) {
+				return st.sval ;
+			} else {
+				return Character.toString((char) st.ttype);
+			} 
+		}	//end of while loop
+		return "" ;
+	}
+	
+	public String readTextListFrom(StreamTokenizer st) throws IOException {
+		String forms = "" ;
+
+		//System.out.println("Starting reading list") ;
+		while (st.nextToken() != StreamTokenizer.TT_EOF) {
+			if (st.ttype == ')') {
+				return forms + ")";
+			} else {
+				st.pushBack();
+				String nextForm = readTextFrom(st) ;
+				if(forms.equals("")) {
+					forms = "(" + nextForm;
+				} else {
+					forms = forms + " " + nextForm ;					
+				}
+			}
+		}
+		System.out.println("Premature end of list string") ;
+		return "" ;
+	}
+	
 	public static DataAtom parseNumber(String st) {
 		try {
 			return new ObjectAtom(Integer.valueOf(st));
@@ -137,16 +175,16 @@ class LispReader {
 }
 
 abstract class ReaderMacro {
-	abstract LispObject process(LispObject o) ;
+	abstract LispObject process(String string) ;
 	
 	static HashMap<String, ReaderMacro> initialReaderMacros() {
 		HashMap<String, ReaderMacro> macros = new HashMap<String, ReaderMacro>() ;
 		
 		macros.put("'", new ReaderMacro() {
 			@Override
-			LispObject process(LispObject o) {
-				// TODO Auto-generated method stub
-					return Atom.make(o) ;
+			LispObject process(String formString) {
+				String processedString = "(quote " + formString + ")" ;
+				return new LispReader().read(processedString) ;
 			}
 		}) ;
 		
