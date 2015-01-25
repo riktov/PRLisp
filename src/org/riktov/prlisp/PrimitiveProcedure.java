@@ -63,30 +63,30 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			public LispObject apply(LispList argForms) {
 				// System.out.println("primitive + apply():" + argForms) ;
 				Number[] numericalArgs = numericalArgs(argForms.toArray());
-				if (numericalArgs[0].getClass() == numericalArgs[1].getClass()) {
-					
-					numericalArgs[0] = numericalArgs[0].floatValue()
-							+ numericalArgs[1].floatValue();
-					return new ObjectAtom(numericalArgs[0]);
+				if ((numericalArgs[0].getClass() == Integer.class) && (numericalArgs[1].getClass() == Integer.class))	{
+					return new ObjectAtom(Math.round(numericalArgs[0].floatValue()) + 	Math.round(numericalArgs[1].floatValue())) ;
 				}
-				return new ObjectAtom(numericalArgs[0].floatValue()
-						+ numericalArgs[1].floatValue());
+				return new ObjectAtom(numericalArgs[0].floatValue() + numericalArgs[1].floatValue());
 			}
 		});
 
 		primitives.put("-".toUpperCase(), new PrimitiveNumericalProcedure() {
 			public LispObject apply(LispList argForms) {
 				Number[] numericalArgs = numericalArgs(argForms.toArray());
-				return new ObjectAtom(numericalArgs[0].floatValue()
-						- numericalArgs[1].floatValue());
+				if ((numericalArgs[0].getClass() == Integer.class) && (numericalArgs[1].getClass() == Integer.class))	{
+					return new ObjectAtom(Math.round(numericalArgs[0].floatValue()) - 	Math.round(numericalArgs[1].floatValue())) ;
+				}
+				return new ObjectAtom(numericalArgs[0].floatValue() - numericalArgs[1].floatValue());
 			}
 		});
 
 		primitives.put("*".toUpperCase(), new PrimitiveNumericalProcedure() {
 			public LispObject apply(LispList argForms) {
 				Number[] numericalArgs = numericalArgs(argForms.toArray());
-				return new ObjectAtom(numericalArgs[0].floatValue()
-						* numericalArgs[1].floatValue());
+				if ((numericalArgs[0].getClass() == Integer.class) && (numericalArgs[1].getClass() == Integer.class))	{
+					return new ObjectAtom(Math.round(numericalArgs[0].floatValue()) * 	Math.round(numericalArgs[1].floatValue())) ;
+				}
+				return new ObjectAtom(numericalArgs[0].floatValue() * numericalArgs[1].floatValue());
 			}
 		});
 
