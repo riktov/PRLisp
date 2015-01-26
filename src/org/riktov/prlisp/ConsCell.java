@@ -102,11 +102,12 @@ class ConsCell extends LispObject implements LispList {
 	 * @return The LispObject resulting from the evaluation
 	 */
 	@Override LispObject eval(Environment env) {
-		System.out.println("ConsCell.eval(): " + this) ;
+		//System.out.println("ConsCell.eval(): " + this) ;
 		
 		LispProcedure proc = (LispProcedure)car.eval(env) ;
-		//proc could be a compound procedure, a primitive, or a special form
 		
+		System.out.println(proc) ;
+		//proc could be a compound procedure, a primitive, or a special form
 		LispList argsToApply = proc.processArguments((LispList)cdr, env);			
 		return proc.apply(argsToApply);
 	}
@@ -227,7 +228,7 @@ class ConsCell extends LispObject implements LispList {
 	 * @param env
 	 */
 	public void bindToParams(LispObject formalParams, Environment env) {
-		System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
+		//System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
 
 		LispObject currentParam = formalParams ;
 		LispObject currentValCell = this ;	//cell may be ConsCell or Atom
@@ -236,13 +237,13 @@ class ConsCell extends LispObject implements LispList {
 		while(!currentValCell.isNull()) {
 			if (!currentParam.isAtom()) {
 				val = currentValCell.car() ;
-				System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;
+				//System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.car().toString(), val) ;
 				currentValCell = currentValCell.cdr() ;
 				currentParam = currentParam.cdr() ;
 			} else {
 				val = currentValCell ;
-				System.out.println("- binding atom key: " + currentParam + " val :" + val  ) ;
+				//System.out.println("- binding atom key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.toString(), val) ;
 				env.printKeys();
 				return ;

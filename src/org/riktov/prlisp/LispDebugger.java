@@ -5,7 +5,8 @@ class LispDebugger {
 		offerRestarts(errorMessage) ;
 	}
 	
-	void offerRestarts(String errorMessage) {
+	int offerRestarts(String errorMessage) {
 		System.out.println(errorMessage) ;
+		return 4 ;
 	}
 }

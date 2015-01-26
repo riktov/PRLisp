@@ -19,13 +19,22 @@ class Environment extends HashMap<String, LispObject> {
 
 	LispObject lookup(String str) {
 		LispObject o = this.get(str);
-
-		if (o == null) {
-			//System.out.println("EVAL: variable " + str + " has no value");
-			LispDebugger debugger = new LispDebugger("Some error", this) ;
+		if(o == null) {
+			LispDebugger debugger = new LispDebugger(";Unbound variable", this) ;
+			int restart = debugger.offerRestarts("FOO");
+			System.out.println(restart) ;
+			switch(restart) {
+			case 1:
+				break ;
+			case 4:
+				System.out.println("The restart is 4") ;
+				o = this.get("FIB") ;
+				break ;
+			default:
+				System.out.println("The restart is default") ;
+			}
 		}
-
-		return o;
+		return o ;
 	}
 
 	void initialize() {
@@ -64,7 +73,7 @@ class Environment extends HashMap<String, LispObject> {
 	}
 
 	boolean intern(String symName, LispObject o) {
-		System.out.println("Environment.intern(): " + symName + " => " + o) ;
+		//System.out.println("Environment.intern(): " + symName + " => " + o) ;
 		put(symName.toUpperCase(), o);
 		return true;
 	}
