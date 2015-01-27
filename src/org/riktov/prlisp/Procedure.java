@@ -58,6 +58,7 @@ class CompoundProcedure extends LispProcedure {
 	 *            This is an array of objects (evaluated) that is passed to the
 	 *            method.
 	 * @return LispObject The value of the last form in the procedure body
+	 * @throws LispAbortEvaluationException 
 	 */
 	public LispObject apply(LispList argForms) {
 		System.out.println("CompoundProcedure.apply() : argForms: " + argForms + " formalParams: " + formalParams) ;

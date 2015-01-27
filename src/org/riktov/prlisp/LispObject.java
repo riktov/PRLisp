@@ -10,6 +10,7 @@ abstract class LispObject {
      * whose values are looked up in the environment,
      * and (lists) cons cells, which are evaluated by applying their first 
      * element to the remainders
+     * @throws LispAbortEvaluationException 
      */
     LispObject eval(Environment env) { return this ;}
     public String toStringCdr() { return " . " + this.toString() ; }
@@ -28,7 +29,20 @@ abstract class LispObject {
     */
 
     public LispObject car() {
-        System.out.println("CAR: " + this.toString() + " is not a list") ;
+		LispRestarter restarter = new LispRestarter(";The object " + this + ", passed as the first argument to car, is not the correct type", null) ;
+		int choice = restarter.offerRestarts("FOO");
+		System.out.println(choice) ;
+		switch(choice) {
+		case 1:
+			break ;
+		case 2:
+			System.out.println("The restart is 2") ;
+//			o = this.get("FIB") ;
+			break ;
+		default:
+			System.out.println("The restart is default") ;
+		}
+
         return new NilAtom() ;
     }
     

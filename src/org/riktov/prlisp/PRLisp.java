@@ -49,12 +49,8 @@ public class PRLisp {
 				}
 				LispObject o = lr.read(input);// READ
 	
-				try {
-					LispObject evaluated = o.eval(env);// EVALUATE
-					System.out.println(evaluated);// PRINT (evaluated)
-				} catch(ClassCastException exc) {
-					new LispDebugger(";The object " + o + " is not applicable.  " + exc.toString(), env) ;
-				}
+				LispObject evaluated = o.eval(env);// EVALUATE
+				System.out.println(evaluated);// PRINT (evaluated)
 
 				//System.out.println(o.toString()) ; //print unevaluated
 	

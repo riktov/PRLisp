@@ -26,7 +26,8 @@ public class ApplyTest {
 
     	CompoundProcedure proc = new CompoundProcedure(NilAtom.nil, body, env) ;
     	
-    	ObjectAtom result = (ObjectAtom)proc.apply(NilAtom.nil) ;
+    	ObjectAtom result = null;
+		result = (ObjectAtom)proc.apply(NilAtom.nil);
 
         assertTrue(result.toString().equals("42")) ;
         assertTrue(result.data.equals(new Integer(42))) ;
@@ -46,11 +47,13 @@ public class ApplyTest {
 		System.out.println("testEvalApplyCompoundWithArgs(): proc: " + proc) ;
 		
 		LispList argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
-		LispList argValues = proc.processArguments(argForms, env) ;
+		LispList argValues = null;
+		argValues = proc.processArguments(argForms, env);
 		
 		System.out.println("testEvalApplyCompoundWithArgs(): argValues: " + argValues) ;
 		
-		LispObject result = proc.apply(argValues) ;
+		LispObject result = null;
+		result = proc.apply(argValues);
 	
 		System.out.println("testEvalApplyCompoundWithArgs(): result :  " + result) ;
 		assertTrue(result.toString().equals("5")) ;

@@ -20,6 +20,9 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("car".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
+				if(!argForms.cdr().isNull()) {
+					LispRestarter restarter = new LispRestarter(";The procedure " + this + " has been called with too many arguments", null) ;
+				}
 				return argForms.car().car();
 			}
 		});

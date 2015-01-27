@@ -43,7 +43,6 @@ abstract class SpecialOperation extends LispProcedure {
 					String symbolName = current.car().toString().toUpperCase() ;//current key
 					current = (ConsCell)current.cdr ;//current value
 					assignedValue = current.car ;
-					//System.out.println("SETQ - setting symbol " + symbolName + " with value " + assignedValue.toString()) ;
 					env.put(symbolName, assignedValue.eval(argEnv));
 					if(!current.cdr.isNull()) {
 						current = (ConsCell)current.cdr ;//next key-value pair						
@@ -84,7 +83,7 @@ abstract class SpecialOperation extends LispProcedure {
 			@Override
 			public LispObject apply(LispList argForms) {
 				if(!argForms.cdr().isNull()) {
-					new LispDebugger(";Ill-formed special form", env) ;
+					new LispRestarter(";Ill-formed special form", env) ;
 				}
 				return argForms.car() ;//unevaluated
 			}
@@ -103,7 +102,8 @@ abstract class SpecialOperation extends LispProcedure {
 				LispObject varNameForm = argForms.car();
 
 				if(varNameForm.isAtom()) {
-					LispObject value = argForms.cdr().car().eval(argEnv) ;
+					LispObject value = null;
+					value = argForms.cdr().car().eval(argEnv);
 					argEnv.intern(varNameForm.toString(), value) ;
 				} else {
 					SymbolAtom procName = (SymbolAtom) varNameForm.car() ;
@@ -136,12 +136,14 @@ abstract class SpecialOperation extends LispProcedure {
 						binding = new ConsCell(binding, NilAtom.nil) ;
 					}
 					SymbolAtom symName = (SymbolAtom) binding.car();
-					LispObject value = binding.cdr().car().eval(argEnv);
+					LispObject value = null;
+					value = binding.cdr().car().eval(argEnv);
 
 					letEnv.intern(symName.toString(), value);
 				}
 				
-				LispObject result = body.evalSequence(letEnv);
+				LispObject result = null;
+				result = body.evalSequence(letEnv);
 
 				return result;
 			}

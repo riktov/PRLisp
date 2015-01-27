@@ -100,11 +100,13 @@ class ConsCell extends LispObject implements LispList {
 	 * @param env
 	 *            The Environment in which this object is evaluated
 	 * @return The LispObject resulting from the evaluation
+	 * @throws LispAbortEvaluationException 
 	 */
 	@Override LispObject eval(Environment env) {
 		//System.out.println("ConsCell.eval(): " + this) ;
 		
-		LispProcedure proc = (LispProcedure)car.eval(env) ;
+		LispObject firstVal = car.eval(env) ;
+		LispProcedure proc = (LispProcedure)firstVal ;
 		
 		System.out.println(proc) ;
 		//proc could be a compound procedure, a primitive, or a special form
@@ -160,9 +162,10 @@ class ConsCell extends LispObject implements LispList {
 	 * @return A list of the same length as this, comprising the evaluated forms
 	 * 
 	 * TODO: change this to evalAllAtoms
+	 * @throws LispAbortEvaluationException 
 	 */
 
-	@Override public LispList listOfValues(Environment env) {
+	@Override public LispList listOfValues(Environment env)  {
 		ConsCell current = this ;
 
 		//System.out.println("ConsCell.listOfValues(): form: " + current) ;
@@ -182,6 +185,7 @@ class ConsCell extends LispObject implements LispList {
 	/**
 	 * Treat this as a list of forms, and evaluate them in turn in env, returning the last one
 	 * @return The value of the last subform
+	 * @throws LispAbortEvaluationException 
 	 */
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;

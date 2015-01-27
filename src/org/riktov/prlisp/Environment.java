@@ -20,10 +20,10 @@ class Environment extends HashMap<String, LispObject> {
 	LispObject lookup(String str) {
 		LispObject o = this.get(str);
 		if(o == null) {
-			LispDebugger debugger = new LispDebugger(";Unbound variable", this) ;
-			int restart = debugger.offerRestarts("FOO");
-			System.out.println(restart) ;
-			switch(restart) {
+			LispRestarter restarter = new LispRestarter(";Unbound variable: ", this) ;
+			int choice = restarter.offerRestarts("FOO");
+			System.out.println(choice) ;
+			switch(choice) {
 			case 1:
 				break ;
 			case 4:
@@ -31,7 +31,8 @@ class Environment extends HashMap<String, LispObject> {
 				o = this.get("FIB") ;
 				break ;
 			default:
-				System.out.println("The restart is default") ;
+				//throw new LispAbortEvaluationException() ;
+				//System.out.println("The restart is default") ;
 			}
 		}
 		return o ;
