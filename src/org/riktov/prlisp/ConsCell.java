@@ -208,7 +208,7 @@ class ConsCell extends LispObject implements LispList {
 		final ConsCell origin = this ;
 //		System.out.println("Creating iterator from " + this) ;
 		return new Iterator<LispObject>() {
-			LispObject current = origin ;
+			ConsCell current = origin ;
 			@Override
 			public boolean hasNext() {
 //				System.out.println("Iterator.hasNext(): " + current) ;
@@ -218,7 +218,7 @@ class ConsCell extends LispObject implements LispList {
 			@Override
 			public LispObject next() {
 				LispObject currentCar = current.car() ;
-				current = current.cdr() ;
+				current = (ConsCell) current.cdr() ;
 				return currentCar ;
 			}
 
@@ -244,7 +244,7 @@ class ConsCell extends LispObject implements LispList {
 		
 		while(!currentValCell.isNull()) {
 			if (!currentParam.isAtom()) {
-				val = currentValCell.car() ;
+				val = ((ConsCell)currentValCell).car() ;
 				//System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.car().toString(), val) ;
 				currentValCell = currentValCell.cdr() ;

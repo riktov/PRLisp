@@ -56,7 +56,7 @@ public class PRLisp {
 					System.out.println("Evaluation aborted.") ;
 				}
 				
-				System.out.println(evaluated);// PRINT (evaluated)
+				System.out.println(";Value: " + evaluated);// PRINT (evaluated)
 
 				//System.out.println(o.toString()) ; //print unevaluated
 	

@@ -21,6 +21,7 @@ abstract class LispObject {
      * a LispObject. Some of these might be unnecessary with judicious use of 
      * downcasting and handling of the resulting ClassCastException
      */
+    
     public LispObject car() {
 		LispRestarter restarter = new LispRestarter() ;
 		restarter.offerRestarts(";The object " + this + ", passed as the first argument to car, is not the correct type.");
@@ -32,6 +33,7 @@ abstract class LispObject {
 		restarter.offerRestarts(";The object " + this + ", passed as the first argument to cdr, is not the correct type.");
 		throw new LispAbortEvaluationException() ;
     }
+    
 }
 
 /**

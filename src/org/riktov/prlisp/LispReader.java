@@ -30,6 +30,7 @@ class LispReader {
 		st.wordChars('?', '?');	//examples: NULL? zero?
 		st.wordChars('*', '*');	//examples: LET*
 		st.wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
+		st.wordChars('>', '>');	//examples: STR->LIS
 		//st.ordinaryChar('+');
 		st.quoteChar('"');
 		// st.parseNumbers() ;
