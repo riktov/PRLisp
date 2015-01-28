@@ -49,7 +49,13 @@ public class PRLisp {
 				}
 				LispObject o = lr.read(input);// READ
 	
-				LispObject evaluated = o.eval(env);// EVALUATE
+				LispObject evaluated = null ;
+				try {
+					evaluated = o.eval(env);// EVALUATE
+				} catch (LispAbortEvaluationException exc) {
+					System.out.println("Evaluation aborted.") ;
+				}
+				
 				System.out.println(evaluated);// PRINT (evaluated)
 
 				//System.out.println(o.toString()) ; //print unevaluated

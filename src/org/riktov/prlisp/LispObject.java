@@ -21,34 +21,16 @@ abstract class LispObject {
      * a LispObject. Some of these might be unnecessary with judicious use of 
      * downcasting and handling of the resulting ClassCastException
      */
-    /*
-    public LispObject apply(LispObject[] argVals) {
-        System.out.println("APPLY: " + this.toString() + " is not a function name; try using a symbol instead") ;
-        return new NilAtom() ;
-    }
-    */
-
     public LispObject car() {
-		LispRestarter restarter = new LispRestarter(";The object " + this + ", passed as the first argument to car, is not the correct type", null) ;
-		int choice = restarter.offerRestarts("FOO");
-		System.out.println(choice) ;
-		switch(choice) {
-		case 1:
-			break ;
-		case 2:
-			System.out.println("The restart is 2") ;
-//			o = this.get("FIB") ;
-			break ;
-		default:
-			System.out.println("The restart is default") ;
-		}
-
-        return new NilAtom() ;
+		LispRestarter restarter = new LispRestarter() ;
+		restarter.offerRestarts(";The object " + this + ", passed as the first argument to car, is not the correct type.");
+		throw new LispAbortEvaluationException() ;
     }
     
     public LispObject cdr() {
-        System.out.println("CDR: " + this.toString() + " is not a list") ;
-        return new NilAtom() ;
+		LispRestarter restarter = new LispRestarter() ;
+		restarter.offerRestarts(";The object " + this + ", passed as the first argument to cdr, is not the correct type.");
+		throw new LispAbortEvaluationException() ;
     }
 }
 
@@ -146,6 +128,8 @@ final class NilAtom extends Atom implements LispList {
 			}			
 		};
 	}
+	@Override
+	public int length() { return 0; }
 }
 
 /**
@@ -163,6 +147,25 @@ class StringAtom extends ObjectAtom {
 class SymbolAtom extends ObjectAtom {
     public SymbolAtom(String s) { super(s.toUpperCase()) ; }
     @Override public LispObject eval(Environment env) {
-        return env.lookup(data.toString()) ;
+        LispObject o = env.lookup(data.toString()) ;
+
+		if(o == null) {
+			LispRestarter restarter = new LispRestarter() ;
+			int choice = restarter.offerRestarts(";Unbound variable: " + this.toString());
+			System.out.println(choice) ;
+			
+			switch(choice) {
+			case 1:
+				break ;
+			case 4:
+				System.out.println("The restart is 4") ;
+//				o = this.get("FIB") ;
+				break ;
+			default:
+				throw new LispAbortEvaluationException() ;
+				//System.out.println("The restart is default") ;
+			}
+		} 
+		return o ;
     }
 }

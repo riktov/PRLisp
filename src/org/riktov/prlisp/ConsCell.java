@@ -7,13 +7,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 interface LispList extends Iterable<LispObject> {
-	public abstract LispList listOfValues(Environment env) ;
-	public abstract LispObject evalSequence(Environment env) ;
+	public LispList listOfValues(Environment env) ;
+	public LispObject evalSequence(Environment env) ;
 	//public void bindParamsToValues(Iterable<LispObject> argForms, Environment env) ;
 	boolean isNull();
 	public LispObject car() ;
 	public LispObject cdr() ;
 	public LispObject[] toArray();
+	public int length() ;
 }
 
 class ConsCell extends LispObject implements LispList {
@@ -106,9 +107,16 @@ class ConsCell extends LispObject implements LispList {
 		//System.out.println("ConsCell.eval(): " + this) ;
 		
 		LispObject firstVal = car.eval(env) ;
-		LispProcedure proc = (LispProcedure)firstVal ;
 		
-		System.out.println(proc) ;
+		LispProcedure proc = null ;
+		try {
+			proc = (LispProcedure)firstVal ;
+		} catch (ClassCastException exc) {
+			new LispRestarter().offerRestarts("The object " + firstVal + " is not applicable.") ;
+			throw new LispAbortEvaluationException() ;
+		}
+		
+		//System.out.println(proc.toString()) ;
 		//proc could be a compound procedure, a primitive, or a special form
 		LispList argsToApply = proc.processArguments((LispList)cdr, env);			
 		return proc.apply(argsToApply);
@@ -151,10 +159,6 @@ class ConsCell extends LispObject implements LispList {
 
 		LispObject[] arr = new LispObject[al.size()];
 		return al.toArray(arr);
-
-		// System.out.println("Arguments: " + arr) ;
-		// return arr;
-		// return new LispObject [] { new Atom(5), new Atom(13) } ;
 	}
 	
 	/**
@@ -189,7 +193,7 @@ class ConsCell extends LispObject implements LispList {
 	 */
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
-		System.out.println("ConsCell.evalSequence(): form: " + current.car.toString()) ;
+		//System.out.println("ConsCell.evalSequence(): form: " + current.car.toString()) ;
 		
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
@@ -249,11 +253,20 @@ class ConsCell extends LispObject implements LispList {
 				val = currentValCell ;
 				//System.out.println("- binding atom key: " + currentParam + " val :" + val  ) ;
 				env.intern(currentParam.toString(), val) ;
-				env.printKeys();
+				//env.printKeys();
 				return ;
 			}
 		}
-		env.printKeys();
+		//env.printKeys();
+	}
+
+	@Override
+	public int length() {
+		if(this.isNull()) {
+			return 0 ;
+		} else {
+			return ((LispList)this.cdr()).length() + 1 ;
+		}
 	}
 	
 	/*

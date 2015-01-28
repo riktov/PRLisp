@@ -6,7 +6,7 @@ import java.util.Iterator;
 abstract class SpecialOperation extends LispProcedure {
 	/**
 	 * A special operation may choose to evaluate some arguments conditionally,
-	 * rather than receiving them evaluated. So it may need the environment in
+	 * during execution, rather than receiving them evaluated. So it may need the environment in
 	 * which the arguments are to be evaluated,
 	 */
 	protected Environment argEnv;
@@ -82,8 +82,11 @@ abstract class SpecialOperation extends LispProcedure {
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
 			@Override
 			public LispObject apply(LispList argForms) {
+				if(argForms.isNull()) {
+					return NilAtom.nil ;	//(QUOTE)
+				}
 				if(!argForms.cdr().isNull()) {
-					new LispRestarter(";Ill-formed special form", env) ;
+					new LispRestarter().offerRestarts(";Ill-formed special form") ;
 				}
 				return argForms.car() ;//unevaluated
 			}

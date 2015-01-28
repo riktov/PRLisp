@@ -18,24 +18,7 @@ class Environment extends HashMap<String, LispObject> {
 	}
 
 	LispObject lookup(String str) {
-		LispObject o = this.get(str);
-		if(o == null) {
-			LispRestarter restarter = new LispRestarter(";Unbound variable: ", this) ;
-			int choice = restarter.offerRestarts("FOO");
-			System.out.println(choice) ;
-			switch(choice) {
-			case 1:
-				break ;
-			case 4:
-				System.out.println("The restart is 4") ;
-				o = this.get("FIB") ;
-				break ;
-			default:
-				//throw new LispAbortEvaluationException() ;
-				//System.out.println("The restart is default") ;
-			}
-		}
-		return o ;
+		return this.get(str);
 	}
 
 	void initialize() {

@@ -61,7 +61,7 @@ class CompoundProcedure extends LispProcedure {
 	 * @throws LispAbortEvaluationException 
 	 */
 	public LispObject apply(LispList argForms) {
-		System.out.println("CompoundProcedure.apply() : argForms: " + argForms + " formalParams: " + formalParams) ;
+		//System.out.println("CompoundProcedure.apply() : argForms: " + argForms + " formalParams: " + formalParams) ;
 		Environment newEnv ;
 
 		if(!argForms.isNull()) {

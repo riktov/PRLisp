@@ -6,23 +6,13 @@ package org.riktov.prlisp;
  *
  */
 class LispRestarter {
-	/**
-	 * constructor 
-	 * @param errorMessage
-	 * @param env
-	 */
-	LispRestarter(String errorMessage, Environment env) {
-	 
-		offerRestarts(errorMessage) ;
-	}
-	
 	int offerRestarts(String errorMessage) {
-		System.out.println(errorMessage) ;
+		System.out.println("; ERROR: " + errorMessage) ;
 		return 2 ;
 	}
 }
 
-class LispAbortEvaluationException extends Exception {
+class LispAbortEvaluationException extends RuntimeException {
 
 	/**
 	 * 

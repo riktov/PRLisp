@@ -14,14 +14,21 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("cons".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
+				int len = argForms.length() ;
+				if(len != 2) {
+					new LispRestarter().offerRestarts("The procedure car has ben called with " + len + " arguments; it requires exactly 2 arguments.") ;
+					throw new LispAbortEvaluationException() ;
+				}
 				return new ConsCell(argForms.car(), argForms.cdr().car());
 			}
 		});
 
 		primitives.put("car".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				if(!argForms.cdr().isNull()) {
-					LispRestarter restarter = new LispRestarter(";The procedure " + this + " has been called with too many arguments", null) ;
+				int len = argForms.length() ;
+				if(len != 1) {
+					new LispRestarter().offerRestarts("The procedure car has ben called with " + len + " arguments; it requires exactly 1 argument.") ;
+					throw new LispAbortEvaluationException() ;
 				}
 				return argForms.car().car();
 			}
@@ -29,6 +36,11 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("cdr".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
+				int len = argForms.length() ;
+				if(len != 1) {
+					new LispRestarter().offerRestarts("The procedure car has ben called with " + len + " arguments; it requires exactly 1 argument.") ;
+					throw new LispAbortEvaluationException() ;
+				}
 				return argForms.car().cdr();
 			}
 		});
@@ -54,6 +66,12 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("null?".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
+				int len = argForms.length() ;
+				if(len != 1) {
+					new LispRestarter().offerRestarts("The procedure null? has ben called with " + len + " arguments; it requires exactly 1 argument.") ;
+					throw new LispAbortEvaluationException() ;
+				}
+
 				if (argForms.car().isNull()) {
 					return new SymbolAtom("t");
 				} else {
@@ -62,34 +80,93 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
+		/**
+		 * This could have been built-in in Lisp, but since it's useful to have a Java function to use
+		 * in the interpreter, we will just let it be used as a primitive.
+		 */
+		primitives.put("length".toUpperCase(), new PrimitiveProcedure() {
+			public LispObject apply(LispList argForms) {
+				LispList lis = null ;
+				try {
+					lis = (LispList)argForms.car() ;
+				} catch (ClassCastException exc) {
+					new LispRestarter().offerRestarts("The object " + argForms.car() + ", passed as an argument to length, is not a list") ;
+					throw new LispAbortEvaluationException() ;
+				}
+				return DataAtom.make(lis.length()) ;
+			}
+		});
+
 		primitives.put("+".toUpperCase(), new PrimitiveNumericalProcedure() {
 			public LispObject apply(LispList argForms) {
-				// System.out.println("primitive + apply():" + argForms) ;
-				Number[] numericalArgs = numericalArgs(argForms.toArray());
-				if ((numericalArgs[0].getClass() == Integer.class) && (numericalArgs[1].getClass() == Integer.class))	{
-					return new ObjectAtom(Math.round(numericalArgs[0].floatValue()) + 	Math.round(numericalArgs[1].floatValue())) ;
-				}
-				return new ObjectAtom(numericalArgs[0].floatValue() + numericalArgs[1].floatValue());
+				
+				Number[] numericalArgs = numericalArgs(argForms.toArray());					
+
+				if(PrimitiveNumericalProcedure.isAllIntegers(numericalArgs)) {
+					Integer accumulator = new Integer(0) ;
+				
+					int i;
+					for(i = 0 ; i < numericalArgs.length ; i++) {
+						accumulator = accumulator + numericalArgs[i].intValue() ;
+					}
+					return new ObjectAtom(accumulator) ;
+				} else {
+					Float accumulator = new Float(0.0) ;
+					
+					int i;
+					for(i = 0 ; i < numericalArgs.length ; i++) {
+						accumulator = accumulator + numericalArgs[i].floatValue() ;
+					}
+					return new ObjectAtom(accumulator) ;					
+				}				
 			}
 		});
 
 		primitives.put("-".toUpperCase(), new PrimitiveNumericalProcedure() {
 			public LispObject apply(LispList argForms) {
 				Number[] numericalArgs = numericalArgs(argForms.toArray());
-				if ((numericalArgs[0].getClass() == Integer.class) && (numericalArgs[1].getClass() == Integer.class))	{
-					return new ObjectAtom(Math.round(numericalArgs[0].floatValue()) - 	Math.round(numericalArgs[1].floatValue())) ;
-				}
-				return new ObjectAtom(numericalArgs[0].floatValue() - numericalArgs[1].floatValue());
+
+				if(PrimitiveNumericalProcedure.isAllIntegers(numericalArgs)) {
+					Integer accumulator = new Integer(numericalArgs[0].intValue()) ;
+				
+					int i;
+					for(i = 1 ; i < numericalArgs.length ; i++) {
+						accumulator = accumulator - numericalArgs[i].intValue() ;
+					}
+					return new ObjectAtom(accumulator) ;
+				} else {
+					Float accumulator = new Float(numericalArgs[0].floatValue()) ;
+					
+					int i;
+					for(i = 1 ; i < numericalArgs.length ; i++) {
+						accumulator = accumulator - numericalArgs[i].floatValue() ;
+					}
+					return new ObjectAtom(accumulator) ;					
+				}				
 			}
 		});
 
 		primitives.put("*".toUpperCase(), new PrimitiveNumericalProcedure() {
 			public LispObject apply(LispList argForms) {
 				Number[] numericalArgs = numericalArgs(argForms.toArray());
-				if ((numericalArgs[0].getClass() == Integer.class) && (numericalArgs[1].getClass() == Integer.class))	{
-					return new ObjectAtom(Math.round(numericalArgs[0].floatValue()) * 	Math.round(numericalArgs[1].floatValue())) ;
-				}
-				return new ObjectAtom(numericalArgs[0].floatValue() * numericalArgs[1].floatValue());
+
+				if(PrimitiveNumericalProcedure.isAllIntegers(numericalArgs)) {
+					Integer accumulator = new Integer(1) ;
+				
+					int i;
+					for(i = 0 ; i < numericalArgs.length ; i++) {
+						accumulator = accumulator * numericalArgs[i].intValue() ;
+					}
+					return new ObjectAtom(accumulator) ;
+				} else {
+					Float accumulator = new Float(1.0) ;
+					
+					int i;
+					for(i = 0 ; i < numericalArgs.length ; i++) {
+						accumulator = accumulator * numericalArgs[i].floatValue() ;
+					}
+					return new ObjectAtom(accumulator) ;					
+				}				
 			}
 		});
 
@@ -134,18 +211,34 @@ abstract class PrimitiveNumericalProcedure extends PrimitiveProcedure {
 	 * Returns an array of Number objects
 	 * 
 	 * @param args
-	 *            Array of ObjectAtoms
+	 *		Array of ObjectAtoms
 	 * @return Array of Numbers
 	 */
 	Number[] numericalArgs(LispObject[] args) {
 		// System.out.println("numericalArgs(LispObject[]):") ;
-		Number[] numArgs = new Number[args.length];
+		Number[] nums = new Number[args.length];
 		int i;
+		ObjectAtom nda = null ;
 		for (i = 0; i < args.length; i++) {
-			ObjectAtom nda = (ObjectAtom) args[i];
-			// System.out.println(nda.toString()) ;
-			numArgs[i] = (Number) (nda.data);
+			try {
+				nda = (ObjectAtom) args[i];
+				// System.out.println(nda.toString()) ;
+				nums[i] = (Number) (nda.data);				
+			} catch(ClassCastException exc) {
+				new LispRestarter().offerRestarts(";The object " + args[i] + " is not a numeric type.") ;
+				throw new LispAbortEvaluationException() ;
+			}
 		}
-		return numArgs;
+		return nums;
+	}
+	
+	static boolean isAllIntegers(Number[] nums) {
+		int i ;
+		for(i = 0 ; i < nums.length ; i++) {
+			if(nums[i].getClass() != Integer.class) {
+				return false ;
+			}
+		}
+		return true ;
 	}
 }
