@@ -9,10 +9,27 @@ package org.riktov.prlisp;
  *
  */
 abstract class LispProcedure extends LispObject {
-	public abstract LispObject apply(LispList argsToApply) ;
+	abstract LispObject apply(LispList argsToApply) ;
     public LispList processArguments(LispList argForms, Environment evalEnv) {
     	//System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
 		return argForms.listOfValues(evalEnv) ;
+	}
+	protected boolean requireArgumentCount(int count, LispList argForms, String procName) {
+		int len = argForms.length() ;
+		if(len != count) {
+			new LispRestarter().offerRestarts("The procedure " + procName + " has been called with " + len + " arguments; it requires exactly " + count + " argument(s).") ;
+			throw new LispAbortEvaluationException() ;
+		}	
+		return true ;
+	}
+
+	protected boolean requireArgumentCountAtLeast(int count, LispList argForms, String procName) {
+		int len = argForms.length() ;
+		if(len < count) {
+			new LispRestarter().offerRestarts("The procedure " + procName + " has ben called with " + len + " arguments; it requires at least " + count + " argument(s).") ;
+			throw new LispAbortEvaluationException() ;
+		}	
+		return true ;
 	}
 
 }
@@ -47,7 +64,7 @@ class CompoundProcedure extends LispProcedure {
 	/**
 	 * accessors
 	 */
-	LispObject formalParams() { return formalParams ; }
+	LispObject formalParams() { return formalParams ; }//can be a list, or nil, or a rest-bound atom
 	LispList body() { return body ; }	
 
 	/**

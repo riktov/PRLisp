@@ -22,6 +22,7 @@ abstract class LispObject {
      * downcasting and handling of the resulting ClassCastException
      */
     
+    /*
     public LispObject car() {
 		LispRestarter restarter = new LispRestarter() ;
 		restarter.offerRestarts(";The object " + this + ", passed as the first argument to car, is not the correct type.");
@@ -33,6 +34,7 @@ abstract class LispObject {
 		restarter.offerRestarts(";The object " + this + ", passed as the first argument to cdr, is not the correct type.");
 		throw new LispAbortEvaluationException() ;
     }
+    */
     
 }
 
@@ -107,12 +109,9 @@ final class NilAtom extends Atom implements LispList {
     //so we just finish printing
     @Override 
     public boolean isNull() { return true ; }
-	@Override
-	public LispList listOfValues(Environment env) { return this ; }
-	@Override
-	public LispObject evalSequence(Environment env) { return this ; }
-	@Override
-	public LispObject[] toArray() { return new LispObject[0] ; }
+	@Override public LispList listOfValues(Environment env) { return this ; }
+	@Override public LispObject evalSequence(Environment env) { return this ; }
+	@Override public LispObject[] toArray() { return new LispObject[0] ; }
 	@Override
 	public Iterator<LispObject> iterator() {
 		return new Iterator<LispObject>() {

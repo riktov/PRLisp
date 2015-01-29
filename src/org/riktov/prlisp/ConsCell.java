@@ -6,15 +6,24 @@ import java.util.Arrays;
 
 import java.util.Iterator;
 
+/**
+ * The LispList interface allows both ConsCells, which have data members, and NilAtoms,
+ * to be treated as lists, the latter as the empty list. In Lisp, NIL is both an atom and
+ * a list, so it essentially has multiple inheritance, which is just the appropriate use for
+ * an interface
+ * 
+ * In scheme it is an error to call CAR or CDR on '(), but in CL, both calls return NIL.
+ * @author paul
+ *
+ */
 interface LispList extends Iterable<LispObject> {
-	public LispList listOfValues(Environment env) ;
-	public LispObject evalSequence(Environment env) ;
-	//public void bindParamsToValues(Iterable<LispObject> argForms, Environment env) ;
+	LispList listOfValues(Environment env) ;
+	LispObject evalSequence(Environment env) ;
 	boolean isNull();
-	public LispObject car() ;
-	public LispObject cdr() ;
-	public LispObject[] toArray();
-	public int length() ;
+	//public LispObject car() ;
+	//public LispObject cdr() ;
+	LispObject[] toArray();
+	int length() ;
 }
 
 class ConsCell extends LispObject implements LispList {
@@ -148,11 +157,11 @@ class ConsCell extends LispObject implements LispList {
 	public LispObject[] toArray() {
 		ArrayList<LispObject> al = new ArrayList<LispObject>();
 
-		LispObject c = this;
+		ConsCell c = this;
 
 		while (!c.cdr().isNull()) {
 			al.add(c.car());
-			c = c.cdr();
+			c = (ConsCell) c.cdr();
 		}
 
 		al.add(c.car());
@@ -208,7 +217,7 @@ class ConsCell extends LispObject implements LispList {
 		final ConsCell origin = this ;
 //		System.out.println("Creating iterator from " + this) ;
 		return new Iterator<LispObject>() {
-			ConsCell current = origin ;
+			LispList current = origin ;
 			@Override
 			public boolean hasNext() {
 //				System.out.println("Iterator.hasNext(): " + current) ;
@@ -216,9 +225,10 @@ class ConsCell extends LispObject implements LispList {
 			}
 
 			@Override
-			public LispObject next() {
-				LispObject currentCar = current.car() ;
-				current = (ConsCell) current.cdr() ;
+			public LispObject next() {//current is assumed to be a ConsCell
+				ConsCell currentCell = (ConsCell) current ;
+				LispObject currentCar = currentCell.car() ;
+				current = (LispList)currentCell.cdr() ;
 				return currentCar ;
 			}
 
@@ -238,21 +248,24 @@ class ConsCell extends LispObject implements LispList {
 	public void bindToParams(LispObject formalParams, Environment env) {
 		//System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
 
-		LispObject currentParam = formalParams ;
-		LispObject currentValCell = this ;	//cell may be ConsCell or Atom
-		LispObject val  ;
+		LispObject currentParam = formalParams ; //may be ConsCell or Atom
+		LispList currentVal = this ;	// ConsCell or nil
+		//LispObject val  ;
 		
-		while(!currentValCell.isNull()) {
-			if (!currentParam.isAtom()) {
-				val = ((ConsCell)currentValCell).car() ;
+		while(!currentVal.isNull()) {
+			ConsCell currentValCell = (ConsCell)currentVal ;
+			if (!currentParam.isAtom()) {	//conventional one-to-one binding
+				LispObject val = currentValCell.car() ;
 				//System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;
-				env.intern(currentParam.car().toString(), val) ;
-				currentValCell = currentValCell.cdr() ;
-				currentParam = currentParam.cdr() ;
-			} else {
-				val = currentValCell ;
+				ConsCell currentParamCell = (ConsCell)currentParam ;
+				String sym = currentParamCell.car().toString() ;
+				env.intern(sym, val) ;
+				currentVal = (LispList) currentValCell.cdr() ;
+				currentParam = currentParamCell.cdr() ;
+			} else { //rest-binding, where currentParam is bound to the rest of the list
+				ConsCell valList = (ConsCell)currentValCell ;
 				//System.out.println("- binding atom key: " + currentParam + " val :" + val  ) ;
-				env.intern(currentParam.toString(), val) ;
+				env.intern(currentParam.toString(), valList) ;
 				//env.printKeys();
 				return ;
 			}

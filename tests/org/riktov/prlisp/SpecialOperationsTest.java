@@ -238,7 +238,7 @@ public class SpecialOperationsTest {
 
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
 		//System.out.println(theLambda) ;
-		
+
 		assertTrue(theLambda.formalParams().car().toString().equals("X")) ;
 		assertTrue(theLambda.body().car() == bodyForm1) ;
 	}

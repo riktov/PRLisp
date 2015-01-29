@@ -72,14 +72,14 @@ public class LispReaderTest {
     @Test public void testReadCons() {
         LispObject aCons = lr.read("(12 . foo)") ;
         System.out.println("testReadCons(): \"(12 . foo)\" as " + aCons.toString()) ;
-        LispObject target = aCons.cdr();
+        LispObject target = ((ConsCell) aCons).cdr();
         assertTrue(target.toString().equals("FOO")) ;
     }
     
     @Test public void testReadConsNested() {
         LispObject aCons = lr.read("(12 . (foo . (\"Steve Miller\" . nil)))") ;
         System.out.println("testReadConsNested(): " + aCons.toString()) ;
-        LispObject target = aCons.cdr().car();
+        LispObject target = ((ConsCell) ((ConsCell) aCons).cdr()).car();
         assertTrue(target.toString().equals("FOO")) ;
     }
     

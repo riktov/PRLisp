@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 
 public class ConsCellTest {
-	private LispList c, d ;
+	private ConsCell c, d ;
 	private Environment env ;
 	ObjectAtom sevenFortySeven = new ObjectAtom(747);
 	
@@ -84,22 +84,22 @@ public class ConsCellTest {
 		ObjectAtom four = new ObjectAtom(4);
 		SymbolAtom x = new SymbolAtom("x");
 		LispObject[] args = { plus, four, x };
-		LispList c = new ConsCell(args);
+		ConsCell c = new ConsCell(args);
 
 		System.out.println("testMakeListFromArray(): List made from array:"
 				+ c.toString());
 
 		assertTrue(c.car() == plus);
-		assertTrue(c.cdr().car() == four);
-		assertTrue(c.cdr().cdr().car() == x);
-		assertTrue(c.cdr().cdr().cdr().isNull());
+		assertTrue(((ConsCell) c.cdr()).car() == four);
+		assertTrue(((ConsCell) ((ConsCell) c.cdr()).cdr()).car() == x);
+		assertTrue(((ConsCell) ((ConsCell) c.cdr()).cdr()).cdr().isNull());
 	}
 
 	@Test
 	public void testMakeListFromArrayShort() {
 		SymbolAtom plus = new SymbolAtom("+");
 		LispObject[] args = { plus };
-		LispList c = new ConsCell(args);
+		ConsCell c = new ConsCell(args);
 
 		System.out
 				.println("testMakeListFromArrayShort(): List made from array:"
@@ -136,7 +136,7 @@ public class ConsCellTest {
 		LispList evaluated = ct0.listOfValues(env);
 		System.out.println("testEvalList() result: " + evaluated.toString());
 
-		LispObject evaluatedSecondElement = evaluated.cdr().car();
+		LispObject evaluatedSecondElement = ((ConsCell) evaluated).cdr().car();
 		assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
 	}
 

@@ -14,34 +14,28 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("cons".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				int len = argForms.length() ;
-				if(len != 2) {
-					new LispRestarter().offerRestarts("The procedure car has ben called with " + len + " arguments; it requires exactly 2 arguments.") ;
-					throw new LispAbortEvaluationException() ;
-				}
-				return new ConsCell(argForms.car(), argForms.cdr().car());
+				requireArgumentCount(2, argForms, "cons") ;
+				LispObject[] args = argForms.toArray() ;
+				return new ConsCell(args[0], args[1]);
 			}
 		});
 
 		primitives.put("car".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				int len = argForms.length() ;
-				if(len != 1) {
-					new LispRestarter().offerRestarts("The procedure car has ben called with " + len + " arguments; it requires exactly 1 argument.") ;
-					throw new LispAbortEvaluationException() ;
-				}
-				return argForms.car().car();
+				requireArgumentCount(1, argForms, "car") ;
+				LispObject[] args = argForms.toArray() ;
+				ConsCell theCons = (ConsCell)(args[0]) ;
+				return ((ConsCell) theCons).car();
 			}
 		});
 
+
 		primitives.put("cdr".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				int len = argForms.length() ;
-				if(len != 1) {
-					new LispRestarter().offerRestarts("The procedure car has ben called with " + len + " arguments; it requires exactly 1 argument.") ;
-					throw new LispAbortEvaluationException() ;
-				}
-				return argForms.car().cdr();
+				requireArgumentCount(1, argForms, "cdr") ;
+				LispObject[] args = argForms.toArray() ;
+				ConsCell theCons = (ConsCell)(args[0]) ;
+				return ((ConsCell) theCons).cdr();
 			}
 		});
 
@@ -59,20 +53,19 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("read".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
+				requireArgumentCount(1, argForms, "read") ;
+				LispObject[] args = argForms.toArray() ;
 				LispReader lr = new LispReader() ;
-				return lr.read(((StringAtom)argForms.car()).toStringUnquoted()) ;
+				return lr.read(((StringAtom)args[0]).toStringUnquoted()) ;
 			}
 		});
 
 		primitives.put("null?".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
-				int len = argForms.length() ;
-				if(len != 1) {
-					new LispRestarter().offerRestarts("The procedure null? has ben called with " + len + " arguments; it requires exactly 1 argument.") ;
-					throw new LispAbortEvaluationException() ;
-				}
+				requireArgumentCount(1, argForms, "null?") ;
+				LispObject[] args = argForms.toArray() ;
 
-				if (argForms.car().isNull()) {
+				if (args[0].isNull()) {
 					return new SymbolAtom("t");
 				} else {
 					return NilAtom.nil;
@@ -86,11 +79,14 @@ abstract class PrimitiveProcedure extends LispProcedure {
 		 */
 		primitives.put("length".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
+				requireArgumentCount(1, argForms, "length") ;
+				LispObject[] args = argForms.toArray() ;
+
 				LispList lis = null ;
 				try {
-					lis = (LispList)argForms.car() ;
+					lis = (LispList)args[0] ;
 				} catch (ClassCastException exc) {
-					new LispRestarter().offerRestarts("The object " + argForms.car() + ", passed as an argument to length, is not a list") ;
+					new LispRestarter().offerRestarts("The object " + args[0] + ", passed as an argument to length, is not a list") ;
 					throw new LispAbortEvaluationException() ;
 				}
 				return DataAtom.make(lis.length()) ;
