@@ -115,9 +115,9 @@ public class LispReaderTest {
 		st.wordChars('.', '.');
 		st.quoteChar('"');
    	
-    	LispObject result = lr.readListFrom(st) ;
+    	ConsCell result = (ConsCell) lr.readListFrom(st) ;
   
-    	ObjectAtom expectedFive = (ObjectAtom)result.cdr().car();
+    	ObjectAtom expectedFive = (ObjectAtom)((ConsCell) result.cdr()).car();
     	
     	assertTrue(expectedFive.data().equals(5)) ;
   	
@@ -125,30 +125,32 @@ public class LispReaderTest {
     
     @Test public void testReadList() {
     	String exp = "(+ 4 5)" ;
-    	LispObject result = lr.read(exp) ;
+    	ConsCell result = (ConsCell) lr.read(exp) ;
     	
-    	ObjectAtom expectedFive = (ObjectAtom)result.cdr().car();
+    	LispObject expectedFive = ((ConsCell) result.cdr()).car();
     	
-    	assertTrue(expectedFive.data.equals(4)) ;
+    	ObjectAtom o = (ObjectAtom)expectedFive ;
+    	
+    	assertTrue(o.data.equals(4)) ;
     }
     
     @Test public void testReadListWithPair() {
     	String exp = "(4 5 . 2)" ;
-    	LispObject result = lr.read(exp) ;
+    	ConsCell result = (ConsCell) lr.read(exp) ;
     	
-    	ObjectAtom expectedFive = (ObjectAtom)result.cdr().car();
+    	ObjectAtom expectedFive = (ObjectAtom)((ConsCell) result.cdr()).car();
     	
     	assertTrue(expectedFive.data().equals(5)) ;
     }
     
     @Test public void testReadSymbolWithSpecialChar() {
     	String exp = "(let* ((x 5)))" ;
-    	LispObject result = lr.read(exp) ;
+    	ConsCell result = (ConsCell) lr.read(exp) ;
     	ObjectAtom expectedLetStar = (ObjectAtom)result.car();
     	assertTrue(expectedLetStar.data().toString().equals("LET*")) ;
 
     	exp = "(let ((hyphenated-variable-name 5)))" ;
-    	result = lr.read(exp) ;
+    	result = (ConsCell) lr.read(exp) ;
     	ObjectAtom expected = (ObjectAtom)result.car();
     	//assertTrue(expected.data().toString().equals("LET*")) ;
 }

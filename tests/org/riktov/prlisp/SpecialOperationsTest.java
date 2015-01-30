@@ -239,8 +239,11 @@ public class SpecialOperationsTest {
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
 		//System.out.println(theLambda) ;
 
-		assertTrue(theLambda.formalParams().car().toString().equals("X")) ;
-		assertTrue(theLambda.body().car() == bodyForm1) ;
+		ConsCell params = (ConsCell) theLambda.formalParams() ;
+		ConsCell body = (ConsCell) theLambda.body() ;
+		
+		assertTrue(params.car().toString().equals("X")) ;
+		assertTrue(body.car() == bodyForm1) ;
 	}
 	
 	@Test
@@ -269,7 +272,9 @@ public class SpecialOperationsTest {
 		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
 		//System.out.println(theLambda) ;
 		
-		assertTrue(theLambda.body().cdr().car() == bodyForm2) ;
+		ConsCell body = (ConsCell) theLambda.body() ;
+		
+		assertTrue(((ConsCell) body.cdr()).car() == bodyForm2) ;
 	}
 
 	/**

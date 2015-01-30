@@ -128,15 +128,16 @@ public class ConsCellTest {
 
 		ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil);
 		ConsCell ct1 = new ConsCell(new SymbolAtom("jumbo"), ct2);
-		LispList ct0 = new ConsCell(Atom.make(55), ct1);
+		ConsCell ct0 = new ConsCell(Atom.make(55), ct1);
 
 		//ct0 => (55 JUMBO 23)
 		
 		System.out.println("testEvalList(): " + ct0.toString());
-		LispList evaluated = ct0.listOfValues(env);
+		ConsCell evaluated = (ConsCell) ct0.listOfValues(env);
 		System.out.println("testEvalList() result: " + evaluated.toString());
 
-		LispObject evaluatedSecondElement = ((ConsCell) evaluated).cdr().car();
+		
+		LispObject evaluatedSecondElement = ((ConsCell) evaluated.cdr()).car();
 		assertTrue(evaluatedSecondElement.equals(sevenFortySeven));
 	}
 
@@ -159,7 +160,7 @@ public class ConsCellTest {
 		LispList evaluated = argList.listOfValues(env);
 		System.out.println("testEvalListWithListArg() result: " + evaluated);
 
-		LispObject evaluatedFirstElement = evaluated.car();
+		LispObject evaluatedFirstElement = ((ConsCell) evaluated).car();
 		assertTrue(evaluatedFirstElement.toString().equals("(12 55 67)"));
 	}
 
@@ -272,6 +273,7 @@ public class ConsCellTest {
 		SymbolAtom bar = new SymbolAtom("bar");
 		SymbolAtom baz = new SymbolAtom("baz");
 
+		//baz is rest-bound to (7 8 9)
 		ConsCell params = new ConsCell(foo, new ConsCell(bar, baz)) ;
 		
 		ConsCell vals = new ConsCell(new ObjectAtom[] {
@@ -289,6 +291,6 @@ public class ConsCellTest {
 		LispObject sevenEightNine = env.get("BAZ") ;
 		
 		System.out.println(sevenEightNine) ;
-		ObjectAtom eight = (ObjectAtom)sevenEightNine.cdr().car() ;
+		ObjectAtom eight = (ObjectAtom)((ConsCell) ((ConsCell) sevenEightNine).cdr()).car() ;
 		assertTrue(eight.data.equals(8)) ;
 	}}

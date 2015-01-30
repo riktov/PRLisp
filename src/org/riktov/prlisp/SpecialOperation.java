@@ -116,7 +116,7 @@ abstract class SpecialOperation extends LispProcedure {
 			@Override
 			public LispObject applyNonNil(ConsCell argForms) {
 				ConsCell argFormsCell = argForms ; //assume argForms is not empty list
-				ConsCell bindings = (ConsCell) argFormsCell.car() ;
+				LispObject bindings = argFormsCell.car() ;
 				ConsCell body = (ConsCell) argFormsCell.cdr() ;
 				return new CompoundProcedure(bindings, body, argEnv);
 			}
@@ -147,29 +147,35 @@ abstract class SpecialOperation extends LispProcedure {
 			}
 		}) ;
 		
+		/**
+		 * LET: The first argument is a list of bindings, which may be atoms which will be bound to NIL,
+		 * or two-elements lists containing the symbol and value. The remaining arguments (the body) are evaluated in
+		 * sequence with the new bindings, and the last value is returned.
+		 */
 		specials.put("let".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
 				LispList bindingList = (LispList)argForms.car();
 				LispList body = (LispList) argForms.cdr();
 				
-//				LispObject[] bindings = bindingList.toArray();
-
 				ChildEnvironment letEnv = new ChildEnvironment(argEnv);
 
 				Iterator<LispObject> itrBindings = bindingList.iterator();
 				
+				/*
+				 * TODO: Simplify; just create a new list with the null bindings filled in,
+				 * then bindToParams
+				 */
 				while(itrBindings.hasNext()) {
 					LispObject bindingExp = itrBindings.next() ;
-					ConsCell bindingPair = null ;
+					
+					LispObject[] bindingArr = null ;
 					
 					if(bindingExp.isAtom()) {
-						bindingPair = new ConsCell(bindingExp, NilAtom.nil) ;
+						bindingArr = new LispObject[] { bindingExp, NilAtom.nil } ;
 					} else {
-						bindingPair = (ConsCell)bindingExp ;
+						bindingArr = ((LispList) bindingExp).toArray() ;
 					}
 
-					LispObject[] bindingArr = bindingPair.toArray() ;
-					
 					SymbolAtom symName = (SymbolAtom) bindingArr[0];
 					LispObject value = bindingArr[1].eval(argEnv);
 

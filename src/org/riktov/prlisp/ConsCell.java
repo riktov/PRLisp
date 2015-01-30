@@ -43,7 +43,7 @@ class ConsCell extends LispObject implements LispList {
 	/**
 	 * Constructor
 	 * @param argObjects
-	 *            An array of LispObjects, which are built into a list
+	 *            An array of LispObjects, which are built into a proper list
 	 */
 	public ConsCell(LispObject[] argObjects) {
 		this.car = argObjects[0];
