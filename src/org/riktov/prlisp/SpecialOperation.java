@@ -15,6 +15,11 @@ abstract class SpecialOperation extends LispProcedure {
 	//public LispObject apply() { return new NilAtom()  ; }
 
 	public LispObject apply(LispList argList) {
+		if(argList.isNull()) {
+			LispRestarter restart = new LispRestarter();
+			restart.offerRestarts("Ill-formed special form ") ;
+			throw new LispAbortEvaluationException() ;
+		}
 		return applyNonNil((ConsCell)argList) ;
 	}	
 	
@@ -47,7 +52,6 @@ abstract class SpecialOperation extends LispProcedure {
 		/**
 		 * setq - Treat the first argument as a symbol(unevaluated), and intern
 		 * it with the value of the second argument
-		 * TODO: Implement the paired-setq
 		 */
 		specials.put("setq".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
@@ -97,15 +101,27 @@ abstract class SpecialOperation extends LispProcedure {
 		});
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
+			/**
+			 * Special case to allow '()
+			 */
+			@Override
+			public LispObject apply(LispList argForms) {
+				if(argForms.isNull()) {
+					return NilAtom.nil ;
+				} else {
+					return applyNonNil((ConsCell)argForms) ;
+				}
+			}
+			
 			@Override
 			public LispObject applyNonNil(ConsCell argForms) {
-				if(argForms.isNull()) {
+/*				if(argForms.isNull()) {
 					return NilAtom.nil ;	//(QUOTE)
 				}
 				if(!argForms.cdr().isNull()) {
 					new LispRestarter().offerRestarts(";Ill-formed special form") ;
 				}
-				return argForms.car() ;//unevaluated
+*/				return argForms.car() ;//unevaluated
 			}
 		});
 

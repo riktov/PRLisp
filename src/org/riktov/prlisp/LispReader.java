@@ -2,6 +2,7 @@ package org.riktov.prlisp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -17,25 +18,9 @@ class LispReader {
 		Reader r = new BufferedReader(new StringReader(sExp));
 		macros = ReaderMacro.initialReaderMacros() ;
 		
-		StreamTokenizer st = new StreamTokenizer(r);
-		st.whitespaceChars(' ', ' ');
-		st.commentChar(';');
-
-		st.resetSyntax();
-		st.whitespaceChars(' ', ' ');
-		st.wordChars('a', 'z');
-		st.wordChars('A', 'Z');
-		st.wordChars('0', '9');
-		st.wordChars('.', '.');
-		st.wordChars('?', '?');	//examples: NULL? zero?
-		st.wordChars('*', '*');	//examples: LET*
-		st.wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
-		st.wordChars('>', '>');	//examples: STR->LIS
-		//st.ordinaryChar('+');
-		st.quoteChar('"');
-		// st.parseNumbers() ;
-		// st.ordinaryChars('0', '9') ;
-
+		LispStreamTokenizer st = new LispStreamTokenizer(r);
+		st.initializeSyntax();
+		
 		// StringTokenizer st = new StringTokenizer(s, "( )", true) ;
 		try {
 			return this.readFrom(st);
@@ -172,7 +157,32 @@ class LispReader {
 	public void prompt() {
 		System.out.print("PR-USER> ");
 	}
+}
 
+class LispStreamTokenizer extends StreamTokenizer {
+	public LispStreamTokenizer(Reader r) {
+		super(r);
+	}
+	
+	void initializeSyntax() {
+		whitespaceChars(' ', ' ');
+		commentChar(';');
+
+		resetSyntax();
+		whitespaceChars(' ', ' ');
+		wordChars('a', 'z');
+		wordChars('A', 'Z');
+		wordChars('0', '9');
+		wordChars('.', '.');
+		wordChars('?', '?');	//examples: NULL? zero?
+		wordChars('*', '*');	//examples: LET*
+		wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
+		wordChars('>', '>');	//examples: STR->LIS
+		//ordinaryChar('+');
+		quoteChar('"');
+		// st.parseNumbers() ;
+		// st.ordinaryChars('0', '9') ;
+	}
 }
 
 abstract class ReaderMacro {
