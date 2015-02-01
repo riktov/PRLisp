@@ -142,7 +142,7 @@ abstract class SpecialOperation extends LispProcedure {
 			public LispObject applyNonNil(ConsCell argForms) {
 				//extract components
 				LispObject varNameForm = argForms.car();
-				ConsCell definition = (ConsCell)argForms.cdr() ;
+				ConsCell definition = (ConsCell) argForms.cdrList() ;
 				
 				if(varNameForm.isAtom()) {
 					LispObject value = null;

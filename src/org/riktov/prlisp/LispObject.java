@@ -131,6 +131,10 @@ final class NilAtom extends Atom implements LispList {
 	}
 	@Override
 	public int length() { return 0; }
+	@Override
+	public LispList cdrList() {
+		return this;
+	}
 }
 
 /**

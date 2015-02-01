@@ -21,7 +21,7 @@ interface LispList extends Iterable<LispObject> {
 	LispObject evalSequence(Environment env) ;
 	boolean isNull();
 	//public LispObject car() ;
-	//public LispObject cdr() ;
+	public LispList cdrList() ;
 	LispObject[] toArray();
 	int length() ;
 }
@@ -280,6 +280,11 @@ class ConsCell extends LispObject implements LispList {
 		} else {
 			return ((LispList)this.cdr()).length() + 1 ;
 		}
+	}
+
+	@Override
+	public LispList cdrList() {
+		return (LispList) cdr ;
 	}
 	
 	/*

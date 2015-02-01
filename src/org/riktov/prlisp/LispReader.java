@@ -97,8 +97,12 @@ class LispReader {
 				items.add(readFrom(st)) ;
 			}
 		}
+		
+		throw new LispIncompleteFormException() ;
+		/*
 		System.out.println("Premature end of list") ;
 		return new NilAtom() ;
+		*/
 	}
 	
 	/**
@@ -201,4 +205,12 @@ abstract class ReaderMacro {
 		
 		return macros;
 	}
+}
+
+class LispIncompleteFormException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }

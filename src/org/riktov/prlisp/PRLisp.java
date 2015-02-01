@@ -40,24 +40,34 @@ public class PRLisp {
 		try{		
 			in = new Scanner(System.in);
 	
+			String previousLine = "" ;
+			LispObject readObject = null ;
+			
 			while (in.hasNextLine()) {
-				String input = in.nextLine();
+				String input = previousLine + in.nextLine();
 				if(input.isEmpty()) {
 					System.out.println(";No value") ;
 					lr.prompt();
 					continue ;
 				}
-				LispObject o = lr.read(input);// READ
+				
+				try {
+					readObject = lr.read(input);// READ					
+				} catch (LispIncompleteFormException exc) {
+					previousLine = input ;
+					continue ;
+				}
 	
 				LispObject evaluated = null ;
 				try {
-					evaluated = o.eval(env);// EVALUATE
+					evaluated = readObject.eval(env);// EVALUATE
+					System.out.println(";Value: " + evaluated);// PRINT (evaluated)
 				} catch (LispAbortEvaluationException exc) {
 					System.out.println("Evaluation aborted.") ;
 				}
 				
-				System.out.println(";Value: " + evaluated);// PRINT (evaluated)
-
+				previousLine = "" ;
+				
 				//System.out.println(o.toString()) ; //print unevaluated
 	
 				lr.prompt();
