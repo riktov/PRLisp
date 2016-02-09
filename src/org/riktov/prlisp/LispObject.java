@@ -2,6 +2,12 @@ package org.riktov.prlisp ;
 
 import java.util.Iterator;
 
+/**
+ * A LispObject is the base of all lisp objects.
+ * 
+ * @author paul
+ *
+ */
 abstract class LispObject {
     public boolean isNull() { return false ; }
     boolean isAtom() { return true ; }
@@ -55,13 +61,7 @@ abstract class Atom extends LispObject {
     public static Atom make(Object o) { return new ObjectAtom(o) ; }
     public static Atom make(String s) { return new StringAtom(s) ; }
     public static Atom make(int i) { return new ObjectAtom(i) ; }
-    public static Atom make(boolean b) {
-    	if (b) {
-    		return new SymbolAtom("t") ;
-    	} else {
-    		return NilAtom.nil ;
-    	}
-    }
+    public static Atom make(boolean b) { return b ? new SymbolAtom("t") : NilAtom.nil ; }
     //accessors
     //implementation of LispObject
     //public String toString() { return data.toString() ; }
@@ -71,6 +71,7 @@ abstract class Atom extends LispObject {
 /** A DataAtom is an atom that holds some value as data. The Atoms that are not DataAtoms
  * are NilAtom and Procedure. DataAtom is abstract because different primitive data subclasses have different 
  * types for the data member.
+ * @author: Paul Richter
  */
 abstract class DataAtom extends Atom {
     //factory methods, dispatch on argument type
@@ -149,6 +150,11 @@ class StringAtom extends ObjectAtom {
     public String toStringUnquoted() { return super.toString(); }
 }
 
+/**
+ * A SymbolAtom can be bound to a value and interned in an environment.
+ * @author paul
+ *
+ */
 class SymbolAtom extends ObjectAtom {
     public SymbolAtom(String s) { super(s.toUpperCase()) ; }
     @Override public LispObject eval(Environment env) {

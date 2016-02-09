@@ -37,7 +37,7 @@ public class PRLisp {
 		lr.prompt();
 
 		Scanner in = null ;
-		try{		
+		try{
 			in = new Scanner(System.in);
 	
 			String previousLine = "" ;

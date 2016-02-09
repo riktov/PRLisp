@@ -1,7 +1,20 @@
 package org.riktov.prlisp;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Scanner;
 
+/**
+ * PrimitiveProcedure is a procedure that can not be implemented in Lisp itself, but does not involve
+ * the operating system.
+ *
+ * @author paul
+ *
+ */
 abstract class PrimitiveProcedure extends LispProcedure {
 	// String symbol ;
 	// public String symbol() { return this.symbol ; }
@@ -9,9 +22,23 @@ abstract class PrimitiveProcedure extends LispProcedure {
 	// public LispObject apply() { return new NilAtom(); } //
 	// public LispObject apply() { return new NilAtom() ; }
 
+	/**
+	 * Create the initial primitive procedures
+	 * @param env - The Environment in which the procedures are defined
+	 * @return
+	 */
 	static HashMap<String, PrimitiveProcedure> initialPrimitives(final Environment env) {
 		HashMap<String, PrimitiveProcedure> primitives = new HashMap<String, PrimitiveProcedure>();
 
+		primitives.put("atom".toUpperCase(), new PrimitiveProcedure() {
+			@Override
+			LispObject apply(LispList argsToApply) {
+				requireArgumentCount(1, argsToApply, "atom") ;
+				LispObject[] args = argsToApply.toArray() ;
+				return Atom.make(args[0].isAtom());
+			}
+		}) ;
+		
 		primitives.put("cons".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				requireArgumentCount(2, argForms, "cons") ;
@@ -29,7 +56,6 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
-
 		primitives.put("cdr".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				requireArgumentCount(1, argForms, "cdr") ;
@@ -39,6 +65,14 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
+		primitives.put("eq".toUpperCase(), new PrimitiveProcedure() {
+			public LispObject apply(LispList argForms) {
+				requireArgumentCount(2, argForms, "eq") ;
+				LispObject[] args = argForms.toArray() ;
+				return Atom.make(args[0].equals(args[1]));
+			}
+		});		
+		
 		primitives.put("env".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				Object[] envKeyNames = env.keySet().toArray() ;
@@ -60,6 +94,72 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});
 
+		/*
+		primitives.put("load".toUpperCase(), new PrimitiveProcedure() {
+			public LispObject apply(LispList argForms) {
+				requireArgumentCount(1, argForms, "load") ;
+				LispObject[] args = argForms.toArray() ;
+				StringAtom nameAtom = (StringAtom)args[0] ;
+				String filename = nameAtom.toStringUnquoted() ;
+
+			    String input;
+	
+			    System.out.println("Working Directory = " +
+			              System.getProperty("user.dir"));
+			    
+				String previousFragment = "" ;
+				LispObject readObject = null ;
+				LispObject lastReadValue = null ;
+				
+				FileReader fr = null ;
+				try{
+					fr = new FileReader(filename) ;
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				BufferedReader reader = new BufferedReader(fr);
+				LispReader lr = new LispReader();
+
+				try {
+					while ((input = reader.readLine()) != null) {
+						System.out.println(input) ;
+						if(input.isEmpty()) { continue ; }
+						
+						String expression = previousFragment + input ;
+						try {
+							readObject = lr.read(expression);// READ					
+							System.out.println("READ: " + readObject) ;
+						} catch (LispIncompleteFormException exc) {
+							previousFragment = previousFragment + expression ;
+							continue ;
+						}
+
+						LispObject evaluated = null ;
+						try {
+							evaluated = readObject.eval(env);// EVALUATE
+							lastReadValue = evaluated ;
+							//System.out.println(evaluated) ;
+						} catch (LispAbortEvaluationException exc) {
+							System.out.println("Evaluation aborted.") ;
+						}
+						
+						previousFragment = "" ;
+						
+						//System.out.println(o.toString()) ; //print unevaluated
+					} //Loop next line
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println(";Value: " + lastReadValue);// PRINT (evaluated)
+				lr.prompt();
+				return NilAtom.nil ;
+			}
+		}) ;
+		*/
+		
 		primitives.put("null?".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				requireArgumentCount(1, argForms, "null?") ;
@@ -201,7 +301,11 @@ abstract class PrimitiveProcedure extends LispProcedure {
 		return primitives;
 	}
 }
-
+/**
+ * A primitive procedure that operates on numbers
+ * @author paul
+ *
+ */
 abstract class PrimitiveNumericalProcedure extends PrimitiveProcedure {
 	/**
 	 * Returns an array of Number objects

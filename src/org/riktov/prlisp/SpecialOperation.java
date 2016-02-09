@@ -7,8 +7,8 @@ abstract class SpecialOperation extends LispProcedure {
 	/**
 	 * A special operation may choose to evaluate some arguments conditionally,
 	 * during execution, rather than receiving them evaluated. So it may need the environment in
-	 * which the arguments are to be evaluated,
-	 * 
+	 * which the arguments are to be evaluated. By contrast, a normal procedure is applied to values
+	 * which have already been evaluated in an environment.
 	 */
 	protected Environment argEnv;
 
@@ -25,7 +25,7 @@ abstract class SpecialOperation extends LispProcedure {
 	
 	/**
 	 * A special operation with no arguments would be meaningless. So we can assume that all special operations
-	 * will be called with a non-zero number of arguments. So the arg list can be a ConsCell, not just
+	 * will be called with a non-zero number of arguments. So the arg list can be typed as a ConsCell, not just
 	 * a LispList (which could be a NilAtom).
 	 *
 	 * @param argList
@@ -53,6 +53,7 @@ abstract class SpecialOperation extends LispProcedure {
 		 * setq - Treat the first argument as a symbol(unevaluated), and intern
 		 * it with the value of the second argument
 		 */
+
 		specials.put("setq".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
 				LispObject assignedValue = null ;
@@ -106,6 +107,7 @@ abstract class SpecialOperation extends LispProcedure {
 			 */
 			@Override
 			public LispObject apply(LispList argForms) {
+				requireArgumentCount(1, argForms, "quote") ;
 				if(argForms.isNull()) {
 					return NilAtom.nil ;
 				} else {

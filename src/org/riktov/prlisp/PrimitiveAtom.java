@@ -10,6 +10,11 @@ abstract class PrimitiveAtom extends DataAtom {
     public boolean isPrimitive() { return true ;}
 }
 
+/**
+ * A primitive atom which holds its value in an int element
+ * @author paul
+ *
+ */
 class IntAtom extends PrimitiveAtom {
     int intData ;
 

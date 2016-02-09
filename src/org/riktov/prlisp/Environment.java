@@ -25,6 +25,7 @@ class Environment extends HashMap<String, LispObject> {
 		installConstants();
 		installPrimitives();
 		installSpecials();
+		installSystemProcs();
 		installBuiltIns();		
 	}
 	void printKeys() {
@@ -56,6 +57,11 @@ class Environment extends HashMap<String, LispObject> {
 		return true ;
 	}
 
+	boolean installSystemProcs() {
+		putAll(SystemProcedure.initialSystemProcedures(this)) ;
+		return true;
+	}
+
 	boolean intern(String symName, LispObject o) {
 		//System.out.println("Environment.intern(): " + symName + " => " + o) ;
 		put(symName.toUpperCase(), o);
@@ -71,6 +77,7 @@ class Environment extends HashMap<String, LispObject> {
 
 /**
  * Environment
+ * @author Paul Richter
  */
 class ChildEnvironment extends Environment {
 	/**

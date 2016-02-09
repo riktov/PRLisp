@@ -54,7 +54,7 @@ class CompoundProcedure extends LispProcedure {
 
 	// implementation of LispObject
 	/**
-	 * Copying CLISP
+	 * Copying CLISP notation
 	 */
 	@Override public String toString() {
 		ConsCell paramsAndBody = new ConsCell((LispObject)formalParams, (LispObject) body) ;

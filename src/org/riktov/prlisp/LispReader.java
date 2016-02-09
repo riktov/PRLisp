@@ -10,11 +10,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ * Converts strings into lisp forms. Also maintains a reader macro table
+ * to convert input in special ways
+ * @author paul
+ *
  */
 class LispReader {
 	private HashMap<String, ReaderMacro> macros;
 
+	/**
+	 * Converts a string into LispObject
+	 * @param sExp - a String
+	 * @return a LispObject
+	 */
 	public LispObject read(String sExp) {
+		//System.out.println("read: " + sExp) ;
 		Reader r = new BufferedReader(new StringReader(sExp));
 		macros = ReaderMacro.initialReaderMacros() ;
 		
@@ -40,7 +50,7 @@ class LispReader {
 			if (st.ttype == '(') {					
 				return readListFrom(st) ;
 			} else if (st.ttype == '"') {
-				// System.out.println("Read quoted string") ;
+				System.out.println("Read quoted string") ;
 				return new StringAtom(st.sval);
 				/**
 				 * We parse numbers ourselves instead of using StreamTokenizer's
@@ -104,7 +114,7 @@ class LispReader {
 		return new NilAtom() ;
 		*/
 	}
-	
+
 	/**
 	 * 
 	 * @param st a StreamTokenizer
@@ -174,6 +184,7 @@ class LispStreamTokenizer extends StreamTokenizer {
 
 		resetSyntax();
 		whitespaceChars(' ', ' ');
+		whitespaceChars(9, 9) ;
 		wordChars('a', 'z');
 		wordChars('A', 'Z');
 		wordChars('0', '9');
@@ -182,15 +193,21 @@ class LispStreamTokenizer extends StreamTokenizer {
 		wordChars('*', '*');	//examples: LET*
 		wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
 		wordChars('>', '>');	//examples: STR->LIS
+		wordChars(';', ';');	//handle lines that start with?? ;
 		//ordinaryChar('+');
 		quoteChar('"');
 		// st.parseNumbers() ;
 		// st.ordinaryChars('0', '9') ;
+		commentChar(';') ;
 	}
 }
 
 abstract class ReaderMacro {
 	abstract LispObject process(String string) ;
+	
+	static String quoteString(String s) {
+		return s ;
+	}
 	
 	static HashMap<String, ReaderMacro> initialReaderMacros() {
 		HashMap<String, ReaderMacro> macros = new HashMap<String, ReaderMacro>() ;
@@ -198,7 +215,9 @@ abstract class ReaderMacro {
 		macros.put("'", new ReaderMacro() {
 			@Override
 			LispObject process(String formString) {
+				System.out.println("String fed to reader macro: "+ formString) ;
 				String processedString = "(quote " + formString + ")" ;
+				//System.out.println(processedString);
 				return new LispReader().read(processedString) ;
 			}
 		}) ;
