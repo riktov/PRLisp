@@ -12,7 +12,7 @@ abstract class PrimitiveAtom extends DataAtom {
 
 /**
  * A primitive atom which holds its value in an int element
- * @author paul
+ * @author riktov@freeshell.org (Paul Richter)
  *
  */
 class IntAtom extends PrimitiveAtom {

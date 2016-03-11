@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * A LispObject is the base of all lisp objects.
  * 
- * @author paul
+ * @author riktov@freeshell.org (Paul Richter)
  *
  */
 abstract class LispObject {

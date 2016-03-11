@@ -12,7 +12,7 @@ import java.util.Scanner;
  * PrimitiveProcedure is a procedure that can not be implemented in Lisp itself, but does not involve
  * the operating system.
  *
- * @author paul
+ * @author riktov@freeshell.org (Paul Richter)
  *
  */
 abstract class PrimitiveProcedure extends LispProcedure {

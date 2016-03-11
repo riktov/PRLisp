@@ -13,7 +13,8 @@ import java.util.Iterator;
  * an interface
  * 
  * In scheme it is an error to call CAR or CDR on '(), but in CL, both calls return NIL.
- * @author paul
+ * 
+ * @author riktov@freeshell.org (Paul Richter)
  *
  */
 interface LispList extends Iterable<LispObject> {

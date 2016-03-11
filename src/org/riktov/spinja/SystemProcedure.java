@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /**
  * A system procedure uses system calls like file I/O, that are not part of the Lisp interpreter, or primitives.
- * @author paul
+ * @author Paul Richter &lt;riktov@freeshell.org&gt;
  *
  */
 abstract class SystemProcedure extends LispProcedure {

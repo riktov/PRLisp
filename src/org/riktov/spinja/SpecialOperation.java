@@ -3,13 +3,14 @@ package org.riktov.spinja;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/**
+ * A special operation may choose to evaluate some arguments conditionally,
+ * during execution, rather than receiving them evaluated. So it may need the environment in
+ * which the arguments are to be evaluated. By contrast, a normal procedure is applied to values
+ * which have already been evaluated in an environment.
+ */
 abstract class SpecialOperation extends LispProcedure {
-	/**
-	 * A special operation may choose to evaluate some arguments conditionally,
-	 * during execution, rather than receiving them evaluated. So it may need the environment in
-	 * which the arguments are to be evaluated. By contrast, a normal procedure is applied to values
-	 * which have already been evaluated in an environment.
-	 */
+
 	protected Environment argEnv;
 
 	//public LispObject apply() { return new NilAtom()  ; }

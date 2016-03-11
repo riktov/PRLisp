@@ -7,3 +7,4 @@ bin/
 doc/
 obsolete/
 build/
+testLoad*.lisp

@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * Converts strings into lisp forms. Also maintains a reader macro table
  * to convert input in special ways
- * @author paul
+ * @author riktov@freeshell.org (Paul Richter)
  *
  */
 class LispReader {

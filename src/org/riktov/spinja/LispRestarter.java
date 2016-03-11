@@ -2,7 +2,7 @@ package org.riktov.spinja;
 
 /**
  * 
- * @author paul
+ * @author riktov@freeshell.org (Paul Richter)
  *
  */
 class LispRestarter {
