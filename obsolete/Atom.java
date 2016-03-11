@@ -1,4 +1,4 @@
-//package org.riktov.prlisp ;
+//package org.riktov.spinja ;
 
 /** Atom HAS a data member, rather than IS a data member because the box classes like
  * Integer and String are final.

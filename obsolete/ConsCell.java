@@ -1,4 +1,4 @@
-//package org.riktov.prlisp ;
+//package org.riktov.spinja ;
 
 class ConsCell implements LispObject {
     private LispObject car ;
