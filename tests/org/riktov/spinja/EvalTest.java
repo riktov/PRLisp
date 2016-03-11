@@ -1,9 +1,17 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.riktov.spinja.Atom;
+import org.riktov.spinja.ConsCell;
+import org.riktov.spinja.Environment;
+import org.riktov.spinja.LispObject;
+import org.riktov.spinja.NilAtom;
+import org.riktov.spinja.ObjectAtom;
+import org.riktov.spinja.StringAtom;
+import org.riktov.spinja.SymbolAtom;
 
 /**
 * Test

@@ -1,14 +1,14 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 import java.util.Scanner;
 
 /**
- * <h1>PRLisp</h1> A Lisp interpreter.
- *
+ * <h1>Spinja</h1> A Lisp interpreter written in Java -- "liSP IN JAva"
+ * 
  * @author Paul Richter &lt;riktov@freeshell.org&gt;
  * @version 0.1
  */
-public class PRLisp {
+public class Spinja {
 	public static void main(String args[]) {
 		Environment env = new Environment();
 		env.initialize();
@@ -18,7 +18,7 @@ public class PRLisp {
 		// LispObject o = env.lookup("FOO") ;
 		// System.out.println(o) ;
 
-		PRLisp lisp = new PRLisp();
+		Spinja lisp = new Spinja();
 		lisp.repl(env);
 		// testFakeReader() ;
 	}
@@ -31,7 +31,7 @@ public class PRLisp {
 	 * @return None
 	 */
 	public void repl(Environment env) {
-		System.out.println("Starting PRLisp");
+		System.out.println("Starting " + this.getClass().getSimpleName());
 
 		LispReader lr = new LispReader();
 		lr.prompt();

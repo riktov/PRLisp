@@ -1,11 +1,14 @@
-package org.riktov.prlisp ;
+package org.riktov.spinja ;
 
 import static org.junit.Assert.assertTrue;
+
 
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
+import org.riktov.spinja.LispObject;
+import org.riktov.spinja.StringAtom;
 
 //import org.junit.runners.JUnit4;
 

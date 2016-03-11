@@ -1,4 +1,4 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import java.util.HashMap;
 class LispReader {
 	private HashMap<String, ReaderMacro> macros;
 
+	
 	/**
 	 * Converts a string into LispObject
 	 * @param sExp - a String
@@ -169,7 +170,7 @@ class LispReader {
 	}
 
 	public void prompt() {
-		System.out.print("PR-USER> ");
+		System.out.print("SPINJA-USER> ");
 	}
 }
 

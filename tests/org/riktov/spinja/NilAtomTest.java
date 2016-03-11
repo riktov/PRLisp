@@ -1,10 +1,15 @@
-package org.riktov.prlisp ;
+package org.riktov.spinja ;
 
 import static org.junit.Assert.* ;
 
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.* ;
+import org.riktov.spinja.Atom;
+import org.riktov.spinja.IntAtom;
+import org.riktov.spinja.NilAtom;
+import org.riktov.spinja.StringAtom;
+import org.riktov.spinja.SymbolAtom;
 
 //import org.junit.runners.JUnit4;
 

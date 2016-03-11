@@ -1,9 +1,12 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 import static org.junit.Assert.assertTrue;
 
+
 //import org.junit.Before;
 import org.junit.Test;
+import org.riktov.spinja.DataAtom;
+import org.riktov.spinja.ObjectAtom;
 
 
 public class NumberAtomTest {

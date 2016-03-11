@@ -1,4 +1,4 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 import static org.junit.Assert.* ;
 
@@ -9,9 +9,15 @@ import java.io.StreamTokenizer;
 import java.io.StringReader;
 
 
+
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.* ;
+import org.riktov.spinja.ConsCell;
+import org.riktov.spinja.DataAtom;
+import org.riktov.spinja.LispObject;
+import org.riktov.spinja.LispReader;
+import org.riktov.spinja.ObjectAtom;
 
 public class LispReaderTest {
 	LispReader lr ;

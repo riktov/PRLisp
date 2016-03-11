@@ -1,4 +1,4 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,13 @@ import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.riktov.spinja.CompoundProcedure;
+import org.riktov.spinja.ConsCell;
+import org.riktov.spinja.Environment;
+import org.riktov.spinja.LispObject;
+import org.riktov.spinja.ObjectAtom;
+import org.riktov.spinja.StringAtom;
+import org.riktov.spinja.SymbolAtom;
 
 public class SystemProceduresTest {
 	private Environment env;

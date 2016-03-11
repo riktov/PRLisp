@@ -1,4 +1,4 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 /** A PrimitiveAtom is a DataAtom whose data member is a primitive
  * All Java primitives except boolean can be treated as numbers, and we deal with

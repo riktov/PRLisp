@@ -1,4 +1,4 @@
-package org.riktov.prlisp;
+package org.riktov.spinja;
 
 //import java.util.List ;
 //import java.util.ArrayList ;
