@@ -2,7 +2,6 @@ package org.riktov.spinja;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -18,16 +17,20 @@ import java.util.HashMap;
 class LispReader {
 	private HashMap<String, ReaderMacro> macros;
 
-	
 	/**
-	 * Converts a string into LispObject
+	 * constructor
+	 */
+	public LispReader() {
+		macros = ReaderMacro.initialReaderMacros() ;
+	}
+	/**
+	 * Converts a string into a LispObject
 	 * @param sExp - a String
 	 * @return a LispObject
 	 */
 	public LispObject read(String sExp) {
 		//System.out.println("read: " + sExp) ;
 		Reader r = new BufferedReader(new StringReader(sExp));
-		macros = ReaderMacro.initialReaderMacros() ;
 		
 		LispStreamTokenizer st = new LispStreamTokenizer(r);
 		st.initializeSyntax();

@@ -8,3 +8,4 @@ doc/
 obsolete/
 build/
 testLoad*.lisp
+/Makefile

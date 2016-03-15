@@ -56,7 +56,7 @@ class ConsCell extends LispObject implements LispList {
 		}
 	}
 
-	/**
+	/*
 	 * public ConsCell(ArrayList<LispObject> argList) { Iterator<LispObject> it
 	 * = argList.iterator() ;
 	 * 

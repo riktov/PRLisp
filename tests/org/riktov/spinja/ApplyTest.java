@@ -92,7 +92,7 @@ public class ApplyTest {
 	
 	@Test public void testApplyCompoundWithListArg() {
 		/* It should be possible to apply a procedure where one of the arguments is a list,
-		 * without the list being evaluated as a procedure application at some intermediate poing
+		 * without the list being evaluated as a procedure application at some intermediate point
 		 * */
 		LispObject formalParams = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
