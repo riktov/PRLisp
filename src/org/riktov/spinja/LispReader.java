@@ -23,17 +23,21 @@ class LispReader {
 	public LispReader() {
 		macros = ReaderMacro.initialReaderMacros() ;
 	}
+	
 	/**
 	 * Converts a string into a LispObject
 	 * @param sExp - a String
 	 * @return a LispObject
 	 */
 	public LispObject read(String sExp) {
-		//System.out.println("read: " + sExp) ;
 		Reader r = new BufferedReader(new StringReader(sExp));
-		
 		LispStreamTokenizer st = new LispStreamTokenizer(r);
-		st.initializeSyntax();
+		
+		return this.read(st) ;
+	}
+	
+	public LispObject read(StreamTokenizer st) {
+		//System.out.println("read: " + sExp) ;
 		
 		// StringTokenizer st = new StringTokenizer(s, "( )", true) ;
 		try {
@@ -180,6 +184,7 @@ class LispReader {
 class LispStreamTokenizer extends StreamTokenizer {
 	public LispStreamTokenizer(Reader r) {
 		super(r);
+		this.initializeSyntax();
 	}
 	
 	void initializeSyntax() {
