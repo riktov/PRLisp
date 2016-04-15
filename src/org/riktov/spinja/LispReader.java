@@ -43,13 +43,14 @@ class LispReader {
 		try {
 			return this.readFrom(st);
 		} catch (IOException e) {
-			System.out.println("error: bad input string in LispReader.read()");
+			System.out.println("error: bad input string in LispReader.read(StreamTokenizer)");
 		}
 		return new NilAtom();
 	}
 
 	/**
 	 * readFrom(StreamTokenizer st)
+	 * @param st a StreamTokenizer
 	 */
 	public LispObject readFrom(StreamTokenizer st) throws IOException {
 		while (st.nextToken() != StreamTokenizer.TT_EOF) {
@@ -60,11 +61,11 @@ class LispReader {
 			} else if (st.ttype == '"') {
 				System.out.println("Read quoted string") ;
 				return new StringAtom(st.sval);
+			} else if (st.ttype == StreamTokenizer.TT_WORD) {
 				/**
 				 * We parse numbers ourselves instead of using StreamTokenizer's
 				 * number parsing, because it will read a solitary dot as 0.0
 				 */
-			} else if (st.ttype == StreamTokenizer.TT_WORD) {
 				Atom a ; 
 
 				try {
@@ -85,6 +86,31 @@ class LispReader {
 		}	//end of while loop
 		return new NilAtom();
 	}
+
+	/**
+	 * readTextFrom(StreamTokenizer st)
+	 * @param st a StreamTokenizer
+	 * @return the next entire string enclosed in parentheses (possible nested), spaces, or quotes
+	 * @throws IOException
+	 */
+	public String readTextFrom(StreamTokenizer st) throws IOException {
+		while (st.nextToken() != StreamTokenizer.TT_EOF) {
+			//System.out.println(st.toString());
+
+			if (st.ttype == '(') {					
+				return readTextListFrom(st) ;
+			} else if (st.ttype == '"') {
+				// System.out.println("Read quoted string") ;
+				return st.sval;
+			} else if (st.ttype == StreamTokenizer.TT_WORD) {
+				return st.sval ;
+			} else {
+				return Character.toString((char) st.ttype);
+			} 
+		}	//end of while loop
+		return "" ;
+	}
+	
 
 	/**
 	 * Reads everything up to a closing paren as elements of a list or dotted-pair
@@ -117,36 +143,15 @@ class LispReader {
 		}
 		
 		throw new LispIncompleteFormException() ;
-		/*
-		System.out.println("Premature end of list") ;
-		return new NilAtom() ;
-		*/
 	}
 
 	/**
-	 * 
-	 * @param st a StreamTokenizer
-	 * @return the next entire string enclosed in parentheses (possible nested), spaces, or quotes
+	 * Reads everything up to a closing paren as a string representation 
+	 * of a list or dotted-pair
+	 * @param st the StreamTokenizer
+	 * @return a String representation of the list
 	 * @throws IOException
 	 */
-	public String readTextFrom(StreamTokenizer st) throws IOException {
-		while (st.nextToken() != StreamTokenizer.TT_EOF) {
-			//System.out.println(st.toString());
-
-			if (st.ttype == '(') {					
-				return readTextListFrom(st) ;
-			} else if (st.ttype == '"') {
-				// System.out.println("Read quoted string") ;
-				return st.sval;
-			} else if (st.ttype == StreamTokenizer.TT_WORD) {
-				return st.sval ;
-			} else {
-				return Character.toString((char) st.ttype);
-			} 
-		}	//end of while loop
-		return "" ;
-	}
-	
 	public String readTextListFrom(StreamTokenizer st) throws IOException {
 		String forms = "" ;
 

@@ -14,6 +14,13 @@ abstract class LispProcedure extends LispObject {
     	//System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
 		return argForms.listOfValues(evalEnv) ;
 	}
+    /**
+     * requireArgumentCount - 
+     * @param count - number of arguments this function requires
+     * @param argForms - the actual passed arguments
+     * @param procName - the function name, used for the error message
+     * @return Normally returns true, otherwise throw a restart condition
+     */
 	protected boolean requireArgumentCount(int count, LispList argForms, String procName) {
 		int len = argForms.length() ;
 		if(len != count) {
