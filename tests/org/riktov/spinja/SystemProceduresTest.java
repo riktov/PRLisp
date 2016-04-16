@@ -31,7 +31,47 @@ public class SystemProceduresTest {
 		//first write the temporary file
 		Writer writer = null ;
 		
-		String sourceFilePath = "testLoad.lisp" ;
+		String sourceFilePath = "testLoad1.lisp" ;
+		
+		//create the test source file
+		try {
+			writer = new BufferedWriter(
+						new OutputStreamWriter(
+								new FileOutputStream(sourceFilePath), "utf-8")) ;
+			writer.write("(define foo 37)\n");
+		} catch (IOException except){
+			
+		} finally {
+			try {writer.close();} catch (Exception ex) {}
+		}
+		
+		//build a form
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("load"),
+				new StringAtom(sourceFilePath)
+		} ;
+		
+		//convert to a list
+		ConsCell c = new ConsCell(forms) ;
+		
+		//evaluate it
+		System.out.println("testLoad() evaluating: " + c.toString()) ;
+		c.eval(env) ;
+	
+		env.dump() ;
+		//check that the environment contains the bindings as stated in the source file.
+		
+		System.out.println("testLoad(): got " + env.get("BAR")) ;
+
+		assertTrue(env.get("FOO").toString().equals("37"));
+	}
+
+	@Test
+	public void testLoadMultipleExpression() {
+		//first write the temporary file
+		Writer writer = null ;
+		
+		String sourceFilePath = "testLoad2.lisp" ;
 		
 		//create the test source file
 		try {
@@ -63,15 +103,22 @@ public class SystemProceduresTest {
 		
 		System.out.println("testLoad(): got " + env.get("BAR")) ;
 
+		//env.dump() ;
 		assertTrue(env.get("BAR").toString().equals("95"));
 	}
 
+
+	/**
+	 * testLoadMultiline()
+	 * 
+	 * Test reading an expression which spans multiple lines
+	 */
 	@Test
 	public void testLoadMultiline() {
 		//first write the temporary file
 		Writer writer = null ;
 		
-		String sourceFilePath = "testLoad2.lisp" ;
+		String sourceFilePath = "testLoad3.lisp" ;
 		
 		//create the test source file
 		try {

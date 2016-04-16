@@ -26,7 +26,7 @@ class Environment extends HashMap<String, LispObject> {
 		installPrimitives();
 		installSpecials();
 		installSystemProcs();
-		installBuiltIns();		
+		installBuiltIns();
 	}
 	void printKeys() {
 		System.out.println(keySet());	
@@ -73,6 +73,15 @@ class Environment extends HashMap<String, LispObject> {
 		return intern(symAtom.toString(), o) ;
 	}
 	*/
+	
+	void dump() {
+		Object[] envKeyNames = this.keySet().toArray() ;	//
+			
+		int i ;
+		for (i = 0 ; i < envKeyNames.length ; i++) {
+			System.out.println(envKeyNames[i]) ;
+		}
+	}
 }
 
 /**

@@ -89,8 +89,16 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			public LispObject apply(LispList argForms) {
 				requireArgumentCount(1, argForms, "read") ;
 				LispObject[] args = argForms.toArray() ;
-				LispReader lr = new LispReader() ;
-				return lr.read(((StringAtom)args[0]).toStringUnquoted()) ;
+				//LispReader lr = new LispReader() ;
+				//return lr.read(((StringAtom)args[0]).toStringUnquoted()) ;
+				LispReader lr = new LispReader(((StringAtom)args[0]).toStringUnquoted()) ;
+				try {
+					return lr.read() ;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return NilAtom.nil ;
+				}
 			}
 		});
 

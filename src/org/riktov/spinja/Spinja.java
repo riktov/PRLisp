@@ -1,5 +1,8 @@
 package org.riktov.spinja;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 /**
@@ -30,6 +33,7 @@ public class Spinja {
 	 *            The initial environment
 	 * @return None
 	 */
+/*
 	public void repl(Environment env) {
 		System.out.println("Starting " + this.getClass().getSimpleName());
 
@@ -77,4 +81,53 @@ public class Spinja {
 				in.close();
 		}
 	}
+*/
+	public void repl(Environment env) {
+		System.out.println("Starting " + this.getClass().getSimpleName());
+
+		LispReader lr = new LispReader(new BufferedReader(new InputStreamReader(System.in)));
+		lr.prompt();
+
+		Scanner in = null ;
+		try{
+			in = new Scanner(System.in);
+	
+			String previousLine = "" ;
+			LispObject readObject = null ;
+			
+			while (in.hasNextLine()) {
+				String input = previousLine + in.nextLine();
+				if(input.isEmpty()) {
+					System.out.println(";No value") ;
+					lr.prompt();
+					continue ;
+				}
+				
+				try {
+					readObject = lr.read(input);// READ					
+				} catch (LispIncompleteFormException exc) {
+					previousLine = input ;
+					continue ;
+				}
+	
+				LispObject evaluated = null ;
+				try {
+					evaluated = readObject.eval(env);// EVALUATE
+					System.out.println(";Value: " + evaluated);// PRINT (evaluated)
+				} catch (LispAbortEvaluationException exc) {
+					System.out.println("Evaluation aborted.") ;
+				}
+				
+				previousLine = "" ;
+				
+				//System.out.println(o.toString()) ; //print unevaluated
+	
+				lr.prompt();
+			}// LOOP!
+		}finally {
+			if(in!=null)
+				in.close();
+		}
+	}
+
 }

@@ -1,12 +1,13 @@
 package org.riktov.spinja;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class BuiltIn {
 	static HashMap<String, SpecialOperation> initialBuiltIns(final Environment env) {
 		HashMap<String, SpecialOperation> builtIns = new HashMap<String, SpecialOperation>() ;
 		
-		LispReader lr = new LispReader();
+//		LispReader lr = new LispReader();
 			
 		String[] builtInDefs = new String[] {
 			"(define (list . x) x)",
@@ -22,8 +23,13 @@ public class BuiltIn {
 			"(define (map fn lis) (if (null? lis) lis (cons (fn (car lis)) (map fn (cdr lis)))))"
 		} ;
 		
+		
+		
 		int i ;
 		for(i = 0 ; i < builtInDefs.length ; i++) {
+			LispReader lr = new LispReader(builtInDefs[i]);
+			//lr.read().eval(env) ;
+	
 			lr.read(builtInDefs[i]).eval(env) ;
 		}
 		

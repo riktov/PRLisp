@@ -24,7 +24,7 @@ public class LispReaderTest {
 	@Before
 	
     public void setUp() {
-        lr = new LispReader() ;
+        lr = new LispReader("Foo") ;
     }
 
     @Test public void testReadAtoms() {
@@ -108,6 +108,7 @@ public class LispReaderTest {
     @Test public void testReadListBare() throws IOException {
     	String exp = "3 5 foo)" ;
     	
+    	/*
 		Reader r = new BufferedReader(new StringReader(exp));
 		StreamTokenizer st = new StreamTokenizer(r);
 		st.whitespaceChars(' ', ' ');
@@ -120,8 +121,11 @@ public class LispReaderTest {
 		st.wordChars('0', '9');
 		st.wordChars('.', '.');
 		st.quoteChar('"');
-   	
-    	ConsCell result = (ConsCell) lr.readListFrom(st) ;
+    	 */
+    	
+    	LispReader lr_local = new LispReader(exp) ;
+    	
+    	ConsCell result = (ConsCell) lr_local.readList() ;
   
     	ObjectAtom expectedFive = (ObjectAtom)((ConsCell) result.cdr()).car();
     	

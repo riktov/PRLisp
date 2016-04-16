@@ -2,6 +2,7 @@ package org.riktov.spinja;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,6 +17,7 @@ abstract class SystemProcedure extends LispProcedure {
 	static HashMap<String, SystemProcedure> initialSystemProcedures(final Environment env) {
 		HashMap<String, SystemProcedure> systemProcs = new HashMap<String, SystemProcedure>();
 
+		/*
 		systemProcs.put("load".toUpperCase(), new SystemProcedure() {
 			public LispObject apply(LispList argForms) {
 				requireArgumentCount(1, argForms, "load") ;
@@ -79,7 +81,55 @@ abstract class SystemProcedure extends LispProcedure {
 				return NilAtom.nil ;
 			}
 		}) ;
+		*/
 		
+		systemProcs.put("load".toUpperCase(), new SystemProcedure() {
+			/**
+			 * load a file
+			 */
+			public LispObject apply(LispList argForms) {
+				requireArgumentCount(1, argForms, "load") ;
+				LispObject[] args = argForms.toArray() ;
+				StringAtom nameAtom = (StringAtom)args[0] ;
+				String filename = nameAtom.toStringUnquoted() ;
+
+			    //System.out.println("Working Directory = " +
+			    //          System.getProperty("user.dir"));
+			    
+				LispObject lastReadValue = null ;
+				
+				FileReader fr = null ;
+				try{
+					fr = new FileReader(filename) ;
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				BufferedReader reader = new BufferedReader(fr);
+				LispReader lr = new LispReader(reader);
+
+				// read() will return as soon as it reads an expression. We need to keep going until
+				// the end of the file (stream)
+				
+				while(lr.canContinueReading()) {
+					//System.out.println("Can continue reading?: " + lr.canContinueReading()) ;
+					try {
+						LispObject o = lr.read() ; //.eval(env) ;
+						//System.out.println("load read: " + o) ;
+						LispObject e = o.eval(env) ;
+						//System.out.println("load evaled: " + e) ;						
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				System.out.println(";Value: " + lastReadValue);// PRINT (evaluated)
+				lr.prompt();
+				return NilAtom.nil ;
+			}
+		}) ;
+
 		return systemProcs;		
 	}
 }
