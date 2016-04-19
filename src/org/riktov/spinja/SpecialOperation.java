@@ -168,7 +168,7 @@ abstract class SpecialOperation extends LispProcedure {
 			@Override
 			public LispObject applyNonNil(ConsCell argForms) {
 				ConsCell argFormsCell = argForms ; //assume argForms is not empty list
-				LispObject bindings = argFormsCell.car() ;
+				LispList bindings = (LispList) argFormsCell.car() ;
 				ConsCell body = (ConsCell) argFormsCell.cdr() ;
 				return new CompoundProcedure(bindings, body, argEnv);
 			}
@@ -176,26 +176,35 @@ abstract class SpecialOperation extends LispProcedure {
 
 		specials.put("define".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
+				//System.out.println(this + " " + argForms) ;
 				//extract components
-				LispObject varNameForm = argForms.car();
+				LispObject varNameForm = argForms.car();	//variable name, or list of function name and parameters
 				ConsCell definition = (ConsCell) argForms.cdrList() ;
 				
-				if(varNameForm.isAtom()) {
-					LispObject value = null;
-					value = definition.car().eval(argEnv);
-					argEnv.intern(varNameForm.toString(), value) ;
-					return varNameForm;
+				SymbolAtom nameSymbol ;
+				LispObject valueObject ;
+				
+				if(varNameForm.isAtom()) {	//defining a variable, not a function
+					nameSymbol = (SymbolAtom) varNameForm ;
+					valueObject = definition.car().eval(argEnv);
 				} else {
 					ConsCell varNameAndParams = (ConsCell)varNameForm ;
-					SymbolAtom procName = (SymbolAtom) varNameAndParams.car() ;
-					
-					LispObject procParamList = varNameAndParams.cdr() ;
-					
+					nameSymbol = (SymbolAtom)varNameAndParams.car() ;
+					LispObject params = varNameAndParams.cdr() ;
+
 					LispList procBody = (LispList) argForms.cdr() ;
-					argEnv.intern(procName.toString(),
-							new CompoundProcedure(procParamList, procBody, argEnv)) ;
-					return procName ;
+
+					if(params.isAtom()) {
+						SymbolAtom symbolName = (SymbolAtom)params ;
+						SymbolAtom procParams = new ParameterSymbol(symbolName) ;
+						valueObject = new CompoundProcedure(procParams, procBody, argEnv) ;
+					} else {
+						ConsCell procParams = new ParameterList((ConsCell)params) ;						
+						valueObject = new CompoundProcedure(procParams, procBody, argEnv) ;
+					}
 				}
+				argEnv.intern(nameSymbol.toString(), valueObject) ;
+				return nameSymbol ;
 			}
 		}) ;
 		

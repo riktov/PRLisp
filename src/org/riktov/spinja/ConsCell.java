@@ -239,6 +239,8 @@ class ConsCell extends LispObject implements LispList {
 	 * @param formalParams
 	 * @param env
 	 */
+	
+	/*
 	public void bindToParams(LispObject formalParams, Environment env) {
 		//System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
 
@@ -267,7 +269,8 @@ class ConsCell extends LispObject implements LispList {
 		}
 		//env.printKeys();
 	}
-
+	*/
+	
 	@Override
 	public int length() {
 		if(this.isNull()) {

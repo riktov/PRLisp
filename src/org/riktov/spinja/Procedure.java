@@ -42,8 +42,8 @@ abstract class LispProcedure extends LispObject {
 }
 
 class CompoundProcedure extends LispProcedure {
-	private LispObject formalParams; //may be a list, or an Atom for list-binding
 	//private LispObject formalParams; //may be a list, or an Atom for list-binding
+	private Bindable formalParams; //may be a list, or an Atom for list-binding
 	private LispList body;
 	private Environment env;
 
@@ -54,10 +54,40 @@ class CompoundProcedure extends LispProcedure {
 	 * @param body
 	 * @param env
 	 */
-	public CompoundProcedure(LispObject formalParams, LispList body, Environment env) {
+	/*
+	public CompoundProcedure(Bindable formalParams, LispList body, Environment env) {
 		this.formalParams = formalParams;
 		this.body = body;
 		this.env = env;
+	}
+	*/
+	
+	public CompoundProcedure(ConsCell formalParams, LispList body, Environment env) {
+		this.formalParams = new ParameterList(formalParams) ;
+		this.body = body;
+		this.env = env;		
+	}	
+
+	public CompoundProcedure(SymbolAtom formalParams, LispList body, Environment env) {
+		this.formalParams = new ParameterSymbol(formalParams) ;
+		this.body = body;
+		this.env = env;		
+	}	
+
+	public CompoundProcedure(NilAtom formalParams, LispList body, Environment env) {
+		this.formalParams = new ParameterNull() ;
+		this.body = body;
+		this.env = env;		
+	}
+	
+	public CompoundProcedure(LispList formalParams, ConsCell body, Environment env) {
+		if(formalParams.isNull()) {
+			this.formalParams = new ParameterNull() ;
+		} else {
+			this.formalParams = new ParameterList((ConsCell)formalParams) ;
+		}
+		this.body = body;
+		this.env = env;				
 	}
 
 	// implementation of LispObject
@@ -72,7 +102,7 @@ class CompoundProcedure extends LispProcedure {
 	/**
 	 * accessors
 	 */
-	LispObject formalParams() { return formalParams ; }//can be a list, or nil, or a rest-bound atom
+	Bindable formalParams() { return formalParams ; }//can be a list, or nil, or a rest-bound atom
 	LispList body() { return body ; }	
 
 	/**
@@ -92,24 +122,34 @@ class CompoundProcedure extends LispProcedure {
 		//TODO: modify to handle list-bound params (&rest in CL) 
 		//where a single formal parameter might be bound to NIL
 		
-		LispObject paramsToBind ;
-		LispList valuesToBind ;			
+		//Bindable paramsToBind ;
+		//LispList valuesToBind ;			
 
-		paramsToBind = formalParams ;
-		valuesToBind = argForms ;
+		//paramsToBind = formalParams ;
+		//valuesToBind = argForms ;
 
+		newEnv = new ChildEnvironment(env);
+		formalParams.bindValues(argForms, newEnv) ;
+
+		/*
 		if(!valuesToBind.isNull()) {
 			newEnv = new ChildEnvironment(env);
-			((ConsCell) valuesToBind).bindToParams(paramsToBind, newEnv) ;
-			//formalParams.bindValues(argForms, newEnv) ;
+			//((ConsCell) valuesToBind).bindToParams(paramsToBind, newEnv) ;
+			formalParams.bindValues(argForms, newEnv) ;
 		} else {
 			newEnv = env ;
 		}
+		 */
 		return body.evalSequence(newEnv) ;
 	}	
 }
 
-/*
+/**
+ * Bindable provides functionality for function parameters, which may be
+ * a list, or an atom, or nil.
+ * @author paul
+ *
+ */
 interface Bindable {
 	void bindValues(LispList values, Environment env) ;
 }
@@ -117,6 +157,14 @@ interface Bindable {
 class ParameterList extends ConsCell implements Bindable {
 	public ParameterList(LispObject car, LispObject cdr) {
 		super(car, cdr);
+	}
+
+	public ParameterList(LispObject []objects) {
+		super(objects);
+	}
+
+	public ParameterList(ConsCell params) {
+		super(params.car, params.cdr) ;// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -128,13 +176,22 @@ class ParameterList extends ConsCell implements Bindable {
 			ConsCell currentValCell = (ConsCell)currentVal ;
 			LispObject val = currentValCell.car() ;
 			
-			ConsCell currentParamCell = (ConsCell)currentParam ;
-			String sym = currentParamCell.car().toString() ;
+			String sym ;
+			//we still need to handle (define (myfunc foo bar . baz)...
+			if(currentParam.isAtom()) {
+				sym = currentParam.toString() ;
+				ParameterSymbol ps = new ParameterSymbol(sym) ;
+				ps.bindValues(currentVal, env) ;
+				return ;
+			} else {
+				ConsCell currentParamCell = (ConsCell)currentParam ;
+				sym = currentParamCell.car().toString() ;
 			
-			env.intern(sym, val) ;
+				env.intern(sym, val) ;
 			
-			currentVal = (LispList) currentValCell.cdr() ;
-			currentParam = currentParamCell.cdr() ;
+				currentVal = (LispList) currentValCell.cdr() ;
+				currentParam = currentParamCell.cdr() ;
+			}
 		}
 	}
 }
@@ -145,11 +202,19 @@ class ParameterSymbol extends SymbolAtom implements Bindable {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+	public ParameterSymbol(SymbolAtom s) {
+		super(s.toString());
+		// TODO Auto-generated constructor stub
+	}
+@Override
 	public void bindValues(LispList values, Environment env) {
 		env.intern(toString(), (LispObject) values) ;		
 	}
 	
 }
-*/
 
+class ParameterNull implements Bindable {
+	public void bindValues(LispList values, Environment env) {
+		
+	}
+}

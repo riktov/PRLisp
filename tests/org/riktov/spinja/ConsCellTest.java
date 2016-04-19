@@ -259,7 +259,7 @@ public class ConsCellTest {
 	 */
 	@Test
 	public void testBindToParamsProperList() {
-		ConsCell params = new ConsCell(new SymbolAtom[] {
+		ParameterList params = new ParameterList(new SymbolAtom[] {
 				new SymbolAtom("foo"),
 				new SymbolAtom("bar"),
 				new SymbolAtom("baz"),
@@ -271,7 +271,8 @@ public class ConsCellTest {
 				new ObjectAtom(7),
 		} ) ;
 		
-		vals.bindToParams(params, env);
+		params.bindValues(vals, env) ;
+//		vals.bindToParams(params, env);
 		
 		assertTrue(env.containsKey("BAR"));
 		LispObject six = env.get("BAR") ;
@@ -285,17 +286,18 @@ public class ConsCellTest {
 		SymbolAtom baz = new SymbolAtom("baz");
 
 		//baz is rest-bound to (7 8 9)
-		ConsCell params = new ConsCell(foo, new ConsCell(bar, baz)) ;
+		ParameterList params = new ParameterList(foo, new ConsCell(bar, baz)) ; //(foo bar . baz)
 		
 		ConsCell vals = new ConsCell(new ObjectAtom[] {
-				new ObjectAtom(5),
-				new ObjectAtom(6),
-				new ObjectAtom(7),
-				new ObjectAtom(8),
-				new ObjectAtom(9),
+				new ObjectAtom(5), //foo
+				new ObjectAtom(6), //bar 
+				new ObjectAtom(7), //baz -> (7 8 9)
+				new ObjectAtom(8), 
+				new ObjectAtom(9), 
 		} ) ;
 		
-		vals.bindToParams(params, env);
+		params.bindValues(vals, env) ;
+		//vals.bindToParams(params, env);
 		
 		env.printKeys();
 		assertTrue(env.containsKey("BAZ"));

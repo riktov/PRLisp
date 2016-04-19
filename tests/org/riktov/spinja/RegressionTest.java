@@ -52,7 +52,7 @@ public class RegressionTest {
 				new SymbolAtom("amount")
 		} ;
 		
-		LispObject params = new ConsCell(paramArray) ;
+		ConsCell params = new ConsCell(paramArray) ;
 		LispList body = (LispList)lr.read("(if (>= 100 1) amount)") ;
 		
 		LispProcedure proc =  new CompoundProcedure(params, body, env) ;

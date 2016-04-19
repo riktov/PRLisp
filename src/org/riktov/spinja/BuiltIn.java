@@ -23,12 +23,14 @@ public class BuiltIn {
 			"(define (map fn lis) (if (null? lis) lis (cons (fn (car lis)) (map fn (cdr lis)))))",
 			"(define (identity x) x)",
 			"(define (>= xa ya) (not (> ya xa)))",
+			
 			"(define (append . lists) "
 			+ "(if (null? lists) "
 			+ 		"nil "
 			+ 		"(if (null? (cdr lists))"
 			+ 			"(car lists)"
 			+ 			"(append2 (car lists) (apply append (cdr lists))))))"
+			
 		} ;
 		
 		

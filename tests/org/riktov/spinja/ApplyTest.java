@@ -57,7 +57,7 @@ public class ApplyTest {
 	 * @param evalTest TODO
 	 */
 	@Test public void testApplyCompoundWithSingleArg() {
-		LispObject formalParams = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
+		ParameterList formalParams = new ParameterList(new SymbolAtom("x"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 	
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
@@ -80,7 +80,7 @@ public class ApplyTest {
 	@Test public void testApplyCompoundWithListBoundArg() {
 		/* We make formalParams an atom instead of a list so that it will be bound
 		to the entire list argParams */
-		LispObject formalParams = new SymbolAtom("x") ;
+		ParameterSymbol formalParams = new ParameterSymbol("x") ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
@@ -96,13 +96,13 @@ public class ApplyTest {
 		/* It should be possible to apply a procedure where one of the arguments is a list,
 		 * without the list being evaluated as a procedure application at some intermediate point
 		 * */
-		LispObject formalParams = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
+		ParameterList formalParams = new ParameterList(new SymbolAtom("alist"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
 		
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
 		System.out.println("testApplyCompoundWithListArg(): proc: " + proc) ;
 		
-		LispList argForms = new ConsCell(sampleList, NilAtom.nil) ;
+		ConsCell argForms = new ConsCell(sampleList, NilAtom.nil) ;
 		//argForms is a list containing one item, the list (13 5)
 				
 		System.out.println("testApplyCompoundWithListArg(): argForms: " + argForms) ;
