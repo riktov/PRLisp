@@ -1,11 +1,7 @@
 package org.riktov.spinja;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * A system procedure uses system calls like file I/O, that are not part of the Lisp interpreter, 

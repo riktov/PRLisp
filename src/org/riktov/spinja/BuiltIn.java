@@ -1,6 +1,5 @@
 package org.riktov.spinja;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class BuiltIn {
