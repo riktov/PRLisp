@@ -21,6 +21,7 @@ class IntAtom extends PrimitiveAtom {
     //constructor
     public IntAtom(int i) { this.intData = i ; }
 
+    /*
     IntAtom addThisClass(IntAtom other) { return new IntAtom(this.intData + other.intData) ; }
     DataAtom add(PrimitiveAtom other) { return addThisClass((IntAtom)other) ; } 
 
@@ -32,6 +33,7 @@ class IntAtom extends PrimitiveAtom {
     }
     
     boolean equals(float f) { return intData == f ; }
+	*/
 }
 
 class FloatAtom extends PrimitiveAtom {
@@ -40,7 +42,7 @@ class FloatAtom extends PrimitiveAtom {
     //constructor
     public FloatAtom(float f) { this.floatData = f ; }
 
-    DataAtom add(PrimitiveAtom n) {
+   /* DataAtom add(PrimitiveAtom n) {
         return (FloatAtom)make(this.floatData + ((FloatAtom)n).floatData) ;
     } 
     DataAtom subtract(PrimitiveAtom n) {
@@ -48,7 +50,7 @@ class FloatAtom extends PrimitiveAtom {
     }    
     
     boolean equals(float f) { return floatData == f ; }
-    @Override public String toString() { return Float.toString(floatData) ; }
+    @Override public String toString() { return Float.toString(floatData) ; }*/
 }
 
 class DoubleAtom extends PrimitiveAtom {
@@ -57,7 +59,7 @@ class DoubleAtom extends PrimitiveAtom {
     //constructor
     public DoubleAtom(double d) { this.doubleData = d ; }
 
-    DataAtom add(PrimitiveAtom n) {
+ /*   DataAtom add(PrimitiveAtom n) {
         return (DoubleAtom)make(this.doubleData + ((DoubleAtom)n).doubleData) ;
     } 
     DataAtom subtract(PrimitiveAtom n) {
@@ -65,5 +67,5 @@ class DoubleAtom extends PrimitiveAtom {
     }    
     
     boolean equals(double d) { return doubleData == d ; }
-    @Override public String toString() { return Double.toString(doubleData) ; }
+    @Override public String toString() { return Double.toString(doubleData) ; }*/
 }

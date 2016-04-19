@@ -8,6 +8,14 @@ import java.util.Iterator;
  * @author riktov@freeshell.org (Paul Richter)
  *
  */
+
+interface NewLispObject {
+	public boolean isNull() ;
+	public boolean isAtom() ;
+	NewLispObject eval(Environment env) ;
+	public String toStringCdr() ;
+}
+
 abstract class LispObject {
     public boolean isNull() { return false ; }
     boolean isAtom() { return true ; }
@@ -54,6 +62,7 @@ abstract class ObsoleteValueObject extends LispObject {
  * Integer and String are final.
  */
 
+//abstract class Atom implements LispObject {
 abstract class Atom extends LispObject {
     //constructor
     //public Atom() { this.data = new NilAtom() ; }
@@ -145,6 +154,12 @@ class IntegerAtom extends ObjectAtom {
 */
 
 class StringAtom extends ObjectAtom {
+	/*
+	private String value ;
+    public StringAtom(String s) { this.value = s ; }
+    @Override public String toString() { return '"' + value + '"' ; }
+    public String toStringUnquoted() { return value ; }
+	 */
     public StringAtom(String s) { super(s) ; }
     @Override public String toString() { return '"' + super.toString() + '"' ; }
     public String toStringUnquoted() { return super.toString(); }

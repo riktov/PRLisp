@@ -46,7 +46,6 @@ class CompoundProcedure extends LispProcedure {
 	private Bindable formalParams; //may be a list, or an Atom for list-binding
 	private LispList body;
 	private Environment env;
-
 	// constructors
 	/**
 	 * Constructor
@@ -116,42 +115,26 @@ class CompoundProcedure extends LispProcedure {
 	 * @throws LispAbortEvaluationException 
 	 */
 	public LispObject apply(LispList argForms) {
-		//System.out.println("CompoundProcedure.apply() : argForms: " + argForms + " formalParams: " + formalParams) ;
-		Environment newEnv ;
-
-		//TODO: modify to handle list-bound params (&rest in CL) 
-		//where a single formal parameter might be bound to NIL
-		
-		//Bindable paramsToBind ;
-		//LispList valuesToBind ;			
-
-		//paramsToBind = formalParams ;
-		//valuesToBind = argForms ;
-
-		newEnv = new ChildEnvironment(env);
+		if(!formalParams.matchCount(argForms)) {
+			new LispRestarter().offerRestarts("Invalid argument count") ;
+		}
+		Environment newEnv = new ChildEnvironment(env);
 		formalParams.bindValues(argForms, newEnv) ;
 
-		/*
-		if(!valuesToBind.isNull()) {
-			newEnv = new ChildEnvironment(env);
-			//((ConsCell) valuesToBind).bindToParams(paramsToBind, newEnv) ;
-			formalParams.bindValues(argForms, newEnv) ;
-		} else {
-			newEnv = env ;
-		}
-		 */
 		return body.evalSequence(newEnv) ;
 	}	
 }
 
 /**
  * Bindable provides functionality for function parameters, which may be
- * a list, or an atom, or nil.
+ * a list, or a SymbolAtom (bound to a list), or nil.
  * @author paul
  *
  */
 interface Bindable {
 	void bindValues(LispList values, Environment env) ;
+	boolean isAtom();
+	boolean matchCount(LispList values) ;
 }
 
 class ParameterList extends ConsCell implements Bindable {
@@ -164,13 +147,13 @@ class ParameterList extends ConsCell implements Bindable {
 	}
 
 	public ParameterList(ConsCell params) {
-		super(params.car, params.cdr) ;// TODO Auto-generated constructor stub
+		super(params.car, params.cdr) ;
 	}
 
 	@Override
 	public void bindValues(LispList values, Environment env) {
 		LispObject currentParam = this ;
-		LispList currentVal = values ;	// ConsCell or nil
+		LispList currentVal = values ;	// ConsCell or NilAtom
 		
 		while(!currentParam.isNull()) {
 			ConsCell currentValCell = (ConsCell)currentVal ;
@@ -194,27 +177,45 @@ class ParameterList extends ConsCell implements Bindable {
 			}
 		}
 	}
+	
+	public boolean matchCount(LispList values) {
+		return (values.length() == length()) ;
+	}
 }
 
 class ParameterSymbol extends SymbolAtom implements Bindable {
 	public ParameterSymbol(String s) {
 		super(s);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ParameterSymbol(SymbolAtom s) {
 		super(s.toString());
-		// TODO Auto-generated constructor stub
 	}
 @Override
 	public void bindValues(LispList values, Environment env) {
 		env.intern(toString(), (LispObject) values) ;		
 	}
-	
+
+	public boolean isAtom() {
+		return super.isAtom() ;
+	}
+
+	public boolean matchCount(LispList values) {
+		return true ;
+	}
 }
 
 class ParameterNull implements Bindable {
 	public void bindValues(LispList values, Environment env) {
-		
+		// do nothing
+	}
+
+	@Override
+	public boolean isAtom() {
+		return false;
+	}
+
+	public boolean matchCount(LispList values) {
+		return (values.length() == 0) ;
 	}
 }
