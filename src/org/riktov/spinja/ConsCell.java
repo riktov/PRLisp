@@ -181,18 +181,11 @@ class ConsCell extends LispObject implements LispList {
 
 	@Override public LispList listOfValues(Environment env)  {
 		ConsCell current = this ;
-
-		//System.out.println("ConsCell.listOfValues(): form: " + current) ;
 		
 		if(current.cdr().isNull()) {
-			return (LispList) new ConsCell(current.car.eval(env), current.cdr) ;
+			return new ConsCell(current.car.eval(env), current.cdr) ;
 		} else {
-			/*
-			if(current.cdr.isAtom()) {
-				return (LispList) new ConsCell(current.car.eval(env), current.cdr.eval(env)) ;								
-			} else { */
-				return (LispList) new ConsCell(current.car.eval(env), (LispObject) ((LispList)current.cdr).listOfValues(env)) ;				
-			//}
+			return new ConsCell(current.car.eval(env), (LispObject) ((LispList)current.cdr).listOfValues(env)) ;				
 		}
 	}
 
@@ -255,6 +248,7 @@ class ConsCell extends LispObject implements LispList {
 		
 		while(!currentVal.isNull()) {
 			ConsCell currentValCell = (ConsCell)currentVal ;
+			//TODO : Anti-pattern here. Should dispatch on type of formalParams
 			if (!currentParam.isAtom()) {	//conventional one-to-one binding
 				LispObject val = currentValCell.car() ;
 				//System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;

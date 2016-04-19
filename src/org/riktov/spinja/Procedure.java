@@ -43,6 +43,7 @@ abstract class LispProcedure extends LispObject {
 
 class CompoundProcedure extends LispProcedure {
 	private LispObject formalParams; //may be a list, or an Atom for list-binding
+	//private LispObject formalParams; //may be a list, or an Atom for list-binding
 	private LispList body;
 	private Environment env;
 
@@ -91,22 +92,64 @@ class CompoundProcedure extends LispProcedure {
 		//TODO: modify to handle list-bound params (&rest in CL) 
 		//where a single formal parameter might be bound to NIL
 		
-		ConsCell paramsToBind, valuesToBind ;			
+		LispObject paramsToBind ;
+		LispList valuesToBind ;			
 
-		if(!formalParams.isAtom()) {	//normal params (define (foo arg1 arg2)...
-			paramsToBind = (ConsCell)formalParams ;
-			valuesToBind = (ConsCell)argForms ;
-		} else {	//list-bound (define (foo . args) ...
-			paramsToBind = new ConsCell(formalParams, NilAtom.nil) ;
-			valuesToBind = new ConsCell((LispObject) argForms, NilAtom.nil) ;
-		}
-		
+		paramsToBind = formalParams ;
+		valuesToBind = argForms ;
+
 		if(!valuesToBind.isNull()) {
 			newEnv = new ChildEnvironment(env);
-			valuesToBind.bindToParams(paramsToBind, newEnv) ;
+			((ConsCell) valuesToBind).bindToParams(paramsToBind, newEnv) ;
+			//formalParams.bindValues(argForms, newEnv) ;
 		} else {
 			newEnv = env ;
 		}
 		return body.evalSequence(newEnv) ;
 	}	
 }
+
+/*
+interface Bindable {
+	void bindValues(LispList values, Environment env) ;
+}
+
+class ParameterList extends ConsCell implements Bindable {
+	public ParameterList(LispObject car, LispObject cdr) {
+		super(car, cdr);
+	}
+
+	@Override
+	public void bindValues(LispList values, Environment env) {
+		LispObject currentParam = this ;
+		LispList currentVal = values ;	// ConsCell or nil
+		
+		while(!currentParam.isNull()) {
+			ConsCell currentValCell = (ConsCell)currentVal ;
+			LispObject val = currentValCell.car() ;
+			
+			ConsCell currentParamCell = (ConsCell)currentParam ;
+			String sym = currentParamCell.car().toString() ;
+			
+			env.intern(sym, val) ;
+			
+			currentVal = (LispList) currentValCell.cdr() ;
+			currentParam = currentParamCell.cdr() ;
+		}
+	}
+}
+
+class ParameterSymbol extends SymbolAtom implements Bindable {
+	public ParameterSymbol(String s) {
+		super(s);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void bindValues(LispList values, Environment env) {
+		env.intern(toString(), (LispObject) values) ;		
+	}
+	
+}
+*/
+

@@ -21,6 +21,7 @@ public class BuiltIn {
 //			"(define (fib n)(if (< n 2)(list 1 1)(let ((fib-prev (fib (- n 1))))(cons (+ (car fib-prev)(cadr fib-prev)) fib-prev))))",
 			"(define (fact n)(if (= n 1) n (* n (fact (- n 1)))))",
 			"(define (map fn lis) (if (null? lis) lis (cons (fn (car lis)) (map fn (cdr lis)))))",
+			"(define (identity x) x)",
 			"(define (>= xa ya) (not (> ya xa)))",
 			"(define (append . lists) "
 			+ "(if (null? lists) "

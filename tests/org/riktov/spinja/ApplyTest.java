@@ -16,6 +16,7 @@ import org.riktov.spinja.SymbolAtom;
 
 public class ApplyTest {
     Environment env ;
+    ConsCell sampleList ; 	//(13 5 40)
 
     @Before
     public void setUp() {
@@ -24,6 +25,14 @@ public class ApplyTest {
     	 * 
     	 */
     	env = new Environment() ;
+    	
+    	LispObject []sampleArray = {
+    			Atom.make(13),
+    			Atom.make(5),
+    			Atom.make(40) 			
+    	} ;
+    	
+    	sampleList = new ConsCell(sampleArray) ;
     }
 
     @Test public void testApplyCompoundNoArgs() {
@@ -47,8 +56,7 @@ public class ApplyTest {
 	 * then apply it to (5)
 	 * @param evalTest TODO
 	 */
-	@Test public void testApplyCompoundWithArgs() {
-//		String[] formalParams = new String[] { "X" } ;
+	@Test public void testApplyCompoundWithSingleArg() {
 		LispObject formalParams = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 	
@@ -72,22 +80,16 @@ public class ApplyTest {
 	@Test public void testApplyCompoundWithListBoundArg() {
 		/* We make formalParams an atom instead of a list so that it will be bound
 		to the entire list argParams */
-		LispObject formalParams = new SymbolAtom("rest") ;
-		LispList body = new ConsCell(new SymbolAtom("rest"), new NilAtom()) ;
+		LispObject formalParams = new SymbolAtom("x") ;
+		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
-		System.out.println("testApplyCompoundWithListBoundArg(): proc: " + proc) ;
+		System.out.println("testApplyCompoundWithListBoundArg(): proc: " + proc + sampleList) ;
 		
-		ConsCell argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
-		argForms = new ConsCell(new ObjectAtom(13), argForms) ;
-		LispList argValues = proc.processArguments(argForms, env) ;
-		
-		System.out.println("testApplyCompoundWithListBoundArg(): argValues: " + argValues) ;
-		
-		LispObject result = proc.apply(argValues) ;
+		LispObject result = proc.apply(sampleList) ;
 	
 		System.out.println("testApplyCompoundWithListBoundArg(): result :  " + result) ;
-		assertTrue(result.toString().equals("(13 5)")) ;
+		assertTrue(result.toString().equals("(13 5 40)")) ;
 	}
 	
 	@Test public void testApplyCompoundWithListArg() {
@@ -100,18 +102,14 @@ public class ApplyTest {
 		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
 		System.out.println("testApplyCompoundWithListArg(): proc: " + proc) ;
 		
-		ConsCell argForms = new ConsCell(new ObjectAtom(5), NilAtom.nil) ;
-		argForms = new ConsCell(new ObjectAtom(13), argForms) ;
-		argForms = new ConsCell(argForms, NilAtom.nil) ;
+		LispList argForms = new ConsCell(sampleList, NilAtom.nil) ;
 		//argForms is a list containing one item, the list (13 5)
-		
-		//LispList argValues = proc.processArguments(argForms, env) ;
-		
+				
 		System.out.println("testApplyCompoundWithListArg(): argForms: " + argForms) ;
 		
 		LispObject result = proc.apply(argForms) ;
 	
 		System.out.println("testApplyCompoundWithListBoundArg(): result :  " + result) ;
-		assertTrue(result.toString().equals("(13 5)")) ;		
+		assertTrue(result.toString().equals("(13 5 40)")) ;		
 	}
 }

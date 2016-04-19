@@ -39,7 +39,7 @@ public class RegressionTest {
 		
 		//System.out.println(new SymbolAtom("withdraw").eval(env)) ;
 		System.out.println(result) ;
-		assertTrue(result.toString().equals("10")) ;
+		assertTrue(result.toString().equals("90")) ;
 	}
 
 
