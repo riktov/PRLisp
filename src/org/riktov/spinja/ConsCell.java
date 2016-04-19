@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 /**
  * The LispList interface allows both ConsCells, which have data members, and NilAtoms,
- * to be treated as lists, the latter as the empty list. In Lisp, NIL is both an atom and
+ * to be treated as lists, the latter as the empty list. In Common Lisp, NIL is both an atom and
  * a list, so it essentially has multiple inheritance, which is just the appropriate use for
  * an interface
  * 
@@ -120,7 +120,7 @@ class ConsCell extends LispObject implements LispList {
 		
 		LispProcedure proc = null ;
 		try {
-			proc = (LispProcedure)firstVal ;
+			proc = (LispProcedure)firstVal ;	
 		} catch (ClassCastException exc) {
 			new LispRestarter().offerRestarts("The object " + firstVal + " is not applicable.") ;
 			throw new LispAbortEvaluationException() ;

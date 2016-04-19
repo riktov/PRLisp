@@ -9,75 +9,48 @@ import org.junit.Test;
 import org.riktov.spinja.LispReader;
 
 public class ReaderMacroTest {
-	LispReader lr ;
-	Environment env ;
+	private LispReader lr ;
+	private Environment env ;
+	private LispObject result ;
 	
 	@Before
 	public void setUp() throws Exception {
     	env = new Environment() ;
     	env.initialize();
+    	
+    	lr = new LispReader("") ;
     }
 
 	@Test
 	public void testSimpleQuote() {
-		lr = new LispReader("'foo") ;
+		result = lr.read("'foo").eval(env) ;
+		System.out.println(result.toString()) ;
 
-		LispObject o ;
-		try {
-			o = lr.read().eval(env) ;
-			System.out.println(o.toString()) ;
-			assertTrue(o.toString().equals("FOO")) ;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//fail("Not yet implemented");
+		assertTrue(result.toString().equals("FOO")) ;
 	}
 
 	@Test
 	public void testQuoteString() {
-		lr = new LispReader("'\"Farmer\"") ;
-		LispObject o ;
+		result = lr.read("'\"Farmer\"").eval(env) ;
+		System.out.println(result.toString()) ;
 		
-		try {
-			o = lr.read().eval(env) ;
-			System.out.println(o.toString()) ;
-			assertTrue(o.toString().equals("\"Farmer\"")) ;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		assertTrue(result.toString().equals("\"Farmer\"")) ;
 	}
 
 
 	@Test
-	public void testQuoteList() {
-		lr = new LispReader("'(\"Farmer\")") ;
-		LispObject o ;
-		
-		try {
-			o = lr.read().eval(env) ;
-			System.out.println(o.toString()) ;
-			assertTrue(o.toString().equals("(\"Farmer\")")) ;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void testQuoteList() {		
+		result = lr.read("'(\"Farmer\")").eval(env) ;
+		System.out.println(result.toString()) ;
+			
+		assertTrue(result.toString().equals("(\"Farmer\")")) ;
 	}
 
 	@Test
-	public void testQuoteListMultiple() {
-		lr = new LispReader("'(foo \"Farmer\")") ;
-		LispObject o ;
-		
-		try {
-			o = lr.read().eval(env) ;
-			System.out.println(o.toString()) ;
-			assertTrue(o.toString().equals("(FOO \"Farmer\")")) ;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void testQuoteListMultiple() {		
+		result = lr.read("'(foo \"Farmer\")").eval(env) ;
+		System.out.println(result.toString()) ;
+
+		assertTrue(result.toString().equals("(FOO \"Farmer\")")) ;
 	}
 }

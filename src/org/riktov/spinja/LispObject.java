@@ -162,7 +162,7 @@ class SymbolAtom extends ObjectAtom {
 
 		if(o == null) {
 			LispRestarter restarter = new LispRestarter() ;
-			int choice = restarter.offerRestarts(";Unbound variable: " + this.toString());
+			int choice = restarter.offerRestarts(";Unbound variable: " + this);
 			System.out.println(choice) ;
 			
 			switch(choice) {

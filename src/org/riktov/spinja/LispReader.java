@@ -1,6 +1,8 @@
 package org.riktov.spinja;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -43,22 +45,21 @@ class LispReader {
 	public LispObject read(String sExp) {
 		Reader r = new BufferedReader(new StringReader(sExp));
 		tokenizer = new LispStreamTokenizer(r);
-		
 		try {
-			return this.read() ;
+			return read() ;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return NilAtom.nil ;
+			return null ;
 		}
 	}
 	
 	/**
-	 * read() - Read a single object from the associated stream
+	 * readObject() - Read a single object from the associated stream
 	 * @return a LispObject
 	 * @throws IOException
 	 */
-	public LispObject read() throws IOException {
+	public LispObject read() throws IOException  {
 		while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
 			this.can_continue_reading = true ;
 			//System.out.println(tokenizer.sval);
@@ -86,115 +87,18 @@ class LispReader {
 				
 				if((null != macros) && macros.containsKey(sym)) {
 					//return macros.get(sym).process(readTextFrom(tokenizer)) ;
-					return macros.get(sym).process(read().toString()) ;
+					//return macros.get(sym).process(read().toString()) ;
+					return macros.get(sym).expand(read()) ;
 				} else {
 					return new SymbolAtom(sym);					
 				}
 			} 
 		}	//end of while loop, exited by no more input
 		this.can_continue_reading = false ;
-		return new NilAtom();
+		return null ;
+		//return new NilAtom();
 	}
 	
-	/**
-	 * readFrom(StreamTokenizer st)
-	 * @param st a StreamTokenizer
-	 */
-	/*
-	public LispObject readFrom(StreamTokenizer st) throws IOException {
-		while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
-			//System.out.println(st.toString());
-
-			if (st.ttype == '(') {					
-				return readListFrom(st) ;
-			} else if (tokenizer.ttype == '"') {
-				System.out.println("Read quoted string") ;
-				return new StringAtom(st.sval);
-			} else if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-				///We parse numbers ourselves instead of using StreamTokenizer's
-				//number parsing, because it will read a solitary dot as 0.0
-				Atom a ; 
-
-				try {
-					a = parseNumber(st.sval);
-				} catch (NumberFormatException e) {
-					a = new SymbolAtom(st.sval);
-				}
-				return a ;
-			} else {
-				String sym = Character.toString((char) tokenizer.ttype);
-				
-				if(macros.containsKey(sym)) {
-					return macros.get(sym).process(readTextFrom(st)) ;
-				} else {
-					return new SymbolAtom(sym);					
-				}
-			} 
-		}	//end of while loop
-		return new NilAtom();
-	}
-	*/
-
-	/**
-	 * readTextFrom(StreamTokenizer st)
-	 * @param st a StreamTokenizer
-	 * @return the next entire string enclosed in parentheses (possible nested), spaces, or quotes
-	 * @throws IOException
-	 */
-	/*
-	public String readTextFrom(StreamTokenizer st) throws IOException {
-		while (st.nextToken() != StreamTokenizer.TT_EOF) {
-			//System.out.println(st.toString());
-
-			if (st.ttype == '(') {					
-				return readTextListFrom(tokenizer) ;
-			} else if (st.ttype == '"') {
-				// System.out.println("Read quoted string") ;
-				return tokenizer.sval;
-			} else if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-				return tokenizer.sval ;
-			} else {
-				return Character.toString((char) st.ttype);
-			} 
-		}	//end of while loop
-		return "" ;
-	}
-	
-
-	/**
-	 * Reads everything up to a closing paren as elements of a list or dotted-pair
-	 * @param st the StreamTokenizer
-	 * @return the read LispObject
-	 * @throws IOException
-	 */
-	/*
-	public LispObject readListFrom(StreamTokenizer st) throws IOException {
-		ArrayList<LispObject> items = new ArrayList<LispObject>() ;
-
-		//System.out.println("Starting reading list") ;
-		while (st.nextToken() != StreamTokenizer.TT_EOF) {
-			if (st.ttype == ')') {
-				//System.out.println("Closing paren to list") ;
-				LispObject[] arr = new LispObject[items.size()];
-				items.toArray(arr);
-				if(arr.length == 0) {
-					return new NilAtom() ;
-				} else if(arr.length == 1) {
-					return new ConsCell(arr[0], new NilAtom()) ;
-				} else if(arr[1].toString().equals(".")) {
-					return new ConsCell(arr[0], arr[2]) ;
-				} else {
-					return new ConsCell(arr) ;
-				}
-			} else {
-				tokenizer.pushBack();
-				items.add(readFrom(st)) ;
-			}
-		}
-		
-		throw new LispIncompleteFormException() ;
-	}
-	*/
 	/**
 	 * Reads everything up to a closing parenthesis as elements of a list or dotted-pair
 	 * @return the read LispObject
@@ -208,7 +112,7 @@ class LispReader {
 			if (tokenizer.ttype == ')') {
 				//System.out.println("Closing paren to list") ;
 				LispObject[] arr = new LispObject[items.size()];
-				items.toArray(arr);
+				items.toArray(arr);	//writes into arr
 
 				if(arr.length == 0) {
 					return new NilAtom() ;
@@ -226,6 +130,56 @@ class LispReader {
 		}
 		
 		throw new LispIncompleteFormException() ;
+	}
+	
+	public LispObject readSequence() { 
+		LispObject lastReadObject = null ;
+		LispObject o = null ;
+		
+		while(canContinueReading()) {
+			try {
+				o = read() ;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+			if(o != null) {
+				lastReadObject = o ;
+			}
+		}
+		return lastReadObject ;
+	}
+
+	public static LispObject load(String filename, Environment env) throws FileNotFoundException{ 
+		LispObject lastReadValue = null ;
+		
+		FileReader fr = null ;
+		
+		fr = new FileReader(filename) ;
+		
+		BufferedReader reader = new BufferedReader(fr);
+		LispReader lr = new LispReader(reader);
+
+		// read() will return as soon as it reads an expression. We need to keep going until
+		// the end of the file (stream)
+		
+		while(lr.canContinueReading()) {
+			//System.out.println("Can continue reading?: " + lr.canContinueReading()) ;
+			LispObject o = null;
+			try {
+				o = lr.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} //.eval(env) ;
+			
+			if(o != null) {
+				lastReadValue = o.eval(env) ;
+			}
+		}
+
+		return lastReadValue ;
 	}
 	
 	public boolean canContinueReading() {
@@ -263,10 +217,10 @@ class LispStreamTokenizer extends StreamTokenizer {
 		wordChars('A', 'Z');
 		wordChars('0', '9');
 		wordChars('.', '.');
-		wordChars('?', '?');	//examples: NULL? zero?
+		wordChars('!', '!');
 		wordChars('*', '*');	//examples: LET*
 		wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
-		wordChars('>', '>');	//examples: STR->LIS
+		wordChars('<', '?');	// <=>? examples: STR->LIS
 		wordChars(';', ';');	//handle lines that start with?? ;
 		//ordinaryChar('+');
 		quoteChar('"');
@@ -276,8 +230,14 @@ class LispStreamTokenizer extends StreamTokenizer {
 	}
 }
 
+/**
+ * 
+ * @author paul
+ *
+ */
 abstract class ReaderMacro {
-	abstract LispObject process(String string) ;
+	//abstract LispObject process(String string) ;
+	abstract LispObject expand(LispObject o) ;
 	
 	static String quoteString(String s) {
 		return s ;
@@ -288,17 +248,13 @@ abstract class ReaderMacro {
 		
 		macros.put("'", new ReaderMacro() {
 			@Override
-			LispObject process(String formString) {
-				//System.out.println("String fed to reader macro: "+ formString) ;
-				String processedString = "(quote " + formString + ")" ;
-				//System.out.println("in reader macro process(): " + processedString);
-				try {
-					return new LispReader(processedString).read() ;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return NilAtom.nil ;
-				}
+			LispObject expand(LispObject lo) {
+				LispObject[] parts = {
+					new SymbolAtom("quote"), lo
+				} ;
+				ConsCell processedList = new ConsCell(parts) ;
+				
+				return processedList;
 			}
 		}) ;
 		

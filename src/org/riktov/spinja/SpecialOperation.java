@@ -34,6 +34,16 @@ abstract class SpecialOperation extends LispProcedure {
 	 */
 	abstract LispObject applyNonNil(ConsCell argList) ;
 	
+	/**
+	 * processArguments - For special operations, we don't immediately evaluate the arguments, but save the environment so 
+	 * they can be evaluated if needed.
+	 * 
+	 * @param unevaluatedArgForms
+	 * @param argEnv
+	 * 
+	 * @return the same argument list
+	 * 
+	 */
 	@Override public LispList processArguments(LispList unevaluatedArgForms, Environment argEnv) {
 		this.argEnv = argEnv;
 		return unevaluatedArgForms;
@@ -51,11 +61,11 @@ abstract class SpecialOperation extends LispProcedure {
 		HashMap<String, SpecialOperation> specials = new HashMap<String, SpecialOperation>();
 
 		/**
-		 * setq - Treat the first argument as a symbol(unevaluated), and intern
+		 * setq(CL) / set!(Scheme) - Treat the first argument as a symbol(unevaluated), and intern
 		 * it with the value of the second argument
 		 */
 
-		specials.put("setq".toUpperCase(), new SpecialOperation() {
+		specials.put("set!".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
 				LispObject assignedValue = null ;
 
@@ -72,6 +82,8 @@ abstract class SpecialOperation extends LispProcedure {
 				return assignedValue;
 			}
 		});
+		
+		specials.put("setq".toUpperCase(), specials.get("set!".toUpperCase())) ;
 
 		/**
 		 * if - Treat the first argument as a boolean(evaluated), and depending
@@ -80,27 +92,48 @@ abstract class SpecialOperation extends LispProcedure {
 		specials.put("if".toUpperCase(), new SpecialOperation() {
 			@Override
 			public LispObject applyNonNil(ConsCell argForms) {
+				//System.out.println("special op IF: " + argEnv.toString()) ;
 				LispObject[] args = argForms.toArray() ;
 
 				LispObject condition = args[0] ;
 				LispObject consequent = args[1] ;
-				LispObject alternate = args[2] ;
-
-				if (!condition.eval(argEnv).isNull()) {
-					return consequent.eval(argEnv);
+				LispObject alternate ;
+				
+				//System.out.println(this +  args[0].toString()) ;
+				
+				if(argForms.length() > 2) {
+					alternate = args[2] ;
 				} else {
-					return alternate.eval(argEnv);
+					alternate = new NilAtom() ;
+				} 
+				
+				//for reentrancy
+				ChildEnvironment env = new ChildEnvironment(argEnv) ;
+				
+				//evaluating the condition sets argEnv with its own bindings, clobbering the earlier binding
+				if (!condition.eval(env).isNull()) {
+					return consequent.eval(env);
+				} else {
+					return alternate.eval(env);
 				}
 			}
 		});
 
 
-		specials.put("progn".toUpperCase(), new SpecialOperation() {
+		/**
+		 * progn(CL) / begin(Scheme) - evaluate the forms in sequence, 
+		 * and return the last form. If processArguments were guaranteed to execute
+		 * from left to right, this could be a conventional procedure, that just
+		 * returns the last argument.
+		 */
+		specials.put("begin".toUpperCase(), new SpecialOperation() {
 			@Override
 			public LispObject applyNonNil(ConsCell argForms) {
 				return argForms.evalSequence(argEnv) ;
 			}
 		});
+		specials.put("progn".toUpperCase(), specials.get("begin".toUpperCase())) ;
+		
 
 		specials.put("quote".toUpperCase(), new SpecialOperation() {
 			/**
@@ -168,8 +201,8 @@ abstract class SpecialOperation extends LispProcedure {
 		
 		/**
 		 * LET: The first argument is a list of bindings, which may be atoms which will be bound to NIL,
-		 * or two-elements lists containing the symbol and value. The remaining arguments (the body) are evaluated in
-		 * sequence with the new bindings, and the last value is returned.
+		 * or two-elements lists containing the symbol and value. The remaining arguments (the body) 
+		 * are evaluated in sequence with the new bindings, and the last value is returned.
 		 */
 		specials.put("let".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
@@ -205,6 +238,16 @@ abstract class SpecialOperation extends LispProcedure {
 				result = body.evalSequence(letEnv);
 
 				return result;
+			}
+
+		});
+
+		specials.put("apply".toUpperCase(), new SpecialOperation() {
+			public LispObject applyNonNil(ConsCell argForms) {
+				LispProcedure proc = (LispProcedure)argForms.car().eval(argEnv) ;
+				LispList values = ((ConsCell) argForms.cdr()).listOfValues(argEnv) ;
+				
+				return proc.apply(values) ;
 			}
 		});
 

@@ -1,12 +1,7 @@
 package org.riktov.spinja;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * PrimitiveProcedure is a procedure that can not be implemented in Lisp itself, but does not involve
@@ -32,9 +27,9 @@ abstract class PrimitiveProcedure extends LispProcedure {
 
 		primitives.put("atom".toUpperCase(), new PrimitiveProcedure() {
 			@Override
-			LispObject apply(LispList argsToApply) {
-				requireArgumentCount(1, argsToApply, "atom") ;
-				LispObject[] args = argsToApply.toArray() ;
+			LispObject apply(LispList argForms) {
+				requireArgumentCount(1, argForms, "atom") ;
+				LispObject[] args = argForms.toArray() ;
 				return Atom.make(args[0].isAtom());
 			}
 		}) ;
@@ -73,6 +68,7 @@ abstract class PrimitiveProcedure extends LispProcedure {
 			}
 		});		
 		
+		//TODO: This should not be a primitive; primitives should not need the environment
 		primitives.put("env".toUpperCase(), new PrimitiveProcedure() {
 			public LispObject apply(LispList argForms) {
 				Object[] envKeyNames = env.keySet().toArray() ;

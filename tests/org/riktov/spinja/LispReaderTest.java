@@ -2,14 +2,7 @@ package org.riktov.spinja;
 
 import static org.junit.Assert.* ;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StreamTokenizer;
-import java.io.StringReader;
-
-
-
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.* ;
@@ -20,7 +13,9 @@ import org.riktov.spinja.LispReader;
 import org.riktov.spinja.ObjectAtom;
 
 public class LispReaderTest {
-	LispReader lr ;
+	private LispReader lr ;
+	private LispObject result ;
+	
 	@Before
 	
     public void setUp() {
@@ -97,6 +92,11 @@ public class LispReaderTest {
         assertTrue(target.toString().equals("FOO")) ;
     }
     */
+    @Test public void testReadSequence() {
+    	LispObject exp = lr.read("1 2 3 4") ;
+    	System.out.println("testReadSequence(): " + exp) ;
+       assertTrue(exp.toString().equals("1")) ;
+    }
     
     @Test public void testReadListEmpty() {
         LispObject aCons = lr.read("()") ;
@@ -158,10 +158,18 @@ public class LispReaderTest {
     	ConsCell result = (ConsCell) lr.read(exp) ;
     	ObjectAtom expectedLetStar = (ObjectAtom)result.car();
     	assertTrue(expectedLetStar.data().toString().equals("LET*")) ;
-
-    	exp = "(let ((hyphenated-variable-name 5)))" ;
-    	result = (ConsCell) lr.read(exp) ;
-    	ObjectAtom expected = (ObjectAtom)result.car();
-    	//assertTrue(expected.data().toString().equals("LET*")) ;
-}
+    }
+    @Test public void testReadSymbolWithSpecialChar2() {
+    	String exp = "hyphenated-variable-name" ;
+    	LispObject result = lr.read(exp) ;
+    	System.out.println("testReadSymbolWithSpecialChar2() : read " + exp + " as " + result) ;
+    	assertTrue(result.toString().equals("HYPHENATED-VARIABLE-NAME")) ;
+    }
+    
+    @Test public void testReadSymbolWithOtherOperator() {
+    	String exp = "<=" ;
+    	LispObject result = lr.read(exp) ;
+    	System.out.println("testReadSymbolWithOtherOperator() : read " + exp + " as " + result) ;
+    	assertTrue(result.toString().equals("<=")) ;
+    }
 }

@@ -177,6 +177,44 @@ public class SpecialOperationsTest {
 		assertTrue(result == alternateObject) ;
 	}
 	
+	@Test
+	public void testIfOmittedAlternateTrue() {
+		LispObject predicateObject = DataAtom.make(5) ;
+		LispObject consequentObject = DataAtom.make(14) ;
+		
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("if"),
+				predicateObject,
+				consequentObject,
+		} ;
+		
+		ConsCell c = new ConsCell(forms) ;
+		System.out.println("testIfOmittedAlternateTrue() evaluating: " + c.toString()) ;
+
+		LispObject result = c.eval(env) ;
+		
+		assertTrue(result == consequentObject) ;
+	}
+
+	@Test
+	public void testIfOmittedAlternateFalse() {
+		LispObject predicateObject = new NilAtom() ;
+		LispObject consequentObject = DataAtom.make(14) ;
+		
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("if"),
+				predicateObject,
+				consequentObject,
+		} ;
+		
+		ConsCell c = new ConsCell(forms) ;
+		System.out.println("testIfOmittedAlternateFalse() evaluating: " + c.toString()) ;
+
+		LispObject result = c.eval(env) ;
+		
+		assertTrue(result.isNull()) ;
+	}
+
 	// TODO: IF test that the skipped clause is not evaluated
 
 	/**

@@ -3,6 +3,7 @@ package org.riktov.spinja;
 import static org.junit.Assert.*;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -45,19 +46,13 @@ public class SystemProceduresTest {
 			try {writer.close();} catch (Exception ex) {}
 		}
 		
-		//build a form
-		LispObject[] forms = new LispObject[] {
-				new SymbolAtom("load"),
-				new StringAtom(sourceFilePath)
-		} ;
+		try {
+			LispObject result = LispReader.load(sourceFilePath, env) ;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		//convert to a list
-		ConsCell c = new ConsCell(forms) ;
-		
-		//evaluate it
-		System.out.println("testLoad() evaluating: " + c.toString()) ;
-		c.eval(env) ;
-	
 		env.dump() ;
 		//check that the environment contains the bindings as stated in the source file.
 		
@@ -86,18 +81,13 @@ public class SystemProceduresTest {
 			try {writer.close();} catch (Exception ex) {}
 		}
 		
-		//build a form
-		LispObject[] forms = new LispObject[] {
-				new SymbolAtom("load"),
-				new StringAtom(sourceFilePath)
-		} ;
-		
-		//convert to a list
-		ConsCell c = new ConsCell(forms) ;
-		
-		//evaluate it
-		System.out.println("testLoad() evaluating: " + c.toString()) ;
-		c.eval(env) ;
+		try {
+			LispObject result = LispReader.load(sourceFilePath, env) ;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	
 		//check that the environment contains the bindings as stated in the source file.
 		
@@ -133,25 +123,20 @@ public class SystemProceduresTest {
 			try {writer.close();} catch (Exception ex) {}
 		}
 		
-		//build a form
-		LispObject[] forms = new LispObject[] {
-				new SymbolAtom("load"),
-				new StringAtom(sourceFilePath)
-		} ;
 		
-		//convert to a list
-		ConsCell c = new ConsCell(forms) ;
-		
-		//evaluate it
-		System.out.println("testLoad() evaluating: " + c.toString()) ;
-		c.eval(env) ;
+		try {
+			LispObject result = LispReader.load(sourceFilePath, env) ;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 		//check that the environment contains the bindings as stated in the source file.
 		
 		CompoundProcedure theProc = (CompoundProcedure) env.get("ADD-THIRTEEN") ;
 
-		forms = new LispObject[] { new ObjectAtom(4) } ;
-		c = new ConsCell(forms) ;
+		LispObject []forms = new LispObject[] { new ObjectAtom(4) } ;
+		ConsCell c = new ConsCell(forms) ;
 		
 		LispObject result = theProc.apply(c) ;
 		

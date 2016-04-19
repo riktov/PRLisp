@@ -15,11 +15,6 @@ public class Spinja {
 	public static void main(String args[]) {
 		Environment env = new Environment();
 		env.initialize();
-		// env.put("FOO", DataAtom.make(45)) ;
-		// env.put("BAR", DataAtom.make("Bargle")) ;
-
-		// LispObject o = env.lookup("FOO") ;
-		// System.out.println(o) ;
 
 		Spinja lisp = new Spinja();
 		lisp.repl(env);

@@ -88,9 +88,22 @@ class CompoundProcedure extends LispProcedure {
 		//System.out.println("CompoundProcedure.apply() : argForms: " + argForms + " formalParams: " + formalParams) ;
 		Environment newEnv ;
 
-		if(!argForms.isNull()) {
+		//TODO: modify to handle list-bound params (&rest in CL) 
+		//where a single formal parameter might be bound to NIL
+		
+		ConsCell paramsToBind, valuesToBind ;			
+
+		if(!formalParams.isAtom()) {	//normal params (define (foo arg1 arg2)...
+			paramsToBind = (ConsCell)formalParams ;
+			valuesToBind = (ConsCell)argForms ;
+		} else {	//list-bound (define (foo . args) ...
+			paramsToBind = new ConsCell(formalParams, NilAtom.nil) ;
+			valuesToBind = new ConsCell((LispObject) argForms, NilAtom.nil) ;
+		}
+		
+		if(!valuesToBind.isNull()) {
 			newEnv = new ChildEnvironment(env);
-			((ConsCell)argForms).bindToParams(formalParams, newEnv) ;
+			valuesToBind.bindToParams(paramsToBind, newEnv) ;
 		} else {
 			newEnv = env ;
 		}
