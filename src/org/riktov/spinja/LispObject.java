@@ -105,33 +105,15 @@ final class NilAtom extends Atom implements LispList {
     @Override
     public Iterator<LispObject> iterator() {
 		return new Iterator<LispObject>() {
-
-			@Override
-			public boolean hasNext() { return false; }
-
-			@Override
-			public LispObject next() { return nil ; }
-
-			@Override
-			public void remove() {
-				// TODO Auto-generated method stub
-				
-			}			
+			@Override public boolean hasNext() { return false; }
+			@Override public LispObject next() { return nil ; }
+			@Override public void remove() {}			
 		};
 	}
-	@Override
-	public int length() { return 0; }
-	@Override
-	public LispList cdrList() {
-		return this;
-	}
+	@Override public int length() { return 0; }
+	@Override public LispList cdrList() { return this; }
 }
 
-/**
-class IntegerAtom extends ObjectAtom {
-	public IntegerAtom(int i) { super(new Integer(i)) ; }
-}
-*/
 
 class StringAtom extends ObjectAtom {
 	/*
@@ -153,7 +135,7 @@ class StringAtom extends ObjectAtom {
 class SymbolAtom extends ObjectAtom {
     public SymbolAtom(String s) { super(s.toUpperCase()) ; }
     @Override public LispObject eval(Environment env) {
-        LispObject o = env.lookup(data.toString()) ;
+        LispObject o = env.lookup(this.toString()) ;
 
 		if(o == null) {
 			LispRestarter restarter = new LispRestarter() ;
