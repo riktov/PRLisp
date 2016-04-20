@@ -23,7 +23,7 @@ public class NumberAtomTest {
        assertTrue(iA.toString().equals("41")) ;
        assertTrue(iA.data.equals(41)) ;
        
-       ObjectAtom oDA = (ObjectAtom)DataAtom.make(26) ;
+       Atom oDA = (Atom)DataAtom.make(26) ;
 	
        assertTrue(iA.toString().equals("41")) ;	//not 41.0
        assertTrue(oDA.toString().equals("26")) ; //not 26.0

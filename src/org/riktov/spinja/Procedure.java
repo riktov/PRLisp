@@ -8,7 +8,27 @@ package org.riktov.spinja;
  * @author Paul RICHTER &lt;riktov@freeshell.de&gt;
  *
  */
-abstract class LispProcedure extends LispObject {
+abstract class LispProcedure implements LispObject {
+	public boolean isNull() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isAtom() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public LispObject eval(Environment env) {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	public String toStringCdr() {
+		// TODO Auto-generated method stub
+		return "Stub implementation of PrimitiveProcedure.toStringCdr()";
+	}
+	
 	abstract LispObject apply(LispList argsToApply) ;
     public LispList processArguments(LispList argForms, Environment evalEnv) {
     	//System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
@@ -122,6 +142,30 @@ class CompoundProcedure extends LispProcedure {
 		formalParams.bindValues(argForms, newEnv) ;
 
 		return body.evalSequence(newEnv) ;
+	}
+
+	@Override
+	public boolean isNull() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isAtom() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public LispObject eval(Environment env) {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	@Override
+	public String toStringCdr() {
+		// TODO Auto-generated method stub
+		return "Stub implementation of CompoundProcedure.toStringCdr()";
 	}	
 }
 

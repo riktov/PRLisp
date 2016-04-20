@@ -186,7 +186,7 @@ class LispReader {
 		return this.can_continue_reading ;
 	}
 	
-	public static DataAtom parseNumber(String st) {
+	public static Atom parseNumber(String st) {
 		try {
 			return new ObjectAtom(Integer.valueOf(st));
 		} catch (NumberFormatException e) {

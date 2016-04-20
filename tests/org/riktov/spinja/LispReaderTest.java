@@ -3,11 +3,11 @@ package org.riktov.spinja;
 import static org.junit.Assert.* ;
 
 import java.io.IOException;
+
 //import org.junit.Test ;
 //import org.junit.Ignore;
 import org.junit.* ;
 import org.riktov.spinja.ConsCell;
-import org.riktov.spinja.DataAtom;
 import org.riktov.spinja.LispObject;
 import org.riktov.spinja.LispReader;
 import org.riktov.spinja.ObjectAtom;
@@ -23,13 +23,13 @@ public class LispReaderTest {
     }
 
     @Test public void testReadAtoms() {
-        DataAtom fiftyfour = (DataAtom)lr.read("54") ;
+        Atom fiftyfour = (Atom)lr.read("54") ;
         //System.out.println("Does read(\"54\") create a primitive? " + fiftyfour.isPrimitive()) ;
         //assertTrue(fiftyfour.equals(54.0)) ;
         System.out.println("testReadAtoms() : read 54 as " + fiftyfour.toString()) ;
         assertTrue(fiftyfour.toString().equals("54")) ;
         
-        DataAtom threePointOneFour = (DataAtom)lr.read("3.14") ;
+        Atom threePointOneFour = (Atom)lr.read("3.14") ;
         System.out.println("testReadAtoms() : read 3.14 as " + threePointOneFour.toString()) ;
         assertTrue(threePointOneFour.toString().equals("3.14")) ;
 

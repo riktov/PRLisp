@@ -31,7 +31,7 @@ import org.riktov.spinja.SymbolAtom;
 public class ConsCellTest {
 	private ConsCell c, d ;
 	private Environment env ;
-	ObjectAtom sevenFortySeven = new ObjectAtom(747);
+	Atom sevenFortySeven = new ObjectAtom(747);
 	
 	@Before
 	public void setUp() {
@@ -92,7 +92,7 @@ public class ConsCellTest {
 	@Test
 	public void testMakeListFromArray() {
 		SymbolAtom plus = new SymbolAtom("+");
-		ObjectAtom four = new ObjectAtom(4);
+		Atom four = new ObjectAtom(4);
 		SymbolAtom x = new SymbolAtom("x");
 		LispObject[] args = { plus, four, x };
 		ConsCell c = new ConsCell(args);
@@ -134,7 +134,7 @@ public class ConsCellTest {
 
 	@Test
 	public void testEvalList() {
-		ObjectAtom sevenFortySeven = new ObjectAtom(747);
+		Atom sevenFortySeven = new ObjectAtom(747);
 		env.intern("JUMBO", sevenFortySeven);
 
 		ConsCell ct2 = new ConsCell(Atom.make(23), NilAtom.nil);
@@ -265,7 +265,7 @@ public class ConsCellTest {
 				new SymbolAtom("baz"),
 		} ) ;
 	
-		ConsCell vals = new ConsCell(new ObjectAtom[] {
+		ConsCell vals = new ConsCell(new Atom[] {
 				new ObjectAtom(5),
 				new ObjectAtom(6),
 				new ObjectAtom(7),
@@ -288,7 +288,7 @@ public class ConsCellTest {
 		//baz is rest-bound to (7 8 9)
 		ParameterList params = new ParameterList(foo, new ConsCell(bar, baz)) ; //(foo bar . baz)
 		
-		ConsCell vals = new ConsCell(new ObjectAtom[] {
+		ConsCell vals = new ConsCell(new Atom[] {
 				new ObjectAtom(5), //foo
 				new ObjectAtom(6), //bar 
 				new ObjectAtom(7), //baz -> (7 8 9)

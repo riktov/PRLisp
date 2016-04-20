@@ -9,13 +9,14 @@ import java.util.Iterator;
  *
  */
 
-interface NewLispObject {
+interface LispObject {
 	public boolean isNull() ;
 	public boolean isAtom() ;
-	NewLispObject eval(Environment env) ;
-	public String toStringCdr() ;
+	LispObject eval(Environment env) ;
+	public String toStringCdr() ;	//String representation as a cdr of a list,
 }
 
+/*
 abstract class LispObject {
     public boolean isNull() { return false ; }
     boolean isAtom() { return true ; }
@@ -26,23 +27,19 @@ abstract class LispObject {
      * element to the remainders
      * @throws LispAbortEvaluationException 
      */
-    LispObject eval(Environment env) { return this ;}
+/*
+	LispObject eval(Environment env) { return this ;}
     public String toStringCdr() { return " . " + this.toString() ; }
 
-    /**
-     * The methods below here are the base "error" implementations of the 
-     * fundamental methods that can be called on 
-     * a LispObject. Some of these might be unnecessary with judicious use of 
-     * downcasting and handling of the resulting ClassCastException
-     */    
 }
+*/    
 
 /** Atom HAS a data member, rather than IS a data member because the box classes like
  * Integer and String are final.
  */
 
 //abstract class Atom implements LispObject {
-abstract class Atom extends LispObject {
+abstract class Atom implements LispObject {
     //constructor
     //public Atom() { this.data = new NilAtom() ; }
     /* factory methods */
@@ -54,6 +51,10 @@ abstract class Atom extends LispObject {
     //implementation of LispObject
     //public String toString() { return data.toString() ; }
 //	abstract public boolean isPrimitive() ;
+	@Override public boolean isAtom() { return true; }
+	@Override public LispObject eval(Environment env) { return this; }
+	@Override public boolean isNull() { return false; }
+	public String toStringCdr() { return " . " + this ; }
 }
 
 /** A DataAtom is an atom that holds some value as data. The Atoms that are not DataAtoms
@@ -96,13 +97,13 @@ final class NilAtom extends Atom implements LispList {
     @Override public String toStringCdr() { return "" ; }
     //If the cdr of a cons is nil, then the cons is the last element of a list,
     //so we just finish printing
-    @Override 
-    public boolean isNull() { return true ; }
-	@Override public LispList listOfValues(Environment env) { return this ; }
-	@Override public LispObject evalSequence(Environment env) { return this ; }
-	@Override public LispObject[] toArray() { return new LispObject[0] ; }
-	@Override
-	public Iterator<LispObject> iterator() {
+    @Override public boolean isNull() { return true ; }
+    @Override public LispList listOfValues(Environment env) { return this ; }
+    @Override public LispObject evalSequence(Environment env) { return this ; }
+    @Override public LispObject[] toArray() { return new LispObject[0] ; }
+    
+    @Override
+    public Iterator<LispObject> iterator() {
 		return new Iterator<LispObject>() {
 
 			@Override

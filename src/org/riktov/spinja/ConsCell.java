@@ -17,17 +17,15 @@ import java.util.Iterator;
  * @author riktov@freeshell.org (Paul Richter)
  *
  */
-interface LispList extends Iterable<LispObject> {
+interface LispList extends Iterable<LispObject>, LispObject {
 	LispList listOfValues(Environment env) ;
 	LispObject evalSequence(Environment env) ;
-	boolean isNull();
-	//public LispObject car() ;
 	public LispList cdrList() ;
 	LispObject[] toArray();
 	int length() ;
 }
 
-class ConsCell extends LispObject implements LispList {
+class ConsCell implements LispList {
 	LispObject car;
 	LispObject cdr;
 
@@ -71,7 +69,8 @@ class ConsCell extends LispObject implements LispList {
 	 * }
 	 */
 
-    public boolean isAtom() { return false ; }
+	@Override public boolean isAtom() { return false ; }
+	@Override public boolean isNull() { return false; }
 
 	// accessors
 	public LispObject car() { return this.car; }
@@ -113,7 +112,8 @@ class ConsCell extends LispObject implements LispList {
 	 * @return The LispObject resulting from the evaluation
 	 * @throws LispAbortEvaluationException 
 	 */
-	@Override LispObject eval(Environment env) {
+	@Override
+	public LispObject eval(Environment env) {
 		//System.out.println("ConsCell.eval(): " + this) ;
 		
 		LispObject firstVal = car.eval(env) ;
@@ -185,7 +185,7 @@ class ConsCell extends LispObject implements LispList {
 		if(current.cdr().isNull()) {
 			return new ConsCell(current.car.eval(env), current.cdr) ;
 		} else {
-			return new ConsCell(current.car.eval(env), (LispObject) ((LispList)current.cdr).listOfValues(env)) ;				
+			return new ConsCell(current.car.eval(env), ((LispList)current.cdr).listOfValues(env)) ;				
 		}
 	}
 
@@ -196,7 +196,6 @@ class ConsCell extends LispObject implements LispList {
 	 */
 	@Override public LispObject evalSequence(Environment env) {
 		ConsCell current = this ;
-		//System.out.println("ConsCell.evalSequence(): form: " + current.car.toString()) ;
 		
 		if(current.cdr().isNull()) {
 			return current.car.eval(env) ;
@@ -229,47 +228,9 @@ class ConsCell extends LispObject implements LispList {
 			@Override
 			public void remove() {
 				// TODO Auto-generated method stub
-				
 			}			
 		} ;
 	}
-	
-	/**
-	 * We cannot use iterators because we may need to bind the entire cdr instead of the car of a cell.
-	 * @param formalParams
-	 * @param env
-	 */
-	
-	/*
-	public void bindToParams(LispObject formalParams, Environment env) {
-		//System.out.println("bindToParams(): formalParams: " + formalParams + " argVals : " + this) ;
-
-		LispObject currentParam = formalParams ; //may be ConsCell or Atom
-		LispList currentVal = this ;	// ConsCell or nil
-		//LispObject val  ;
-		
-		while(!currentVal.isNull()) {
-			ConsCell currentValCell = (ConsCell)currentVal ;
-			//TODO : Anti-pattern here. Should dispatch on type of formalParams
-			if (!currentParam.isAtom()) {	//conventional one-to-one binding
-				LispObject val = currentValCell.car() ;
-				//System.out.println("- binding cell key: " + currentParam + " val :" + val  ) ;
-				ConsCell currentParamCell = (ConsCell)currentParam ;
-				String sym = currentParamCell.car().toString() ;
-				env.intern(sym, val) ;
-				currentVal = (LispList) currentValCell.cdr() ;
-				currentParam = currentParamCell.cdr() ;
-			} else { //rest-binding, where currentParam is bound to the rest of the list
-				ConsCell valList = (ConsCell)currentValCell ;
-				//System.out.println("- binding atom key: " + currentParam + " val :" + val  ) ;
-				env.intern(currentParam.toString(), valList) ;
-				//env.printKeys();
-				return ;
-			}
-		}
-		//env.printKeys();
-	}
-	*/
 	
 	@Override
 	public int length() {
@@ -284,30 +245,5 @@ class ConsCell extends LispObject implements LispList {
 	public LispList cdrList() {
 		return (LispList) cdr ;
 	}
-	
-	/*
-	public void bindParamsToValues(Iterable<LispObject> argVals, Environment env) {
-		Iterator<LispObject> itrParams = this.iterator() ;
-		Iterator<LispObject> itrVals  = argVals.iterator() ;
-		String symbolName ;
-		LispObject val ;
-		
-		//System.out.println("bindParamsToValues(): formalParams: " + this + " argVals :" + argVals) ;
-		//System.out.println(itrParams.hasNext()) ;
-		while(itrParams.hasNext()) {
-			LispObject param = itrParams.next() ;
-			if(param.isAtom()) {	//rest-binding
-				symbolName = param.toString() ;
-			} else {
-				symbolName = param.car().toString() ;					
-			}
-			val = itrVals.next() ;
-
-			//System.out.println("bindParamsToValues(): interning " + symbolName + " with value: " + val ) ;
-			env.intern(symbolName, val) ;
-		}
-
-	}
-	*/
 }
 
