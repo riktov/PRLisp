@@ -34,29 +34,8 @@ abstract class LispObject {
      * fundamental methods that can be called on 
      * a LispObject. Some of these might be unnecessary with judicious use of 
      * downcasting and handling of the resulting ClassCastException
-     */
-    
-    /*
-    public LispObject car() {
-		LispRestarter restarter = new LispRestarter() ;
-		restarter.offerRestarts(";The object " + this + ", passed as the first argument to car, is not the correct type.");
-		throw new LispAbortEvaluationException() ;
-    }
-    
-    public LispObject cdr() {
-		LispRestarter restarter = new LispRestarter() ;
-		restarter.offerRestarts(";The object " + this + ", passed as the first argument to cdr, is not the correct type.");
-		throw new LispAbortEvaluationException() ;
-    }
-    */
-    
+     */    
 }
-
-/**
-abstract class ObsoleteValueObject extends LispObject {
-    abstract public String toStringCdr() ;
-}
-*/
 
 /** Atom HAS a data member, rather than IS a data member because the box classes like
  * Integer and String are final.
