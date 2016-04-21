@@ -46,28 +46,23 @@ abstract class Atom implements LispObject {
     public static Atom make(Object o) { return new ObjectAtom(o) ; }
     public static Atom make(String s) { return new StringAtom(s) ; }
     public static Atom make(int i) { return new ObjectAtom(i) ; }
-    public static Atom make(boolean b) { return b ? new SymbolAtom("t") : NilAtom.nil ; }
-    //accessors
+    public static LispObject make(boolean b) { return b ? new SymbolAtom("t") : NilAtom.nil ; }
+
     //implementation of LispObject
-    //public String toString() { return data.toString() ; }
-//	abstract public boolean isPrimitive() ;
 	@Override public boolean isAtom() { return true; }
-	@Override public LispObject eval(Environment env) { return this; }
 	@Override public boolean isNull() { return false; }
+	@Override public LispObject eval(Environment env) { return this; }
 	public String toStringCdr() { return " . " + this ; }
 }
 
-/** A DataAtom is an atom that holds some value as data. The Atoms that are not DataAtoms
+/** A DataAtom is an atom that holds some value as data. The data may be of a numerical primitive type
+ * or an Object-derived class. The Atoms that are not DataAtoms
  * are NilAtom and Procedure. DataAtom is abstract because different primitive data subclasses have different 
  * types for the data member.
  * @author: Paul Richter
  */
 abstract class DataAtom extends Atom {
-    //factory methods, dispatch on argument type
-    //public static DataAtom make(float f) { return new FloatAtom(f) ; }
-    //public static DataAtom make(double d) { return new DoubleAtom(d) ; }
-    
-    abstract public boolean isPrimitive() ;
+    public boolean isPrimitive() { return false ; }
 }
 
 /**
@@ -81,8 +76,6 @@ class ObjectAtom extends DataAtom {
     public Object data() { return data ; }    
     public ObjectAtom(Object o) { this.data = o ; }
     @Override public String toString() { return data.toString() ; }
-    //public boolean dataEquals(Object o) { return data.equals(o);}
-    @Override public boolean isPrimitive() { return false ; }
 }
 
 /**
@@ -91,37 +84,34 @@ class ObjectAtom extends DataAtom {
 * NilAtom implements the LispList interface because it is equivalent to an empty list
 */
 
-final class NilAtom extends Atom implements LispList {
+final class NilAtom implements LispList {
 	public static final NilAtom nil = new NilAtom() ;
+	
     @Override public String toString() { return "NIL" ; }
-    @Override public String toStringCdr() { return "" ; }
-    //If the cdr of a cons is nil, then the cons is the last element of a list,
-    //so we just finish printing
+    
+   //Implementation of LispObject interface
+    @Override public String toStringCdr() { return "" ; }	//nil in the cdr makes it a list
     @Override public boolean isNull() { return true ; }
+    @Override public boolean isAtom() { return false; }
+    @Override public LispObject eval(Environment env) { return this; }
+
+   //Implementation of LispList interface
     @Override public LispList listOfValues(Environment env) { return this ; }
     @Override public LispObject evalSequence(Environment env) { return this ; }
     @Override public LispObject[] toArray() { return new LispObject[0] ; }
-    
-    @Override
-    public Iterator<LispObject> iterator() {
+    @Override public int length() { return 0; }    
+    @Override public LispList cdrList() { return this; }
+    @Override public Iterator<LispObject> iterator() {
 		return new Iterator<LispObject>() {
 			@Override public boolean hasNext() { return false; }
 			@Override public LispObject next() { return nil ; }
 			@Override public void remove() {}			
 		};
-	}
-	@Override public int length() { return 0; }
-	@Override public LispList cdrList() { return this; }
+	}	
 }
 
 
 class StringAtom extends ObjectAtom {
-	/*
-	private String value ;
-    public StringAtom(String s) { this.value = s ; }
-    @Override public String toString() { return '"' + value + '"' ; }
-    public String toStringUnquoted() { return value ; }
-	 */
     public StringAtom(String s) { super(s) ; }
     @Override public String toString() { return '"' + super.toString() + '"' ; }
     public String toStringUnquoted() { return super.toString(); }
