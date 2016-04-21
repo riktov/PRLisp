@@ -187,7 +187,7 @@ abstract class SpecialOperation extends LispProcedure {
 				if(varNameForm.isAtom()) {	//defining a variable, not a function
 					nameSymbol = (SymbolAtom) varNameForm ;
 					valueObject = definition.car().eval(argEnv);
-				} else {
+				} else {	//defining a function
 					ConsCell varNameAndParams = (ConsCell)varNameForm ;
 					nameSymbol = (SymbolAtom)varNameAndParams.car() ;
 					LispObject params = varNameAndParams.cdr() ;
@@ -254,7 +254,8 @@ abstract class SpecialOperation extends LispProcedure {
 		specials.put("apply".toUpperCase(), new SpecialOperation() {
 			public LispObject applyNonNil(ConsCell argForms) {
 				LispProcedure proc = (LispProcedure)argForms.car().eval(argEnv) ;
-				LispList values = ((ConsCell) argForms.cdr()).listOfValues(argEnv) ;
+				ConsCell argListToApply = (ConsCell) ((ConsCell) argForms.cdr()).car() ;
+				LispList values = (LispList) argListToApply.eval(argEnv) ;
 				
 				return proc.apply(values) ;
 			}
