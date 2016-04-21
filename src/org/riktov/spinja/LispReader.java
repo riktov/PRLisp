@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Converts strings into lisp forms. Also maintains a reader macro table
+ * Reads text strings and returns lisp forms. Also maintains a reader macro table
  * to convert input in special ways
  * @author riktov@freeshell.org (Paul Richter)
  *
@@ -222,6 +222,8 @@ class LispStreamTokenizer extends StreamTokenizer {
 		wordChars('-', '-');	//examples: VARIABLE-WITH-HYPHENS
 		wordChars('<', '?');	// <=>? examples: STR->LIS
 		wordChars(';', ';');	//handle lines that start with?? ;
+		wordChars('#', '#');	//for characters via reader-macro
+		wordChars('\\', '\\'); //for characters via reader-macro
 		//ordinaryChar('+');
 		quoteChar('"');
 		// st.parseNumbers() ;
@@ -239,9 +241,11 @@ abstract class ReaderMacro {
 	//abstract LispObject process(String string) ;
 	abstract LispObject expand(LispObject o) ;
 	
+	/*
 	static String quoteString(String s) {
 		return s ;
 	}
+	*/
 	
 	static HashMap<String, ReaderMacro> initialReaderMacros() {
 		HashMap<String, ReaderMacro> macros = new HashMap<String, ReaderMacro>() ;
