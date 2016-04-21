@@ -45,8 +45,12 @@ public class BuiltInsTest {
 	public void AppendTestTwoArgs() {
 		LispProcedure proc = (LispProcedure)new SymbolAtom("append").eval(env) ;
 		
+		LispObject arg1Objects[] = { ObjectAtom.make(1) } ;
+		LispObject arg2Objects[] = { ObjectAtom.make(2) } ;
+		/*
 		LispObject arg1Objects[] = { ObjectAtom.make(1), ObjectAtom.make(2) } ;
 		LispObject arg2Objects[] = { ObjectAtom.make(3), ObjectAtom.make(4) } ;
+		 */
 		
 		LispList arg1 = new ConsCell(arg1Objects) ;
 		LispList arg2 = new ConsCell(arg2Objects) ;
@@ -56,7 +60,7 @@ public class BuiltInsTest {
 		LispList args = new ConsCell(argsObjects) ;
 		result = proc.apply(args) ;
 		
-		String expected = "(1 2 3 4)" ;
+		String expected = "(1 2)" ;
 		System.out.println("Expecting: " + expected + " Got: " + result) ;
 		assertTrue(result.toString().equals(expected)) ;
 	}
