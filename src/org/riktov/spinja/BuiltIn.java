@@ -15,14 +15,12 @@ public class BuiltIn {
 			"(define (caar alis) (car (car alis)))",
 			"(define (cadr alis) (car (cdr alis)))",
 			"(define (cdar alis) (cdr (car alis)))",			
-			"(define (append2 lis1 lis2) (if (null? lis1) lis2 (cons (car lis1) (append (cdr lis1) lis2))))",
+			"(define (append2 lis1 lis2) (if (null? lis1) lis2 (cons (car lis1) (append2 (cdr lis1) lis2))))",
 			"(define (reverse alis) (if (null? alis) alis (append (reverse (cdr alis)) (list (car alis)))))",
 			//"(define (length alis) (if (null? alis) 0 (+ 1 (length (cdr alis)))))",
 //			"(define (fib n)(if (< n 2)(list 1 1)(let ((fib-prev (fib (- n 1))))(cons (+ (car fib-prev)(cadr fib-prev)) fib-prev))))",
-			"(define (fact n)(if (= n 1) n (* n (fact (- n 1)))))",
 			"(define (map fn lis) (if (null? lis) lis (cons (fn (car lis)) (map fn (cdr lis)))))",
 			"(define (identity x) x)",
-			"(define (>= xa ya) (not (> ya xa)))",
 			
 			"(define (append . lists) "
 			+ "(if (null? lists) "
@@ -33,9 +31,21 @@ public class BuiltIn {
 			
 		} ;
 		
+		String[] builtInMath = new String[] {
+				"(define (>= xa ya) (not (> ya xa)))",
+				"(define (<= xa ya) (not (> xa ya)))",
+				"(define (fact n)(if (= n 1) n (* n (fact (- n 1)))))",
+				"(define (expt b p) "
+				+ "(if (= 0 p)"
+				+ 		"1"
+				+ 		"(if (= 1 p) "
+				+ 			"b "
+				+ 			"(* b (expt b (- p 1))))))"
+		} ;
 		
 		
 		int i ;
+
 		for(i = 0 ; i < builtInDefs.length ; i++) {
 			//LispReader lr = new LispReader(builtInDefs[i]);
 			//lr.read().eval(env) ;
@@ -43,6 +53,9 @@ public class BuiltIn {
 			lr.read(builtInDefs[i]).eval(env) ;
 		}
 		
+		for(i = 0 ; i < builtInMath.length ; i++) {
+			lr.read(builtInMath[i]).eval(env) ;
+		}
 		return builtIns;
 	}
 }
