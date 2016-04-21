@@ -391,10 +391,32 @@ public class SpecialOperationsTest {
 		} ;
 
 		ConsCell c = new ConsCell(formAsArray) ;
-		System.out.println("testLet() evaluating: " + c.toString()) ;
+		System.out.println("testLetEmptyBinding() evaluating: " + c.toString()) ;
 
 		LispObject result = c.eval(env) ;
 				
 		assertTrue(result.isNull()) ;
+	}
+	
+	@Test
+	public void testApplyNumericalAddition() {
+		LispObject[] args = new LispObject[] {
+				new SymbolAtom("list"),
+				Atom.make(3), 
+				Atom.make(5)
+		} ;
+		
+		LispObject[] formAsArray = new LispObject[] {
+				new SymbolAtom("apply"),
+				new SymbolAtom("+"),
+				new ConsCell(args)
+		} ;
+		
+		ConsCell c = new ConsCell(formAsArray) ;
+		System.out.println("testApplyNumericalAddition() evaluating: " + c) ;
+
+		LispObject result = c.eval(env) ;
+		System.out.println(result) ;
+		assertTrue(result.toString().equals("8")) ;
 	}
 }
