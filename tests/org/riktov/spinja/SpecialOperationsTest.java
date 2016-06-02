@@ -98,7 +98,7 @@ public class SpecialOperationsTest {
 		
 		LispList argList = new ConsCell(new ObjectAtom(352), NilAtom.nil) ;
 		
-		CompoundProcedure builtProc = (CompoundProcedure)(env.get("FOOBAR")) ;
+		LispProcedure builtProc = (LispProcedure)(env.get("FOOBAR")) ;
 		LispObject applyResult = builtProc.apply(argList);
 		
 		assertTrue(applyResult.toString().equals("352")) ;
@@ -265,6 +265,27 @@ public class SpecialOperationsTest {
 	 * Invoke the lambda special operation with a single parameter and a single form in its body.
 	 * Assert that when evaluated, it returns a CompoundProcedure with the parameter list and the body.
 	 */
+	
+	@Test
+	public void testNullLambda() {
+		LispObject[] forms = new LispObject[] {
+				new SymbolAtom("lambda"),
+				NilAtom.nil,
+				NilAtom.nil
+		} ;
+		ConsCell c = new ConsCell(forms) ;
+		
+		System.out.println("testNullLambda() evaluating: " + c.toString()) ;
+
+		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
+
+		Bindable params = theLambda.formalParams() ;
+		LispObject body = theLambda.body() ;
+		
+		assertTrue(params.isNull()) ;
+		assertTrue(body.isNull()) ;
+	}
+	
 	@Test
 	public void testLambda() {
 		ConsCell arglist = new ConsCell(new LispObject[] { new SymbolAtom("x") });
@@ -341,7 +362,7 @@ public class SpecialOperationsTest {
 		ConsCell c = new ConsCell(exp) ;
 		System.out.println("testLambdaNoArgs() evaluating: " + c.toString()) ;
 
-		CompoundProcedure theLambda = (CompoundProcedure)c.eval(env) ;
+		LispProcedure theLambda = (LispProcedure)c.eval(env) ;
 		
 		//System.out.println(theLambda) ;
 		

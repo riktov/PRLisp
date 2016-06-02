@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
  * @author Paul Richter &lt;riktov@freeshell.org&gt;
  *
  */
-abstract class SystemProcedure extends LispProcedure {
+abstract class SystemProcedure extends PrimitiveProcedure {
 	static HashMap<String, SystemProcedure> initialSystemProcedures(final Environment env) {
 		HashMap<String, SystemProcedure> systemProcs = new HashMap<String, SystemProcedure>();
 		

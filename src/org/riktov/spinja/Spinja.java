@@ -81,7 +81,7 @@ public class Spinja {
 
 		LispReader lr = new LispReader(new BufferedReader(new InputStreamReader(System.in)));
 		lr.prompt();
-
+		
 		Scanner in = null ;
 		try{
 			in = new Scanner(System.in);
@@ -98,13 +98,14 @@ public class Spinja {
 				}
 				
 				try {
-					readObject = lr.read(input);// READ					
+					readObject = lr.read(input);// READ	
 				} catch (LispIncompleteFormException exc) {
 					previousLine = input ;
 					continue ;
 				}
 	
 				LispObject evaluated = null ;
+				
 				try {
 					evaluated = readObject.eval(env);// EVALUATE
 					System.out.println(";Value: " + evaluated);// PRINT (evaluated)

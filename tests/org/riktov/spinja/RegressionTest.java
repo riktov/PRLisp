@@ -18,6 +18,10 @@ public class RegressionTest {
 		env.initialize() ;
 	}
 
+	/**
+	 * This was something about the environment, and values weren't being properly interned
+	 * in a re-entrant environment
+	 */
 	@Test
 	public void testRegression1() {
 		try {

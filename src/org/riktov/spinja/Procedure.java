@@ -23,11 +23,6 @@ abstract class LispProcedure implements LispObject {
 		// TODO Auto-generated method stub
 		return this;
 	}
-
-	public String toStringCdr() {
-		// TODO Auto-generated method stub
-		return "Stub implementation of PrimitiveProcedure.toStringCdr()";
-	}
 	
 	abstract LispObject apply(LispList argsToApply) ;
     public LispList processArguments(LispList argForms, Environment evalEnv) {
@@ -59,6 +54,12 @@ abstract class LispProcedure implements LispObject {
 		return true ;
 	}
 
+	@Override
+	public String toStringCdr() {
+		// TODO Auto-generated method stub
+		return "";
+	}
+
 }
 
 class CompoundProcedure extends LispProcedure {
@@ -81,25 +82,28 @@ class CompoundProcedure extends LispProcedure {
 	}
 	*/
 	
+	//procedure with non-zero parameters
 	public CompoundProcedure(ConsCell formalParams, LispList body, Environment env) {
 		this.formalParams = new ParameterList(formalParams) ;
 		this.body = body;
 		this.env = env;		
 	}	
 
+	//procedure with list-bound parameter
 	public CompoundProcedure(SymbolAtom formalParams, LispList body, Environment env) {
 		this.formalParams = new ParameterSymbol(formalParams) ;
 		this.body = body;
 		this.env = env;		
 	}	
 
+	//procedure with no parameters
 	public CompoundProcedure(NilAtom formalParams, LispList body, Environment env) {
 		this.formalParams = new ParameterNull() ;
 		this.body = body;
 		this.env = env;		
 	}
 	
-	public CompoundProcedure(LispList formalParams, ConsCell body, Environment env) {
+	public CompoundProcedure(LispList formalParams, LispList body, Environment env) {
 		if(formalParams.isNull()) {
 			this.formalParams = new ParameterNull() ;
 		} else {
@@ -143,30 +147,6 @@ class CompoundProcedure extends LispProcedure {
 
 		return body.evalSequence(newEnv) ;
 	}
-
-	@Override
-	public boolean isNull() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAtom() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public LispObject eval(Environment env) {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	@Override
-	public String toStringCdr() {
-		// TODO Auto-generated method stub
-		return "Stub implementation of CompoundProcedure.toStringCdr()";
-	}	
 }
 
 /**
@@ -177,7 +157,8 @@ class CompoundProcedure extends LispProcedure {
  */
 interface Bindable {
 	void bindValues(LispList values, Environment env) ;
-	boolean isAtom();
+	boolean isAtom() ;
+	boolean isNull() ;
 	boolean matchCount(LispList values) ;
 }
 
@@ -257,6 +238,10 @@ class ParameterNull implements Bindable {
 	@Override
 	public boolean isAtom() {
 		return false;
+	}
+	
+	public boolean isNull() {
+		return true ;
 	}
 
 	public boolean matchCount(LispList values) {

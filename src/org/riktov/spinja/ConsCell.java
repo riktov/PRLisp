@@ -27,7 +27,7 @@ interface LispList extends Iterable<LispObject>, LispObject {
 
 class ConsCell implements LispList {
 	LispObject car;
-	LispObject cdr;
+	LispObject cdr;	//the next cell, or nil for the last cell in a proper list, or an atom if this is a dotted-pair
 
 	/**
 	 * Constructor 

@@ -11,7 +11,6 @@ import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.riktov.spinja.CompoundProcedure;
 import org.riktov.spinja.ConsCell;
 import org.riktov.spinja.Environment;
 import org.riktov.spinja.LispObject;
@@ -133,7 +132,7 @@ public class SystemProceduresTest {
 	
 		//check that the environment contains the bindings as stated in the source file.
 		
-		CompoundProcedure theProc = (CompoundProcedure) env.get("ADD-THIRTEEN") ;
+		LispProcedure theProc = (LispProcedure) env.get("ADD-THIRTEEN") ;
 
 		LispObject []forms = new LispObject[] { new ObjectAtom(4) } ;
 		ConsCell c = new ConsCell(forms) ;

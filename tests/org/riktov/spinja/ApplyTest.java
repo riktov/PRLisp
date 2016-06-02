@@ -35,6 +35,16 @@ public class ApplyTest {
     	sampleList = new ConsCell(sampleArray) ;
     }
 
+    @Test public void testApplyCompoundNull() {
+    	// a procedure which takes no arguments and has not body.
+    	LispProcedure proc = new CompoundProcedure(NilAtom.nil, NilAtom.nil, env) ;
+    	
+    	LispObject result = null;
+		result = proc.apply(NilAtom.nil);
+
+		assertTrue(result.isNull()) ;
+    }
+    
     @Test public void testApplyCompoundNoArgs() {
     	// a procedure which takes no arguments and returns 42.
     	// DataAtom.make(42) makes the data have the Integer run-time type. 
@@ -42,7 +52,7 @@ public class ApplyTest {
     	LispList body = new ConsCell(new LispObject[] { DataAtom.make(42) }) ;
     	System.out.println("testEvalApplyCompoundNoArgs(): body is " + body.toString()) ;
 
-    	CompoundProcedure proc = new CompoundProcedure(NilAtom.nil, body, env) ;
+    	LispProcedure proc = new CompoundProcedure(NilAtom.nil, body, env) ;
     	
     	ObjectAtom result = null;
 		result = (ObjectAtom)proc.apply(NilAtom.nil);
@@ -60,7 +70,7 @@ public class ApplyTest {
 		ParameterList formalParams = new ParameterList(new SymbolAtom("x"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 	
-		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
+		LispProcedure proc = new CompoundProcedure(formalParams, body, env) ;
 		System.out.println("testEvalApplyCompoundWithArgs(): proc: " + proc) ;
 		
 		LispList argForms = new ConsCell(new ObjectAtom(5), new NilAtom()) ;
@@ -83,7 +93,7 @@ public class ApplyTest {
 		ParameterSymbol formalParams = new ParameterSymbol("x") ;
 		LispList body = new ConsCell(new SymbolAtom("x"), new NilAtom()) ;
 		
-		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
+		LispProcedure proc = new CompoundProcedure(formalParams, body, env) ;
 		System.out.println("testApplyCompoundWithListBoundArg(): proc: " + proc + sampleList) ;
 		
 		LispObject result = proc.apply(sampleList) ;
@@ -99,7 +109,7 @@ public class ApplyTest {
 		ParameterList formalParams = new ParameterList(new SymbolAtom("alist"), new NilAtom()) ;
 		LispList body = new ConsCell(new SymbolAtom("alist"), new NilAtom()) ;
 		
-		CompoundProcedure proc = new CompoundProcedure(formalParams, body, env) ;
+		LispProcedure proc = new CompoundProcedure(formalParams, body, env) ;
 		System.out.println("testApplyCompoundWithListArg(): proc: " + proc) ;
 		
 		ConsCell argForms = new ConsCell(sampleList, NilAtom.nil) ;
