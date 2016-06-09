@@ -9,22 +9,12 @@ package org.riktov.spinja;
  *
  */
 abstract class LispProcedure implements LispObject {
-	public boolean isNull() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean isAtom() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public LispObject eval(Environment env) {
-		// TODO Auto-generated method stub
-		return this;
-	}
+	public boolean isNull() { return false; }
+	public boolean isAtom() { return false; }
+	public LispObject eval(Environment env) { return this; }
 	
 	abstract LispObject apply(LispList argsToApply) ;
+	
     public LispList processArguments(LispList argForms, Environment evalEnv) {
     	//System.out.println("LispProcedure.processArguments() : argForms: " + argForms) ;
 		return argForms.listOfValues(evalEnv) ;
@@ -54,11 +44,7 @@ abstract class LispProcedure implements LispObject {
 		return true ;
 	}
 
-	@Override
-	public String toStringCdr() {
-		// TODO Auto-generated method stub
-		return "";
-	}
+	@Override public String toStringCdr() { return ""; }
 
 }
 
@@ -151,7 +137,7 @@ class CompoundProcedure extends LispProcedure {
 
 /**
  * Bindable provides functionality for function parameters, which may be
- * a list, or a SymbolAtom (bound to a list), or nil.
+ * a list of symbols, or a SymbolAtom (bound to a list), or nil.
  * @author paul
  *
  */
