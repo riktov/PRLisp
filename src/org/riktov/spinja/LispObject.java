@@ -3,7 +3,7 @@ package org.riktov.spinja ;
 import java.util.Iterator;
 
 /**
- * A LispObject is the base of all lisp objects.
+ * A <code>LispObject</code> is the base of all lisp objects.
  * 
  * @author riktov@freeshell.org (Paul Richter)
  *
