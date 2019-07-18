@@ -25,6 +25,11 @@ interface LispList extends Iterable<LispObject>, LispObject {
 	int length() ;
 }
 
+/**
+ * 
+ * @author riktov@freeshell.org (Paul Richter)
+ *
+ */
 class ConsCell implements LispList {
 	LispObject car;
 	LispObject cdr;	//the next cell, or nil for the last cell in a proper list, or an atom if this is a dotted-pair

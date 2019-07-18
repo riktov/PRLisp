@@ -1,3 +1,4 @@
+
 package org.riktov.spinja;
 
 import java.io.BufferedReader;
@@ -30,17 +31,20 @@ class LispReader {
 		tokenizer = new LispStreamTokenizer(r) ;
 	}
 	
+	/**
+	 * constructor 
+	 * @param s - a String
+	 */
 	public LispReader(String s) {
 		this(new BufferedReader(new StringReader(s))) ;
 	}
 	
 	/**
-	 * Converts a string into a LispObject
+	 * Converts a string into a LispObject. This will discard the current tokenizer for a new one built on the string.
 	 * @param sExp - a String
 	 * @return a LispObject
 	 * @throws IOException 
 	 * 
-	 * This will discard the current tokenizer for a new one built on the string.
 	 */
 	public LispObject read(String sExp) {
 		Reader r = new BufferedReader(new StringReader(sExp));
