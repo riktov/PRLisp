@@ -1,4 +1,3 @@
-
 package org.riktov.spinja;
 
 import java.io.BufferedReader;
@@ -215,7 +214,7 @@ class LispStreamTokenizer extends StreamTokenizer {
 
 		resetSyntax();
 		whitespaceChars(' ', ' ');
-		whitespaceChars(9, 9) ;
+		whitespaceChars(9, 9) ;	//tab
 		whitespaceChars('\n', '\n') ;
 		wordChars('a', 'z');
 		wordChars('A', 'Z');

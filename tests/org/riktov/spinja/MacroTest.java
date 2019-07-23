@@ -1,7 +1,5 @@
 package org.riktov.spinja;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +15,7 @@ public class MacroTest {
 	@Test
 	public void testNullMacro() {
 		// a macro with no args and body that is a scalar
-		Macro m = new Macro((LispList)NilAtom.nil, (LispList)(NilAtom.nil), env) ;
+		//Macro m = new Macro((LispList)NilAtom.nil, (LispList)(NilAtom.nil), env) ;
 	}
 
 }

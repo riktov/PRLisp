@@ -16,6 +16,8 @@ import org.riktov.spinja.ObjectAtom;
 import org.riktov.spinja.SpecialOperation;
 import org.riktov.spinja.SymbolAtom;
 
+//https://stackoverflow.com/questions/155436/unit-test-naming-best-practices
+	
 public class SpecialOperationsTest {
 	private Environment env;
 	@Before
