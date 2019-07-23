@@ -20,3 +20,11 @@ class LispAbortEvaluationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
 }
+
+class LispQuitException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID =21L;
+}
